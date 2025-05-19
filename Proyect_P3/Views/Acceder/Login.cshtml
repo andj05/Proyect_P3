@@ -1,0 +1,197 @@
+﻿@{
+    ViewBag.Title = "Login";
+    Layout = "~/views/shared/_LayoutApp.cshtml";
+}
+
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    html, body {
+        height: 100%;
+        width: 100%;
+        font-family: Arial, sans-serif;
+    }
+
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #b3cde0, #a2b9e0); 
+    }
+
+    .login-container {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px;
+    }
+
+    .login-card {
+        background-color: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(6px);
+        border-radius: 20px;
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+        overflow: hidden;
+    }
+
+    .login-header {
+        background: linear-gradient(135deg, #7ca6e5, #6b8fd6);
+        color: white;
+        padding: 25px;
+        text-align: center;
+        font-size: 1.4rem;
+        font-weight: bold;
+    }
+
+    .card-body {
+        padding: 30px;
+    }
+
+    .form-control {
+        border-radius: 10px;
+        padding: 12px 15px;
+        border: 1px solid #ccd;
+        margin-bottom: 20px;
+        font-size: 1rem;
+    }
+
+        .form-control:focus {
+            border-color: #7ca6e5;
+            box-shadow: 0 0 0 0.2rem rgba(124, 166, 229, 0.25);
+            outline: none;
+        }
+
+    .password-group {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        cursor: pointer;
+        color: #666;
+        font-size: 1.1rem;
+    }
+
+    .btn-login {
+        background: linear-gradient(135deg, #7ca6e5, #6b8fd6);
+        border: none;
+        border-radius: 10px;
+        padding: 12px 30px;
+        color: white;
+        width: 100%;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.2s ease-in-out;
+    }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #6b8fd6, #5c7fcf);
+        }
+
+    .loading {
+        display: none;
+        text-align: center;
+        margin-top: 15px;
+        font-size: 0.95rem;
+        color: #555;
+    }
+</style>
+
+<div class="login-container">
+    <div class="login-card">
+        <div class="login-header">
+            🔐 Iniciar Sesión
+        </div>
+        <div class="card-body">
+            <form id="frmAcceder">
+                <div class="form-group">
+                    <label>👤 Usuario</label>
+                    <input type="text"
+                           name="Usuario"
+                           id="inputUsuario"
+                           class="form-control"
+                           placeholder="Ingrese su usuario"
+                           required />
+                </div>
+
+                <div class="form-group">
+                    <label>🔒 Contraseña</label>
+                    <div class="password-group">
+                        <input type="password"
+                               name="Password"
+                               id="inputPassword"
+                               class="form-control"
+                               placeholder="Ingrese su contraseña"
+                               required />
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-login" id="btnEntrar">
+                        ➡️ Entrar
+                    </button>
+                </div>
+
+                <div class="loading" id="loadingSpinner">
+                    ⏳ Verificando credenciales...
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#inputUsuario").focus();
+
+            $("#togglePassword").click(function () {
+                const passwordField = $("#inputPassword");
+                const isPassword = passwordField.attr("type") === "password";
+                passwordField.attr("type", isPassword ? "text" : "password");
+                $(this).text(isPassword ? "🙈" : "👁️");
+            });
+
+            $("#frmAcceder").submit(function (e) {
+                e.preventDefault();
+
+                $("#btnEntrar").prop("disabled", true).text("⏳ Entrando...");
+                $("#loadingSpinner").show();
+
+                const Url = "@Url.Content("~/Acceder/Enter")";
+                const parametros = $(this).serialize();
+
+                $.post(Url, parametros, function (data) {
+                    if (data == "1") {
+                        window.location.href = "@Url.Action("Index", "Home")";
+                    } else {
+                        alert("❌ " + data);
+                    }
+                })
+                .fail(function () {
+                    alert("❌ Error de conexión. Intente nuevamente.");
+                })
+                .always(function () {
+                    $("#btnEntrar").prop("disabled", false).text("➡️ Entrar");
+                    $("#loadingSpinner").hide();
+                });
+            });
+        });
+    </script>
+}

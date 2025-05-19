@@ -1,0 +1,66 @@
+﻿@model List<Proyect_P3.Models.ViewModels.QueryViewModels>
+@{
+    ViewBag.Title = "Consulta Usario";
+    Layout = "~/views/shared/_LayoutApp.cshtml";
+}
+
+<h2>Consulta</h2>
+
+<div class="row">
+    <br />
+    <div class="col-md-12">
+    </div>
+    <br/>
+    <br/>
+
+    <div class="col-lg-12">
+        <table class=" table table-bordered">
+            <tr>
+                <th style="background-color: #ff6a00; color:white;">ID</th>
+                <th style="background-color: #ff6a00; color:white;">Correo</th>
+                <th style="background-color: #ff6a00; color:white;">Edad</th>
+                <th style="background-color: #ff6a00; color:white;">Accion</th>
+            </tr>
+
+            @foreach(var Objs in Model)
+            {
+                <tr>
+                    <td>@Objs._id</td>
+                    <td>@Objs._Email</td>
+                    <td>@Objs._Edad</td>
+                    <td>
+                        <input type="button"
+                               class="btn btn-danger btn-lg"
+                               onclick="jsDelete(@Objs._id)"
+                               value="Borra" />
+
+                        <input type="button"
+                               class="btn btn-default btn-lg"
+                               onclick=""
+                               value="Editar" />
+                    </td>
+                </tr>
+            }
+        </table>
+
+    </div>
+
+</div>
+
+<script>
+    function jsDelete(ID)
+    {
+        if (confirm("Estas Seguro de Borrar??")) {
+            URL = "@Url.Content("~/User/Delete")" + "/" +
+
+                $.post(URL, function (data) {
+                    if (data == "1") {
+                        document.location.href = "@Url.Content("~/User/Query")"
+                    } else {
+                        alert("Registro no fue borrado :)")
+                    }
+                })
+        }
+    }
+</script>
+
