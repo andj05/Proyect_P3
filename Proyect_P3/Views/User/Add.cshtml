@@ -1,0 +1,63 @@
+﻿
+@model Proyect_P3.Models.ViewModels.AddUserViewModels
+
+@{
+    ViewBag.Title = "Agregar";
+    Layout = "~/views/shared/_LayoutApp.cshtml";
+}
+
+<h2>Guardar Usuario</h2>
+
+<div class="col-md-12">
+    <br />
+    <br />
+    <br />
+    <br />
+    <div>
+        @using (Html.BeginForm("Add", "User", FormMethod.Post, new { role = "form", @class = "" }))
+        {
+            @Html.LabelFor(d => d.Nombre)
+            @Html.TextBoxFor(d => d.Nombre, new { @class = "form-contrl" })
+            @Html.ValidationMessageFor(d => d.Nombre, "", new { @class = "text-danger" })
+            <br />
+
+            @Html.LabelFor(d => d.Usuario)
+            @Html.TextBoxFor(d => d.Usuario, new { @class = "form-contrl" })
+            @Html.ValidationMessageFor(d => d.Usuario, "", new { @class = "text-danger" })
+            <br />
+
+            @Html.LabelFor(d => d.Email)
+            @Html.TextBoxFor(d => d.Email, new { @class = "form-contrl" })
+            @Html.ValidationMessageFor(d => d.Email, "", new { @class = "text-danger" })
+            <br />
+
+            @Html.LabelFor(d => d.Password)
+            @Html.TextBoxFor(d => d.Password, new { @class = "form-contrl" })
+            @Html.ValidationMessageFor(d => d.Password, "", new { @class = "text-danger" })
+            <br />
+
+            @Html.LabelFor(d => d.ConfirmPassword)
+            @Html.TextBoxFor(d => d.ConfirmPassword, new { @class = "form-contrl" })
+            @Html.ValidationMessageFor(d => d.ConfirmPassword, "", new { @class = "text-danger" })
+            <br />
+
+            @Html.LabelFor(d => d.Edad)
+            @Html.TextBoxFor(d => d.Edad, new { @class = "form-contrl" })
+            @Html.ValidationMessageFor(d => d.Edad, "", new { @class = "text-danger" })
+
+            //este codigo tiene un error dejado aproposito por el maestro
+            <br />
+
+            <div style="text-align: left">
+                <input type="submit"
+                       value="Guardar"
+                       class="btn btn-success btn-lg" />
+
+                <input type="button"
+                       value="Volver Atras"
+                       class="btn btn-info btn-lg"
+                       onclick="document.location.href=@Url.Content("~/User/Query")'" />
+            </div>
+        }
+    </div>
+</div>
