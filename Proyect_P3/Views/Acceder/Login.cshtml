@@ -102,13 +102,20 @@
 
     .modern-form-control {
         width: 100%;
-        padding: 13px 16px;
+        padding: 16px 20px;
         border: 1.5px solid #e0e0e0;
         border-radius: 12px;
-        font-size: 1.05rem;
+        font-size: 1.1rem;
         background: #f7f8fa;
         transition: border-color 0.2s;
         outline: none;
+        height: 50px;
+        box-sizing: border-box;
+    }
+
+    /* Padding especial solo para el campo de contraseña */
+    .modern-password-group .modern-form-control {
+        padding: 16px 50px 16px 20px;
     }
 
         .modern-form-control:focus {
@@ -123,21 +130,36 @@
 
     .modern-password-toggle {
         position: absolute;
-        right: 14px;
+        right: 20px;
         top: 50%;
         transform: translateY(-50%);
         background: none;
         border: none;
         color: #888;
-        font-size: 1.2rem;
         cursor: pointer;
         z-index: 2;
-        padding: 0 4px;
+        padding: 2px;
         transition: color 0.2s;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
     }
 
         .modern-password-toggle:hover {
             color: #6a82fb;
+        }
+
+        .modern-password-toggle svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+            transition: all 0.2s ease;
+        }
+
+        .modern-password-toggle:hover svg {
+            transform: scale(1.1);
         }
 
     .modern-btn-login {
@@ -197,7 +219,19 @@
                            placeholder="Ingrese su contraseña"
                            required />
                     <button type="button" class="modern-password-toggle" id="togglePassword" tabindex="-1" aria-label="Mostrar/Ocultar contraseña">
-                        👁️
+                        <!-- SVG para mostrar (ojo abierto) -->
+                        <svg class="eye-open" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)">
+                                <path d="M2274 4094 c-456 -55 -912 -230 -1349 -519 -390 -258 -760 -628 -884-885 -49 -103 -49 -157 0 -260 135 -279 543 -675 968 -939 389 -241 795 -397 1191 -456 230 -35 551 -30 790 11 648 111 1357 510 1833 1032 187 205 292 378 292 482 0 176 -308 552 -708 863 -405 316 -870 536 -1337 636 -234 49 -561 64 -796 35z m536 -308 c248 -30 495 -99 740 -208 473 -209 965 -594 1198 -935l56 -83 -56 -82 c-234 -344 -729 -730 -1208 -941 -700 -308 -1394 -287 -2095 65 -437 219 -862 566 -1073 875 l-56 83 56 83 c228 335 711 715 1173 924 249 113 537 194 785 222 119 13 355 12 480 -3z"/>
+                                <path d="M2388 3475 c-351 -67 -634 -331 -730 -683 -31 -111 -31 -353 0 -464 90 -327 342 -580 667 -669 116 -32 354 -32 470 0 325 89 577 342 667 669 31 111 31 353 0 464 -90 328 -346 584 -667 669 -106 27 -300 34 -407 14z m67 -156 c79 -29 173 -119 211 -201 26 -56 29 -74 29 -163 0 -92 -3 -106 -32 -167 -40 -85 -106 -151 -191 -191 -61 -29 -76 -32 -162 -32 -86 0 -101 3 -162 32 -83 39 -154 108 -194 188 -27 55 -29 69 -29 170 0 102 2 114 30 169 95 187 303 269 500 195z"/>
+                            </g>
+                        </svg>
+                        <!-- SVG para ocultar (ojo cerrado) -->
+                        <svg class="eye-closed" style="display: none;" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
+                            <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)">
+                                <path d="M560 3548 c-48 -33 -72 -70 -77 -120 -6 -55 27 -126 114 -243 61 -82 230 -250 296 -295 l36 -25 -268 -270 c-232 -232 -271 -276 -280 -312 -36 -133 101 -248 222 -187 18 9 163 146 323 305 l290 290 102 -46 c117 -52 295 -112 430 -146 51 -13 91 -28 88 -34 -24 -64 -186 -703 -186 -736 0 -87 65 -149 155 -149 58 0 106 25 133 70 10 16 63 196 118 400 l99 371 110 -8 c124 -9 425 -10 589 -3 l110 5 101 -378 c107 -396 112 -409 177 -443 38 -20 107 -17 148 5 42 22 80 83 80 131 0 19 -43 194 -95 389 -53 195 -94 355 -93 356 2 1 37 10 78 20 119 29 305 91 433 146 l119 52 297 -296 c163 -162 306 -300 318 -306 30 -15 87 -14 127 3 68 28 108 115 87 189 -11 35 -55 85 -282 312 l-268 270 36 25 c66 45 235 213 296 295 87 117 120 188 114 243 -9 79 -77 142 -154 142 -76 0 -113 -29 -183 -146 -52 -88 -218 -249 -335 -326 -274 -182 -662 -313 -1060 -360 -161 -19 -569 -16 -728 5 -394 53 -755 178 -1022 355 -117 77 -283 238 -335 326 -70 117 -107 146 -183 146 -29 0 -55 -8 -77 -22z"/>
+                            </g>
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -219,8 +253,19 @@
             $("#togglePassword").click(function () {
                 const passwordField = $("#inputPassword");
                 const isPassword = passwordField.attr("type") === "password";
+                const eyeClosed = $(this).find(".eye-closed");
+                const eyeOpen = $(this).find(".eye-open");
+               
+                
                 passwordField.attr("type", isPassword ? "text" : "password");
-                $(this).text(isPassword ? "🙈" : "👁️");
+                
+                if (isPassword) {
+                    eyeOpen.show();
+                    eyeClosed.hide();
+                } else {
+                    eyeOpen.hide();
+                    eyeClosed.show();
+                }
             });
 
             $("#frmAcceder").submit(function (e) {

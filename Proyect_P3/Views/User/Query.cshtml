@@ -1,75 +1,352 @@
 ﻿@model List<Proyect_P3.Models.ViewModels.QueryViewModels>
 @{
-    ViewBag.Title = "Consulta Usario";
+    ViewBag.Title = "Consulta Usuario";
     Layout = "~/views/shared/_LayoutApp.cshtml";
 }
 
-<h2>Consulta</h2>
+<style>
+    .page-container {
+        background: #f8f9fa;
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+    }
 
-<div class="row">
-    <br />
-    <div class="col-md-12">
-        <input type="button"
-               value="Nuevo"
-               class="btn btn-primary btn-lg" 
-                onclick="document.location.href='@Url.Content("~/User/Add")'" />
+    .header-card {
+        background: white;
+        border-radius: 0;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        padding: 1.5rem;
+        margin-bottom: 0;
+    }
 
-        <input type="button"
-               value="Volver Atras"
-               class="btn btn-info btn-lg"
-               onclick="document.location.href='@Url.Content("~/")'" />
-    </div>
-    <br/>
-    <br/>
+    .page-title {
+        color: #2c3e50;
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid #3498db;
+        padding-bottom: 0.5rem;
+        display: inline-block;
+    }
 
-    <div class="col-lg-12">
-        <table class=" table table-bordered">
-            <tr>
-                <th style="background-color: #ff6a00; color:white;">ID</th>
-                <th style="background-color: #ff6a00; color:white;">Correo</th>
-                <th style="background-color: #ff6a00; color:white;">Edad</th>
-                <th style="background-color: #ff6a00; color:white;">Accion</th>
-            </tr>
+    .btn-modern {
+        border-radius: 8px;
+        font-weight: 500;
+        padding: 12px 24px;
+        transition: all 0.3s ease;
+        border: none;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        display: inline-block;
+    }
 
-            @foreach(var Objs in Model)
-            {
-                <tr>
-                    <td>@Objs._id</td>
-                    <td>@Objs._Email</td>
-                    <td>@Objs._Edad</td>
-                    <td>
-                        <input type="button"
-                               class="btn btn-danger btn-lg"
-                               onclick="jsDelete(@Objs._id)"
-                               value="Borra" />
+    .btn-primary-modern {
+        background: linear-gradient(135deg, #3498db, #2980b9);
+        color: white;
+        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
+    }
 
-                        <input type="button"
-                               class="btn btn-default btn-lg"
-                               onclick=""
-                               value="Editar" />
-                    </td>
-                </tr>
+        .btn-primary-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
+            color: white;
+        }
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+        color: white;
+        box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3);
+    }
+
+        .btn-secondary-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
+            color: white;
+        }
+
+    /* Tabla de pantalla completa */
+    .table-container {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        background: white;
+    }
+
+    .table-modern {
+        width: 100%;
+        margin: 0;
+        border: none;
+        background: white;
+        border-radius: 0;
+        overflow: hidden;
+        box-shadow: none;
+    }
+
+        .table-modern thead th {
+            background: linear-gradient(135deg, #34495e, #2c3e50);
+            color: white;
+            font-weight: 600;
+            padding: 1.2rem 1rem;
+            border: none;
+            text-align: center;
+            font-size: 1rem;
+        }
+
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+            .table-modern tbody tr:hover {
+                background: #f8f9fa;
             }
-        </table>
 
+        .table-modern tbody td {
+            padding: 1.2rem 1rem;
+            border: none;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
+        }
+
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .btn-action {
+        border-radius: 6px;
+        padding: 10px 16px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        margin: 4px;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-block;
+    }
+
+    .btn-danger-modern {
+        background: linear-gradient(135deg, #e74c3c, #c0392b);
+        color: white;
+        box-shadow: 0 2px 6px rgba(231, 76, 60, 0.3);
+    }
+
+        .btn-danger-modern:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.4);
+            color: white;
+        }
+
+    .btn-warning-modern {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
+        color: white;
+        box-shadow: 0 2px 6px rgba(243, 156, 18, 0.3);
+    }
+
+        .btn-warning-modern:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(243, 156, 18, 0.4);
+            color: white;
+        }
+
+    .user-id {
+        color: #3498db;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .user-email {
+        color: #2c3e50;
+        font-weight: 500;
+        font-size: 1rem;
+    }
+
+    .user-age {
+        background: linear-gradient(135deg, #27ae60, #2ecc71);
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        display: inline-block;
+    }
+
+    .actions-buttons {
+        margin-bottom: 1.5rem;
+        padding-top: 1rem;
+    }
+
+    .stats-info {
+        background: linear-gradient(135deg, #9b59b6, #8e44ad);
+        color: white;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .stats-number {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+
+    .stats-label {
+        font-size: 0.95rem;
+        opacity: 0.9;
+    }
+</style>
+
+<div class="page-container">
+    <!-- Header con información y botones -->
+    <div class="header-card">
+        <h2 class="page-title">Consulta de Usuarios</h2>
+
+        <div class="stats-info">
+            <div class="stats-number">@Model.Count()</div>
+            <div class="stats-label">Usuarios Registrados</div>
+        </div>
+
+        <div class="actions-buttons">
+            <input type="button"
+                   value="Nuevo Usuario"
+                   class="btn btn-modern btn-primary-modern"
+                   onclick="document.location.href='@Url.Content("~/User/Add")'" />
+            <input type="button"
+                   value="Volver Atrás"
+                   class="btn btn-modern btn-secondary-modern"
+                   onclick="document.location.href='@Url.Content("~/")'" />
+        </div>
     </div>
 
+    <!-- Tabla de pantalla completa -->
+    <div class="table-container">
+        <table class="table table-modern">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Correo Electrónico</th>
+                    <th>Edad</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var Objs in Model)
+                {
+                    <tr>
+                        <td class="user-id">@Objs._id</td>
+                        <td class="user-email">@Objs._Email</td>
+                        <td><span class="user-age">@Objs._Edad</span></td>
+                        <td>
+                            <input type="button"
+                                   class="btn btn-action btn-warning-modern"
+                                   onclick="editUser(@Objs._id)"
+                                   value="Editar" />
+                            <input type="button"
+                                   class="btn btn-action btn-danger-modern"
+                                   onclick="jsDelete(@Objs._id)"
+                                   value="Eliminar" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
 
 <script>
-    function jsDelete(ID)
-    {
-        if (confirm("Estas Seguro de Borrar??")) {
-            URL = "@Url.Content("~/User/Delete")" + "/" +
+    function jsDelete(ID) {
+        if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+            // Mostrar indicador de carga
+            showLoading(true);
 
-                $.post(URL, function (data) {
-                    if (data == "1") {
-                        document.location.href = "@Url.Content("~/User/Query")"
-                    } else {
-                        alert("Registro no fue borrado :)")
-                    }
-                })
+            var URL = "@Url.Content("~/User/Delete")" + "/" + ID;
+            $.post(URL, function (data) {
+                showLoading(false);
+                if (data == "1") {
+                    // Mostrar mensaje de éxito
+                    showNotification("Usuario eliminado exitosamente", "success");
+                    setTimeout(function() {
+                        document.location.href = "@Url.Content("~/User/Query")";
+                    }, 1500);
+                } else {
+                    showNotification("Error: El registro no pudo ser eliminado", "error");
+                }
+            }).fail(function() {
+                showLoading(false);
+                showNotification("Error de conexión. Inténtelo nuevamente.", "error");
+            });
         }
     }
-</script>
 
+    function editUser(ID) {
+        document.location.href = "@Url.Content("~/User/Edit")" + "/" + ID;
+    }
+
+    function showLoading(show) {
+        if (show) {
+            // Crear overlay de carga si no existe
+            if (!document.getElementById('loadingOverlay')) {
+                var overlay = document.createElement('div');
+                overlay.id = 'loadingOverlay';
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    z-index: 9999;
+                `;
+                overlay.innerHTML = `
+                    <div style="background: white; padding: 2.5rem; border-radius: 8px; text-align: center;">
+                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="sr-only">Cargando...</span>
+                        </div>
+                        <p style="margin-top: 1.5rem; color: #2c3e50; font-size: 1.2rem;">Procesando solicitud...</p>
+                    </div>
+                `;
+                document.body.appendChild(overlay);
+            }
+            document.getElementById('loadingOverlay').style.display = 'flex';
+        } else {
+            var overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.style.display = 'none';
+            }
+        }
+    }
+
+    function showNotification(message, type) {
+        var bgColor = type === 'success' ? '#27ae60' : '#e74c3c';
+        var notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: ${bgColor};
+            color: white;
+            padding: 1.2rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 10000;
+            font-weight: 500;
+            font-size: 1.1rem;
+            max-width: 400px;
+        `;
+        notification.textContent = message;
+
+        document.body.appendChild(notification);
+
+        setTimeout(function() {
+            if (notification.parentNode) {
+                notification.remove();
+            }
+        }, 4000);
+    }
+</script>
