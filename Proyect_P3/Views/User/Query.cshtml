@@ -257,29 +257,29 @@
 </div>
 
 <script>
-    function jsDelete(ID) {
-        if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
-            // Mostrar indicador de carga
-            showLoading(true);
+function jsDelete(ID) {
+    if (confirm("¿Estás seguro de que deseas eliminar este usuario?")) {
+        // Mostrar indicador de carga
+        showLoading(true);
 
-            var URL = "@Url.Content("~/User/Delete")" + "/" + ID;
-            $.post(URL, function (data) {
-                showLoading(false);
-                if (data == "1") {
-                    // Mostrar mensaje de éxito
-                    showNotification("Usuario eliminado exitosamente", "success");
-                    setTimeout(function() {
-                        document.location.href = "@Url.Content("~/User/Query")";
-                    }, 1500);
-                } else {
-                    showNotification("Error: El registro no pudo ser eliminado", "error");
-                }
-            }).fail(function() {
-                showLoading(false);
-                showNotification("Error de conexión. Inténtelo nuevamente.", "error");
-            });
-        }
+        var URL = "@Url.Content("~/User/Delete")";
+        $.post(URL, { id: ID }, function (data) {
+            showLoading(false);
+            if (data === "1") {
+                // Mostrar mensaje de éxito
+                showNotification("Usuario eliminado exitosamente", "success");
+                setTimeout(function() {
+                    document.location.href = "@Url.Content("~/User/Query")";
+                }, 1500);
+            } else {
+                showNotification("Error: El registro no pudo ser eliminado", "error");
+            }
+        }).fail(function() {
+            showLoading(false);
+            showNotification("Error de conexión. Inténtelo nuevamente.", "error");
+        });
     }
+}
 
     function editUser(ID) {
         document.location.href = "@Url.Content("~/User/Edit")" + "/" + ID;

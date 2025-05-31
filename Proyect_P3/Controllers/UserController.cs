@@ -112,5 +112,30 @@ namespace Proyect_P3.Controllers
             return Redirect(Url.Content("~/User/Query")); // redireccionamos a la vista Query
         }
 
+        [HttpPost]
+        public JsonResult Delete(int id)
+        {
+            try
+            {
+                using (var db = new DBMVCEntities())
+                {
+                    var ouser = db.USERS.Find(id);
+                    if (ouser != null)
+                    {
+                        ouser.idEstatus = 3; // Marca el registro como eliminado
+                        db.Entry(ouser).State = System.Data.EntityState.Modified; // Marca como modificado
+                        db.SaveChanges();
+                        return Json("1"); // Éxito
+                    }
+                }
+            }
+            catch (Exception)
+            {
+                return Json("0"); // Error
+            }
+
+            return Json("0"); // Error por defecto
+        }
+
     }
 }
