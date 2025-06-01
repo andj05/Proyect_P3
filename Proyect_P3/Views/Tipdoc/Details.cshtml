@@ -578,7 +578,7 @@
     }
 
     function goToList() {
-        showLoading(true, 'Cargando lista...');
+        showLoading(true);
         setTimeout(() => {
             document.location.href = '@Url.Content("~/Tipdoc/TipdocQuery")';
         }, 500);
