@@ -268,6 +268,42 @@
             background: white;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
         }
+
+    .origen-sistema {
+        background: linear-gradient(135deg, #27ae60, #2ecc71); /* Verde */
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .origen-usuario {
+        background: linear-gradient(135deg, #3498db, #2980b9); /* Azul */
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .origen-externo {
+        background: linear-gradient(135deg, #f39c12, #e67e22); /* Naranja */
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .origen-default {
+        background: linear-gradient(135deg, #7f8c8d, #95a5a6); /* Gris */
+        color: white;
+        padding: 6px 12px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+    }
 </style>
 
 <div class="page-container">
@@ -315,36 +351,39 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (var item in Model)
-                    {
-                        <tr>
-                            <td class="doc-id">@item.Id</td>
-                            <td><span class="doc-tipo">@item.TipoDoc</span></td>
-                            <td class="doc-descripcion">@item.Descripcion</td>
-                            <td>
-                                <span class="doc-origen @(item.Origen == "Sistema" ? "origen-sistema" : 
-                                                         item.Origen == "Usuario" ? "origen-usuario" : "origen-externo")">
-                                    @item.Origen
-                                </span>
-                            </td>
-                            <td>
-                                <input type="button"
-                                       class="btn btn-action btn-info-modern"
-                                       onclick="viewTipdoc(@item.Id)"
-                                       value="Ver" />
-                                <input type="button"
-                                       class="btn btn-action btn-warning-modern"
-                                       onclick="editTipdoc(@item.Id)"
-                                       value="Editar" />
-                                <input type="button"
-                                       class="btn btn-action btn-danger-modern"
-                                       onclick="jsDelete(@item.Id, '@item.Descripcion')"
-                                       value="Eliminar" />
-                            </td>
-                        </tr>
-                    }
-                </tbody>
+               <tbody>
+                   @foreach (var item in Model)
+                   {
+                       <tr>
+                           <td class="doc-id">@item.Id</td>
+                           <td><span class="doc-tipo">@item.TipoDoc</span></td>
+                           <td class="doc-descripcion">@item.Descripcion</td>
+                           <td>
+                               <span class="doc-origen @(item.Origen == "S" ? "origen-sistema" :
+                                         item.Origen == "U" ? "origen-usuario" :
+                                         item.Origen == "E" ? "origen-externo" : "origen-default")">
+                                   @(item.Origen == "S" ? "Sistema" :
+                                    item.Origen == "U" ? "Usuario" :
+                                     item.Origen == "E" ? "Externo" : "Desconocido")
+                               </span>
+                           </td>
+                           <td>
+                               <input type="button"
+                                      class="btn btn-action btn-info-modern"
+                                      onclick="viewTipdoc(@item.Id)"
+                                      value="Ver" />
+                               <input type="button"
+                                      class="btn btn-action btn-warning-modern"
+                                      onclick="editTipdoc(@item.Id)"
+                                      value="Editar" />
+                               <input type="button"
+                                      class="btn btn-action btn-danger-modern"
+                                      onclick="jsDelete(@item.Id, '@item.Descripcion')"
+                                      value="Eliminar" />
+                           </td>
+                       </tr>
+                   }
+               </tbody>
             </table>
         }
         else

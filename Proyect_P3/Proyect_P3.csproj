@@ -242,6 +242,7 @@
     <Content Include="Views\Tipdoc\TipdocQuery.cshtml" />
     <Content Include="Views\Tipdoc\Add.cshtml" />
     <Content Include="Views\Tipdoc\Details.cshtml" />
+    <Content Include="Views\Tipdoc\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

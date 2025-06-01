@@ -1,623 +1,426 @@
-﻿@model Proyect_P3.Models.ViewModels.DetailsTipdocQueryViewModels
-@{
-    ViewBag.Title = "Detalles del Tipo de Documento";
-    Layout = "~/views/shared/_LayoutApp.cshtml";
-}
+﻿
+        }@model Proyect_P3.Models.ViewModels.DetailsTipdocQueryViewModels
+        @{
+            ViewBag.Title = "Detalles del Tipo de Documento";
+            Layout = "~/views/shared/_LayoutApp.cshtml";
+        }
 
-<style>
-    .page-container {
-        background: #f8f9fa;
+        <style>
+    .details-page {
+        background-color: #f8f9fa;
         min-height: 100vh;
-        padding: 0;
-        margin: 0;
-    }
-
-    .header-card {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        border-radius: 0;
-        padding: 2rem 1.5rem;
-        margin-bottom: 0;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .header-card::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="20" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="20" cy="80" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="90" r="1.2" fill="rgba(255,255,255,0.1)"/></svg>');
-        pointer-events: none;
-    }
-
-    .page-title {
-        font-size: 2rem;
-        font-weight: 700;
-        margin-bottom: 0.5rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .page-subtitle {
-        font-size: 1.1rem;
-        opacity: 0.9;
-        margin-bottom: 1.5rem;
-        position: relative;
-        z-index: 1;
-    }
-
-    .doc-id-badge {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        padding: 8px 16px;
-        border-radius: 25px;
-        font-size: 1rem;
-        font-weight: 600;
-        display: inline-block;
-        position: relative;
-        z-index: 1;
+        padding: 2rem 0;
     }
 
     .details-container {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 0 1rem;
+    }
+
+    .page-header {
         background: white;
-        margin: 0;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    }
-
-    .details-section {
+        border-radius: 8px;
         padding: 2rem;
-        border-bottom: 1px solid #f1f3f4;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #495057;
+        text-align: center;
     }
 
-    .details-section:last-child {
-        border-bottom: none;
+    .page-title {
+        color: #343a40;
+        font-size: 1.75rem;
+        font-weight: 600;
+        margin: 0 0 0.5rem 0;
     }
 
-    .section-header {
-        display: flex;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        padding-bottom: 1rem;
-        border-bottom: 2px solid #f8f9fa;
+    .page-subtitle {
+        color: #6c757d;
+        font-size: 1rem;
+        margin: 0 0 1rem 0;
     }
 
-    .section-icon {
-        font-size: 1.8rem;
-        margin-right: 1rem;
-        padding: 12px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    .document-id {
+        display: inline-block;
+        background: #f8f9fa;
+        color: #495057;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid #dee2e6;
+    }
+
+    .details-card {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     }
 
     .section-title {
-        color: #2c3e50;
-        font-size: 1.4rem;
+        color: #495057;
+        font-size: 1.2rem;
         font-weight: 600;
-        margin: 0;
+        margin: 0 0 1.5rem 0;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #f8f9fa;
     }
 
-    .details-grid {
+    .detail-row {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 1.5rem;
+        gap: 2rem;
+        margin-bottom: 2rem;
+        align-items: flex-start;
+    }
+
+    .detail-row:last-child {
+        margin-bottom: 0;
     }
 
     .detail-item {
-        background: #f8f9fa;
-        border-radius: 12px;
-        padding: 1.5rem;
-        transition: all 0.3s ease;
-        border-left: 4px solid transparent;
-        position: relative;
-        overflow: hidden;
-    }
-
-        /* Eliminamos el pseudo-elemento ::before */
-        .detail-item::before {
-            display: none;
-        }
-
-        .detail-item:hover {
-            transform: translateY(-2px); /* Mantiene el efecto de levantamiento */
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-            background: #f8f9fa; /* Evita el cambio de color al fondo blanco */
-        }
-
-    .detail-item:hover::before {
-        width: 100%;
-        opacity: 0.05;
+        display: flex;
+        flex-direction: column;
     }
 
     .detail-label {
         color: #6c757d;
         font-size: 0.9rem;
-        font-weight: 600;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-        margin-bottom: 0.5rem;
-        display: block;
     }
 
     .detail-value {
-        color: #2c3e50;
-        font-size: 1.1rem;
-        font-weight: 600;
-        margin: 0;
-        word-wrap: break-word;
+        color: #343a40;
+        font-size: 1rem;
+        font-weight: 500;
     }
 
-    .status-badge {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 0.9rem;
+    .document-type {
+        background: #495057;
+        color: white;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-size: 1.1rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.5px;
-    }
-
-    .status-active {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        color: white;
-        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
-    }
-
-    .status-inactive {
-        background: linear-gradient(135deg, #e74c3c, #c0392b);
-        color: white;
-        box-shadow: 0 2px 8px rgba(231, 76, 60, 0.3);
+        display: inline-block;
     }
 
     .origin-badge {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 20px;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
         font-size: 0.9rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
+        font-weight: 500;
+        display: inline-block;
     }
 
     .origin-sistema {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        color: white;
+        background: #d1ecf1;
+        color: #0c5460;
+        border: 1px solid #bee5eb;
     }
 
     .origin-usuario {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
     }
 
     .origin-externo {
-        background: linear-gradient(135deg, #f39c12, #e67e22);
-        color: white;
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeaa7;
     }
 
-    .document-type-display {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        padding: 12px 24px;
-        border-radius: 25px;
-        font-size: 1.2rem;
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 1px;
+    .status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
         display: inline-block;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
     }
 
-    .description-card {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        color: white;
-        border-radius: 15px;
-        padding: 2rem;
-        margin: 1rem 0;
-        position: relative;
-        overflow: hidden;
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
     }
 
-    .description-card::before {
-        content: '"';
-        position: absolute;
-        top: -10px;
-        left: 20px;
-        font-size: 6rem;
-        opacity: 0.2;
-        font-family: serif;
-    }
-
-    .description-text {
-        font-size: 1.1rem;
-        line-height: 1.6;
-        margin: 0;
-        position: relative;
-        z-index: 1;
-    }
-
-    .actions-container {
-        background: #f8f9fa;
-        padding: 2rem;
-        margin: 0;
-        text-align: center;
-        border-top: 1px solid #e9ecef;
-    }
-
-    .btn-modern {
-        border-radius: 12px;
-        font-weight: 600;
-        padding: 14px 28px;
-        transition: all 0.3s ease;
-        border: none;
-        margin: 0.5rem;
-        font-size: 1rem;
-        display: inline-block;
-        cursor: pointer;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    .btn-primary-modern {
-        background: linear-gradient(135deg, #667eea, #764ba2);
-        color: white;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    .btn-primary-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        color: white;
-    }
-
-    .btn-warning-modern {
-        background: linear-gradient(135deg, #f39c12, #e67e22);
-        color: white;
-        box-shadow: 0 4px 15px rgba(243, 156, 18, 0.3);
-    }
-
-    .btn-warning-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(243, 156, 18, 0.4);
-        color: white;
-    }
-
-    .btn-secondary-modern {
-        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        color: white;
-        box-shadow: 0 4px 15px rgba(149, 165, 166, 0.3);
-    }
-
-    .btn-secondary-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(149, 165, 166, 0.4);
-        color: white;
+    .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
     }
 
     .counter-display {
-        background: linear-gradient(135deg, #11998e, #38ef7d);
-        color: white;
-        padding: 16px 24px;
-        border-radius: 15px;
+        background: #f8f9fa;
+        border: 2px solid #e9ecef;
+        border-radius: 4px;
+        padding: 1rem;
         text-align: center;
-        box-shadow: 0 4px 15px rgba(17, 153, 142, 0.3);
     }
 
     .counter-number {
         font-size: 2rem;
         font-weight: 700;
-        margin-bottom: 0.5rem;
-        display: block;
+        color: #495057;
+        margin: 0;
+        line-height: 1;
     }
 
     .counter-label {
-        font-size: 0.9rem;
-        opacity: 0.9;
+        font-size: 0.8rem;
+        color: #6c757d;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        margin-top: 0.25rem;
     }
 
-    .account-card {
-        background: white;
-        border: 2px solid #e9ecef;
-        border-radius: 12px;
-        padding: 1.5rem;
-        text-align: center;
-        transition: all 0.3s ease;
+    .account-info {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1rem;
     }
 
-    .account-card:hover {
-        border-color: #667eea;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    }
-
-    .account-type {
+    .account-label {
         color: #6c757d;
         font-size: 0.8rem;
-        font-weight: 600;
         text-transform: uppercase;
-        letter-spacing: 1px;
+        letter-spacing: 0.5px;
         margin-bottom: 0.5rem;
     }
 
     .account-number {
-        color: #2c3e50;
-        font-size: 1.3rem;
-        font-weight: 700;
+        color: #495057;
+        font-size: 1.1rem;
+        font-weight: 600;
         font-family: 'Courier New', monospace;
     }
 
-        .page-title {
-            font-size: 1.6rem;
+    .no-account {
+        color: #6c757d;
+        font-style: italic;
+    }
+
+    .description-section {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 4px;
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .description-text {
+        color: #495057;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin: 0;
+    }
+
+    .actions-section {
+        background: white;
+        border-radius: 8px;
+        padding: 2rem;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        text-align: center;
+    }
+
+    .btn-action {
+        display: inline-block;
+        padding: 0.75rem 2rem;
+        margin: 0 0.5rem;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        text-decoration: none;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+    .btn-edit {
+        background: #ffc107;
+        color: #212529;
+        border-color: #ffc107;
+    }
+
+    .btn-edit:hover {
+        background: #e0a800;
+        border-color: #d39e00;
+        color: #212529;
+    }
+
+    .btn-list {
+        background: #6c757d;
+        color: white;
+        border-color: #6c757d;
+    }
+
+    .btn-list:hover {
+        background: #5a6268;
+        border-color: #545b62;
+        color: white;
+    }
+
+    .btn-back {
+        background: transparent;
+        color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    .btn-back:hover {
+        background: #6c757d;
+        color: white;
+    }
+
+        .page-header,
+        .details-card,
+        .actions-section {
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
         }
 
-        .details-section {
-            padding: 1.5rem 1rem;
-        }
-
-        .details-grid {
+        .detail-row {
             grid-template-columns: 1fr;
             gap: 1rem;
         }
 
-        .actions-container {
-            padding: 1.5rem 1rem;
-        }
-
-        .btn-modern {
+        .counter-display {
             width: 100%;
-            margin: 0.3rem 0;
         }
     }
+        </style>
 
-    .fade-in {
-        animation: fadeIn 0.8s ease-in;
-    }
+        <div class="details-page">
+            <div class="details-container">
 
-</style>
-
-<div class="page-container fade-in">
-    <!-- Header Elegante -->
-    <div class="header-card">
-        <h1 class="page-title">📄 Detalles del Tipo de Documento</h1>
-        <p class="page-subtitle">Información completa y detallada del registro</p>
-        <span class="doc-id-badge">ID: @Model.Id</span>
-    </div>
-
-    <!-- Contenedor de Detalles -->
-    <div class="details-container">
-
-        <!-- Sección: Información Principal -->
-        <div class="details-section">
-            <div class="section-header">
-                <div class="section-icon">📋</div>
-                <h2 class="section-title">Información Principal</h2>
-            </div>
-
-            <div class="details-grid">
-                <div class="detail-item">
-                    <span class="detail-label">Tipo de Documento</span>
-                    <div class="document-type-display">@Model.TipoDoc</div>
+                <!-- Encabezado -->
+                <div class="page-header">
+                    <h1 class="page-title">Detalles del Tipo de Documento</h1>
+                    <p class="page-subtitle">Información completa del registro seleccionado</p>
+                    <div class="document-id">ID: @Model.Id</div>
                 </div>
 
-                <div class="detail-item">
-                    <span class="detail-label">Origen del Documento</span>
-                    <span class="origin-badge @(Model.Origen == "Sistema" ? "origin-sistema" :
-                                              Model.Origen == "Usuario" ? "origin-usuario" : "origin-externo")">
-                        @Model.Origen
-                    </span>
-                </div>
-            </div>
+                <!-- Información Principal -->
+                <div class="details-card">
+                    <h2 class="section-title">Información Principal</h2>
 
-            @if (!string.IsNullOrEmpty(Model.Descripcion))
-            {
-                <div class="description-card">
-                    <p class="description-text">@Model.Descripcion</p>
-                </div>
-            }
-        </div>
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <div class="detail-label">Tipo de Documento</div>
+                            <div class="detail-value">
+                                <div class="document-type">@Model.TipoDoc</div>
+                            </div>
+                        </div>
 
-        <!-- Sección: Configuración del Sistema -->
-        <div class="details-section">
-            <div class="section-header">
-                <div class="section-icon">⚙️</div>
-                <h2 class="section-title">Configuración del Sistema</h2>
-            </div>
-
-            <div class="details-grid">
-                <div class="detail-item">
-                    <span class="detail-label">Estado Actual</span>
-                    <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
-                        @(Model.Estatus == 1 ? "✅ Activo" : "❌ Inactivo")
-                    </span>
-                </div>
-
-                <div class="detail-item">
-                    <div class="counter-display">
-                        <span class="counter-number">@Model.Contador</span>
-                        <span class="counter-label">Contador Actual</span>
+                        <div class="detail-item">
+                            <div class="detail-label">Origen</div>
+                            <div class="detail-value">
+                                <span class="origin-badge @(Model.Origen == "Sistema" ? "origin-sistema" :
+                                                  Model.Origen == "Usuario" ? "origin-usuario" : "origin-externo")">
+                                    @Model.Origen
+                                </span>
+                            </div>
+                        </div>
                     </div>
+
+                    @if (!string.IsNullOrEmpty(Model.Descripcion))
+                    {
+                        <div class="detail-row">
+                            <div class="detail-item">
+                                <div class="detail-label">Descripción</div>
+                                <div class="detail-value">
+                                    <div class="description-section">
+                                        <p class="description-text">@Model.Descripcion</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
                 </div>
-            </div>
-        </div>
 
-        <!-- Sección: Información Contable -->
-        <div class="details-section">
-            <div class="section-header">
-                <div class="section-icon">💰</div>
-                <h2 class="section-title">Configuración Contable</h2>
-            </div>
+                <!-- Configuración del Sistema -->
+                <div class="details-card">
+                    <h2 class="section-title">Configuración del Sistema</h2>
 
-            <div class="details-grid">
-                <div class="detail-item">
-                    <div class="account-card">
-                        <div class="account-type">Cuenta Débito</div>
-                        <div class="account-number">
-                            @(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <div class="detail-label">Estado</div>
+                            <div class="detail-value">
+                                <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
+                                    @(Model.Estatus == 1 ? "Activo" : "Inactivo")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Contador</div>
+                            <div class="detail-value">
+                                <div class="counter-display">
+                                    <div class="counter-number">@Model.Contador</div>
+                                    <div class="counter-label">Actual</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="detail-item">
-                    <div class="account-card">
-                        <div class="account-type">Cuenta Crédito</div>
-                        <div class="account-number">
-                            @(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")
+                <!-- Información Contable -->
+                <div class="details-card">
+                    <h2 class="section-title">Configuración Contable</h2>
+
+                    <div class="detail-row">
+                        <div class="detail-item">
+                            <div class="detail-label">Cuenta Débito</div>
+                            <div class="detail-value">
+                                <div class="account-info">
+                                    <div class="account-label">Débito</div>
+                                    <div class="account-number @(string.IsNullOrEmpty(Model.CuentaDebito) ? "no-account" : "")">
+                                        @(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Cuenta Crédito</div>
+                            <div class="detail-value">
+                                <div class="account-info">
+                                    <div class="account-label">Crédito</div>
+                                    <div class="account-number @(string.IsNullOrEmpty(Model.CuentaCredito) ? "no-account" : "")">
+                                        @(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Botones de Acción -->
+                <div class="actions-section">
+                    <input type="button"
+                           value="Editar"
+                           class="btn-action btn-edit"
+                           onclick="document.location.href='@Url.Content("~/Tipdoc/Edit/" + Model.Id)'" />
+                    <input type="button"
+                           value="Ver Listado"
+                           class="btn-action btn-list"
+                           onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
+                    <input type="button"
+                           value="Volver"
+                           class="btn-action btn-back"
+                           onclick="window.history.back()" />
+                </div>
+
             </div>
         </div>
-    </div>
-
-    <!-- Botones de Acción -->
-    <div class="actions-container">
-        <input type="button"
-               value="✏️ Editar"
-               class="btn btn-modern btn-warning-modern"
-               onclick="document.location.href='@Url.Content("~/Tipdoc/Edit/" + Model.Id)'" />
-        <input type="button"
-               value="📋 Ver Todos"
-               class="btn btn-modern btn-primary-modern"
-               onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
-        <input type="button"
-               value="↩️ Volver"
-               class="btn btn-modern btn-secondary-modern"
-               onclick="window.history.back()" />
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Agregar efectos de animación suaves
-        const detailItems = document.querySelectorAll('.detail-item');
-
-        // Observer para animaciones al hacer scroll
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.animation = 'fadeIn 0.6s ease-in-out';
-                }
-            });
-        }, { threshold: 0.1 });
-
-        detailItems.forEach(item => {
-            observer.observe(item);
-        });
-
-        // Efecto de hover mejorado para las tarjetas
-        detailItems.forEach(item => {
-            item.addEventListener('mouseenter', function() {
-                this.style.transform = 'translateY(-4px) scale(1.02)';
-            });
-
-            item.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // Mostrar notificación de bienvenida
-        setTimeout(() => {
-            showNotification('Detalles cargados exitosamente', 'success');
-        }, 500);
-    });
-
-    function showNotification(message, type) {
-        const bgColor = type === 'success' ?
-            'linear-gradient(135deg, #27ae60, #2ecc71)' :
-            'linear-gradient(135deg, #e74c3c, #c0392b)';
-
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${bgColor};
-            color: white;
-            padding: 1.2rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
-            z-index: 10000;
-            font-weight: 600;
-            font-size: 1rem;
-            max-width: 400px;
-            transform: translateX(400px);
-            transition: transform 0.3s ease;
-        `;
-        notification.textContent = message;
-
-        document.body.appendChild(notification);
-
-        // Animar entrada
-        setTimeout(() => {
-            notification.style.transform = 'translateX(0)';
-        }, 100);
-
-        // Animar salida
-        setTimeout(() => {
-            notification.style.transform = 'translateX(400px)';
-            setTimeout(() => {
-                if (notification.parentNode) {
-                    notification.remove();
-                }
-            }, 300);
-        }, 3500);
-    }
-
-    // Funciones de navegación mejoradas
-    function goToEdit() {
-        showLoading(true, 'Cargando editor...');
-        setTimeout(() => {
-            document.location.href = '@Url.Content("~/Tipdoc/Edit/" + Model.Id)';
-        }, 500);
-    }
-
-    function goToList() {
-        showLoading(true);
-        setTimeout(() => {
-            document.location.href = '@Url.Content("~/Tipdoc/TipdocQuery")';
-        }, 500);
-    }
-
-    function showLoading(show, message = 'Cargando...') {
-        if (show) {
-            if (!document.getElementById('loadingOverlay')) {
-                const overlay = document.createElement('div');
-                overlay.id = 'loadingOverlay';
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.6);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 9999;
-                    backdrop-filter: blur(5px);
-                `;
-                overlay.innerHTML = `
-                    <div style="background: white; padding: 2.5rem; border-radius: 15px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
-                        <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="sr-only">Cargando...</span>
-                        </div>
-                        <p style="margin-top: 1.5rem; color: #2c3e50; font-size: 1.2rem; font-weight: 600;">${message}</p>
-                    </div>
-                `;
-                document.body.appendChild(overlay);
-            }
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        } else {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
-        }
-    }
-</script>

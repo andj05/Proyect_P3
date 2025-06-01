@@ -1,11 +1,11 @@
-﻿@model Proyect_P3.Models.ViewModels.AddTipdocViewModels
+﻿@model Proyect_P3.Models.ViewModels.EditTipdocViewModels
 @{
-    ViewBag.Title = "Agregar Tipo de Documento";
+    ViewBag.Title = "Editar Tipo de Documento";
     Layout = "~/views/shared/_LayoutApp.cshtml";
 }
 
 <style>
-    .page-container {
+    .edit-page {
         background: #f8f9fa;
         min-height: 100vh;
         padding: 0;
@@ -18,27 +18,57 @@
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         padding: 1.5rem;
         margin-bottom: 0;
+        border-left: 4px solid #f39c12;
     }
 
     .page-title {
         color: #2c3e50;
         font-size: 1.8rem;
         font-weight: 600;
-        margin-bottom: 1.5rem;
-        border-bottom: 3px solid #27ae60;
-        padding-bottom: 0.5rem;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .title-icon {
+        color: #f39c12;
+        font-size: 2rem;
+    }
+
+    .edit-subtitle {
+        color: #6c757d;
+        font-size: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .record-id {
         display: inline-block;
+        background: #fff3cd;
+        color: #856404;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        border: 1px solid #ffeaa7;
     }
 
     .form-container {
         background: white;
-        padding: 2rem;
+        padding: 2.5rem;
         margin: 0;
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .form-section {
-        margin-bottom: 2rem;
+        margin-bottom: 2.5rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .form-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
     }
 
     .section-title {
@@ -89,9 +119,9 @@
 
     .form-control-modern:focus {
         outline: none;
-        border-color: #3498db;
+        border-color: #f39c12;
         background: white;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
     }
 
     .form-control-modern.is-invalid {
@@ -126,6 +156,47 @@
         font-weight: 500;
     }
 
+    .form-row {
+        display: flex;
+        gap: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-col {
+        flex: 1;
+    }
+
+    .current-value-display {
+        background: #e8f4f8;
+        border: 1px solid #bee5eb;
+        border-radius: 4px;
+        padding: 0.75rem;
+        margin-bottom: 0.5rem;
+        font-size: 0.9rem;
+    }
+
+    .current-value-label {
+        color: #0c5460;
+        font-weight: 600;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .current-value-text {
+        color: #2c3e50;
+        font-weight: 500;
+    }
+
+    .actions-container {
+        background: #f8f9fa;
+        padding: 2rem;
+        margin: 0;
+        border-top: 1px solid #e9ecef;
+        text-align: center;
+    }
+
     .btn-modern {
         border-radius: 8px;
         font-weight: 500;
@@ -140,15 +211,15 @@
         text-decoration: none;
     }
 
-    .btn-success-modern {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
+    .btn-warning-modern {
+        background: linear-gradient(135deg, #f39c12, #e67e22);
         color: white;
-        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
     }
 
-    .btn-success-modern:hover:not(:disabled) {
+    .btn-warning-modern:hover:not(:disabled) {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
+        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
         color: white;
     }
 
@@ -164,13 +235,13 @@
         color: white;
     }
 
-    .btn-primary-modern {
+    .btn-info-modern {
         background: linear-gradient(135deg, #3498db, #2980b9);
         color: white;
         box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
     }
 
-    .btn-primary-modern:hover {
+    .btn-info-modern:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
         color: white;
@@ -182,26 +253,8 @@
         transform: none !important;
     }
 
-    .actions-container {
-        background: #f8f9fa;
-        padding: 2rem;
-        margin: 0;
-        border-top: 1px solid #e9ecef;
-        text-align: center;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-col {
-        flex: 1;
-    }
-
     .info-card {
-        background: linear-gradient(135deg, #3498db, #2980b9);
+        background: linear-gradient(135deg, #f39c12, #e67e22);
         color: white;
         padding: 1.2rem;
         border-radius: 8px;
@@ -220,53 +273,76 @@
         opacity: 0.9;
     }
 
-    .counter-input {
-        text-align: right;
+    .status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
     }
 
+    .status-badge {
+        padding: 0.4rem 0.8rem;
+        border-radius: 4px;
+        font-size: 0.85rem;
+        font-weight: 500;
+    }
 
-        .header-card, .form-container, .actions-container {
-            padding: 1rem;
-        }
+    .status-active {
+        background: #d4edda;
+        color: #155724;
+        border: 1px solid #c3e6cb;
+    }
+
+    .status-inactive {
+        background: #f8d7da;
+        color: #721c24;
+        border: 1px solid #f5c6cb;
+    }
 
         .page-title {
             font-size: 1.5rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 0;
         }
 
         .btn-modern {
             width: 100%;
             margin-right: 0;
         }
-
-    .text-primary {
-        color: blue;
     }
-
-    .text-success {
-        color: green;
-    }
-
-    .text-danger {
-        color: red;
-    }
-    }
-
 </style>
 
-<div class="page-container">
+<div class="edit-page">
     <!-- Header -->
     <div class="header-card">
-        <h2 class="page-title">✨ Agregar Nuevo Tipo de Documento</h2>
+        <h1 class="page-title">
+            <span class="title-icon">✏️</span>
+            Editar Tipo de Documento
+        </h1>
+        <p class="edit-subtitle">Modifique la información del registro seleccionado</p>
+        <div class="record-id">ID: @Model.Id</div>
+
+        <div class="status-indicator">
+            <span>Estado actual:</span>
+            <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
+                @(Model.Estatus == 1 ? "Activo" : "Inactivo")
+            </span>
+        </div>
 
         <div class="info-card">
-            <h4>💡 Información Importante</h4>
-            <p>Complete todos los campos marcados con (*) para crear un nuevo tipo de documento en el sistema.</p>
+            <h4>⚠️ Importante</h4>
+            <p>Los cambios realizados afectarán todos los documentos futuros que utilicen este tipo. Revise cuidadosamente antes de guardar.</p>
         </div>
     </div>
 
     <!-- Formulario -->
-    @using (Html.BeginForm("Add", "Tipdoc", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
+    @using (Html.BeginForm("Edit", "Tipdoc", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
     {
+        @Html.HiddenFor(m => m.Id)
+
         <div class="form-container">
             <!-- Información Básica -->
             <div class="form-section">
@@ -280,11 +356,15 @@
                     <div class="form-col">
                         <div class="form-group-modern">
                             <label class="form-label-modern required-field">Tipo de Documento</label>
+                            <div class="current-value-display">
+                                <div class="current-value-label">Valor Actual</div>
+                                <div class="current-value-text">@Model.TipoDoc</div>
+                            </div>
                             @Html.DropDownListFor(m => m.TipoDoc, new List<SelectListItem>
                             {
-                                new SelectListItem { Text = "Factura", Value = "FAC" },
-                                new SelectListItem { Text = "Recibo", Value = "REC" },
-                                new SelectListItem { Text = "Nota de Crédito", Value = "NC" }
+                                new SelectListItem { Text = "Factura", Value = "FAC", Selected = Model.TipoDoc == "FAC" },
+                                new SelectListItem { Text = "Recibo", Value = "REC", Selected = Model.TipoDoc == "REC" },
+                                new SelectListItem { Text = "Nota de Crédito", Value = "NC", Selected = Model.TipoDoc == "NC" }
                             }, new
                             {
                                 @class = "form-control-modern select-modern"
@@ -293,27 +373,34 @@
                         </div>
                     </div>
 
-                       <!-- Origen -->
-    <div class="form-col">
-        <div class="form-group-modern">
-            <label class="form-label-modern required-field">Origen</label>
-            @Html.DropDownListFor(m => m.Origen, new List<SelectListItem>
-            {
-                new SelectListItem { Text = "Sistema", Value = "S" },
-                new SelectListItem { Text = "Usuario", Value = "U" },
-                new SelectListItem { Text = "Externo", Value = "E" }
-            }, new
-            {
-                @class = "form-control-modern select-modern",
-                id = "OrigenDropdown"
-            })
-            @Html.ValidationMessageFor(m => m.Origen, "", new { @class = "validation-error" })
-        </div>
-    </div>
-</div>
+                    <!-- Origen -->
+                    <div class="form-col">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern required-field">Origen</label>
+                            <div class="current-value-display">
+                                <div class="current-value-label">Valor Actual</div>
+                                <div class="current-value-text">@Model.Origen</div>
+                            </div>
+                            @Html.DropDownListFor(m => m.Origen, new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Sistema", Value = "S", Selected = Model.Origen == "S" },
+                                new SelectListItem { Text = "Usuario", Value = "U", Selected = Model.Origen == "U" },
+                                new SelectListItem { Text = "Externo", Value = "E", Selected = Model.Origen == "E" }
+                            }, new
+                            {
+                                @class = "form-control-modern select-modern"
+                            })
+                            @Html.ValidationMessageFor(m => m.Origen, "", new { @class = "validation-error" })
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group-modern">
                     <label class="form-label-modern required-field">Descripción</label>
+                    <div class="current-value-display">
+                        <div class="current-value-label">Valor Actual</div>
+                        <div class="current-value-text">@Model.Descripcion</div>
+                    </div>
                     @Html.TextAreaFor(m => m.Descripcion, new
                     {
                         @class = "form-control-modern textarea-modern",
@@ -321,6 +408,55 @@
                         @maxlength = "50"
                     })
                     @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "validation-error" })
+                </div>
+            </div>
+
+            <!-- Configuración del Sistema -->
+            <div class="form-section">
+                <h3 class="section-title">
+                    <span class="section-icon">⚙️</span>
+                    Configuración del Sistema
+                </h3>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Estado</label>
+                            <div class="current-value-display">
+                                <div class="current-value-label">Valor Actual</div>
+                                <div class="current-value-text">@(Model.Estatus == 1 ? "Activo" : Model.Estatus == 2 ? "Inactivo" : "Borrado")</div>
+                            </div>
+                            @Html.DropDownListFor(m => m.Estatus, new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Activo", Value = "1", Selected = Model.Estatus == 1 },
+                                new SelectListItem { Text = "Inactivo", Value = "2", Selected = Model.Estatus == 2 },
+                                new SelectListItem { Text = "Borrado", Value = "3", Selected = Model.Estatus == 3 }
+                            }, new
+                            {
+                                @class = "form-control-modern select-modern"
+                            })
+                            @Html.ValidationMessageFor(m => m.Estatus, "", new { @class = "validation-error" })
+                        </div>
+                    </div>
+
+                    <div class="form-col">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern">Contador</label>
+                            <div class="current-value-display">
+                                <div class="current-value-label">Valor Actual</div>
+                                <div class="current-value-text">@Model.Contador</div>
+                            </div>
+                            @Html.TextBoxFor(m => m.Contador, new
+                            {
+                                @class = "form-control-modern",
+                                @placeholder = "Ej: 12345",
+                                @type = "number",
+                                @min = "0",
+                                @maxlength = "10"
+                            })
+                            @Html.ValidationMessageFor(m => m.Contador, "", new { @class = "validation-error" })
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -335,6 +471,10 @@
                     <div class="form-col">
                         <div class="form-group-modern">
                             <label class="form-label-modern">Cuenta Débito</label>
+                            <div class="current-value-display">
+                                <div class="current-value-label">Valor Actual</div>
+                                <div class="current-value-text">@(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")</div>
+                            </div>
                             @Html.TextBoxFor(m => m.CuentaDebito, new
                             {
                                 @class = "form-control-modern",
@@ -348,6 +488,10 @@
                     <div class="form-col">
                         <div class="form-group-modern">
                             <label class="form-label-modern">Cuenta Crédito</label>
+                            <div class="current-value-display">
+                                <div class="current-value-label">Valor Actual</div>
+                                <div class="current-value-text">@(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")</div>
+                            </div>
                             @Html.TextBoxFor(m => m.CuentaCredito, new
                             {
                                 @class = "form-control-modern",
@@ -358,51 +502,24 @@
                         </div>
                     </div>
                 </div>
-
-                <div class="form-row">
-                    <div class="form-col">
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Contador</label>
-                            @Html.TextBoxFor(m => m.Contador, new
-                            {
-                                @class = "form-control-modern",
-                                @placeholder = "Ej: 12345",
-                                @maxlength = "10"
-                            })
-                            @Html.ValidationMessageFor(m => m.Contador, "", new { @class = "validation-error" })
-                        </div>
-                    </div>
-
-                    <div class="form-col">
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Estatus</label>
-                            @Html.DropDownListFor(m => m.Estatus, new List<SelectListItem>
-                            {
-                                new SelectListItem { Text = "Activo", Value = "1" },
-                                new SelectListItem { Text = "Inactivo", Value = "2" },
-                                new SelectListItem { Text = "Borrado", Value = "3" }
-                            }, new
-                            {
-                                @class = "form-control-modern select-modern"
-                            })
-                            @Html.ValidationMessageFor(m => m.Estatus, "", new { @class = "validation-error" })
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
 
         <!-- Botones de Acción -->
         <div class="actions-container">
-            <button type="submit" class="btn btn-modern btn-success-modern" id="submitBtn">
-                💾 Guardar Tipo de Documento
+            <button type="submit" class="btn btn-modern btn-warning-modern" id="updateBtn">
+                💾 Actualizar Registro
             </button>
             <input type="button"
+                   value="👁️ Ver Detalles"
+                   class="btn btn-modern btn-info-modern"
+                   onclick="document.location.href='@Url.Content("~/Tipdoc/Details/" + Model.Id)'" />
+            <input type="button"
                    value="📋 Ver Lista"
-                   class="btn btn-modern btn-primary-modern"
+                   class="btn btn-modern btn-secondary-modern"
                    onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
             <input type="button"
-                   value="↩️ Volver Atrás"
+                   value="↩️ Cancelar"
                    class="btn btn-modern btn-secondary-modern"
                    onclick="window.history.back()" />
         </div>
@@ -428,10 +545,19 @@
                 return false;
             }
 
+            // Confirmar actualización
+            if (!confirm('¿Está seguro de que desea actualizar este registro? Los cambios afectarán todos los documentos futuros.')) {
+                e.preventDefault();
+                return false;
+            }
+
             // Mostrar indicador de carga
             showLoading(true);
-            document.getElementById('submitBtn').disabled = true;
+            document.getElementById('updateBtn').disabled = true;
         });
+
+        // Resaltar cambios
+        highlightChanges();
     });
 
     function validateField(e) {
@@ -505,6 +631,26 @@
         }
     }
 
+    function highlightChanges() {
+        const inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(input => {
+            const originalValue = input.defaultValue || input.defaultSelected;
+
+            input.addEventListener('input', function() {
+                const currentValue = this.type === 'checkbox' ? this.checked : this.value;
+                const hasChanged = currentValue !== originalValue;
+
+                if (hasChanged) {
+                    this.style.borderLeftWidth = '4px';
+                    this.style.borderLeftColor = '#f39c12';
+                } else {
+                    this.style.borderLeftWidth = '';
+                    this.style.borderLeftColor = '';
+                }
+            });
+        });
+    }
+
     function showLoading(show) {
         if (show) {
             if (!document.getElementById('loadingOverlay')) {
@@ -524,10 +670,10 @@
                 `;
                 overlay.innerHTML = `
                     <div style="background: white; padding: 2.5rem; border-radius: 8px; text-align: center;">
-                        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="sr-only">Guardando...</span>
+                        <div class="spinner-border text-warning" role="status" style="width: 3rem; height: 3rem;">
+                            <span class="sr-only">Actualizando...</span>
                         </div>
-                        <p style="margin-top: 1.5rem; color: #2c3e50; font-size: 1.2rem;">Guardando tipo de documento...</p>
+                        <p style="margin-top: 1.5rem; color: #2c3e50; font-size: 1.2rem;">Actualizando registro...</p>
                     </div>
                 `;
                 document.body.appendChild(overlay);
@@ -568,23 +714,4 @@
             }
         }, 4000);
     }
-
-    // Auto-formatear campos
-    document.addEventListener('DOMContentLoaded', function() {
-        // Convertir tipo de documento a mayúsculas
-        const tipoDocInput = document.querySelector('input[name="TipoDoc"]');
-        if (tipoDocInput) {
-            tipoDocInput.addEventListener('input', function() {
-                this.value = this.value.toUpperCase();
-            });
-        }
-
-        // Limitar contador a números enteros positivos
-        const contadorInput = document.querySelector('input[name="Contador"]');
-        if (contadorInput) {
-            contadorInput.addEventListener('input', function() {
-                if (this.value < 0) this.value = 0;
-            });
-        }
-    });
 </script>
