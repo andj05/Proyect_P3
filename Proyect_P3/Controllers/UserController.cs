@@ -83,7 +83,7 @@ namespace Proyect_P3.Controllers
             {
                 var user = db.USERS.Find(Id); // buscamos el usuario por ID
 
-             
+                model.Nombre = user.Nombre;
                 model.Edad = user.Edad;
                 model.Email = user.Email;
                 model.Password = user.Password;
@@ -96,19 +96,35 @@ namespace Proyect_P3.Controllers
         [HttpPost]
         public ActionResult Edit(EditUserViewModels model)
         {
-            using(var db= new DBMVCEntities()) 
+            using (var db = new DBMVCEntities())
             {
                 var oUser = db.USERS.Find(model.Id); // buscamos el usuario por ID
-                oUser.Email = model.Email; // actualizamos el email
-                oUser.Edad = model.Edad; // actualizamos la edad
 
-                if (model.Password != null || model.Password != " ") // si la contraseña no es nula
+                // Verificamos si cada campo tiene un valor antes de actualizarlo
+                if (!string.IsNullOrWhiteSpace(model.Email))
+                {
+                    oUser.Email = model.Email; // actualizamos el email
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Nombre))
+                {
+                    oUser.Nombre = model.Nombre; // actualizamos el nombre
+                }
+
+                if (model.Edad.HasValue)
+                {
+                    oUser.Edad = model.Edad.Value; // actualizamos la edad
+                }
+
+                if (!string.IsNullOrWhiteSpace(model.Password))
                 {
                     oUser.Password = model.Password; // actualizamos la contraseña
                 }
+
                 db.Entry(oUser).State = System.Data.EntityState.Modified; // marcamos el usuario como modificado
-                db.SaveChanges();
+                db.SaveChanges(); // guardamos los cambios
             }
+
             return Redirect(Url.Content("~/User/Query")); // redireccionamos a la vista Query
         }
 

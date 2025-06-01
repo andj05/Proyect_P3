@@ -4,13 +4,26 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="DBMVCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="DBMVCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="mSTATUS">
           <Key>
             <PropertyRef Name="idStatus" />
           </Key>
           <Property Name="idStatus" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="TIPDOC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="TIPDOC" Type="nvarchar" MaxLength="3" />
+          <Property Name="ORIGEN" Type="nvarchar" MaxLength="1" />
+          <Property Name="DESCRIPCION" Type="nvarchar" MaxLength="50" />
+          <Property Name="CONTADOR" Type="nvarchar" MaxLength="10" />
+          <Property Name="CTADEBITO" Type="nvarchar" MaxLength="20" />
+          <Property Name="CTACREDITO" Type="nvarchar" MaxLength="20" />
+          <Property Name="ESTATUS" Type="int" />
         </EntityType>
         <EntityType Name="USERS">
           <Key>
@@ -38,14 +51,14 @@
         </Association>
         <EntityContainer Name="DBMVCModelStoreContainer">
           <EntitySet Name="mSTATUS" EntityType="Self.mSTATUS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TIPDOC" EntityType="Self.TIPDOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USERS" EntityType="Self.USERS" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_USERS_mSTATUS" Association="Self.FK_USERS_mSTATUS">
             <End Role="mSTATUS" EntitySet="mSTATUS" />
             <End Role="USERS" EntitySet="USERS" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="DBMVCModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -89,7 +102,21 @@
             <End Role="mSTATUS" EntitySet="mSTATUS" />
             <End Role="USERS" EntitySet="USERS" />
           </AssociationSet>
+          <EntitySet Name="TIPDOCs" EntityType="DBMVCModel.TIPDOC" />
         </EntityContainer>
+        <EntityType Name="TIPDOC">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="TIPDOC1" Type="String" MaxLength="3" FixedLength="false" Unicode="true" />
+          <Property Name="ORIGEN" Type="String" MaxLength="1" FixedLength="false" Unicode="true" />
+          <Property Name="DESCRIPCION" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CONTADOR" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CTADEBITO" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="CTACREDITO" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="ESTATUS" Type="Int32" />
+        </EntityType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -114,6 +141,20 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="Edad" ColumnName="Edad" />
                 <ScalarProperty Name="idEstatus" ColumnName="idEstatus" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TIPDOCs">
+            <EntityTypeMapping TypeName="DBMVCModel.TIPDOC">
+              <MappingFragment StoreEntitySet="TIPDOC">
+                <ScalarProperty Name="ESTATUS" ColumnName="ESTATUS" />
+                <ScalarProperty Name="CTACREDITO" ColumnName="CTACREDITO" />
+                <ScalarProperty Name="CTADEBITO" ColumnName="CTADEBITO" />
+                <ScalarProperty Name="CONTADOR" ColumnName="CONTADOR" />
+                <ScalarProperty Name="DESCRIPCION" ColumnName="DESCRIPCION" />
+                <ScalarProperty Name="ORIGEN" ColumnName="ORIGEN" />
+                <ScalarProperty Name="TIPDOC1" ColumnName="TIPDOC" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

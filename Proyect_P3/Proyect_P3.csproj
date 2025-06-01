@@ -129,6 +129,7 @@
     <Compile Include="Controllers\AccederController.cs" />
     <Compile Include="Controllers\CerrarSeccionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\TipdocController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\VerificaSession.cs" />
     <Compile Include="Global.asax.cs">
@@ -152,10 +153,14 @@
     <Compile Include="Models\mSTATU.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TIPDOC.cs">
+      <DependentUpon>DBmodel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\USER.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ViewModels\QueryViewModels.cs" />
+    <Compile Include="Models\ViewModels\TipdocQueryViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -234,6 +239,9 @@
     <Content Include="Views\Acceder\Login.cshtml" />
     <Content Include="Views\User\Add.cshtml" />
     <Content Include="Views\User\Edit.cshtml" />
+    <Content Include="Views\Tipdoc\TipdocQuery.cshtml" />
+    <Content Include="Views\Tipdoc\Add.cshtml" />
+    <Content Include="Views\Tipdoc\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

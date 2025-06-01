@@ -1,7 +1,633 @@
 ﻿
+@model Proyect_P3.Models.ViewModels.EditUserViewModels
 @{
-    ViewBag.Title = "Edit";
+    ViewBag.Title = "Editar";
+    Layout = "~/views/shared/_LayoutApp.cshtml";
 }
 
-<h2>Edit</h2>
+<style>
+    /* Reset completo para eliminar cualquier línea o borde */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        border: none; /* Elimina todos los bordes por defecto */
+        outline: none; /* Elimina outlines por defecto */
+    }
 
+        *:before,
+        *:after {
+            box-sizing: border-box;
+            border: none;
+        }
+
+    /* Reset específico para html y body */
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow-x: hidden;
+        border: none; /* Asegura que no hay bordes */
+        outline: none;
+        background: transparent; /* Elimina cualquier background por defecto */
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+    }
+
+    .modern-form-container {
+        background: url('/Content/Images/Login.jpg') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        width: 100vw;
+        position: fixed;
+        top: 0;
+        left: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        box-sizing: border-box;
+        border: none; /* Elimina cualquier borde del contenedor */
+    }
+
+    /* Overlay para mejorar la legibilidad */
+    .modern-form-container::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(35, 37, 38, 0.45);
+        z-index: 0;
+        pointer-events: none;
+    }
+
+    .form-card {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 24px;
+        padding: 40px;
+        width: 100%;
+        max-width: 480px;
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 8px 16px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2); /* Solo este borde está permitido */
+        transform: translateY(0);
+        transition: all 0.3s ease;
+        position: relative;
+        z-index: 10;
+    }
+
+        .form-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2), 0 10px 20px rgba(0, 0, 0, 0.12);
+        }
+
+    .modern-form-header {
+        text-align: center;
+        margin-bottom: 32px;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 16px;
+    }
+
+    .edit-icon {
+        width: 32px;
+        height: 32px;
+        fill: #f59e0b;
+    }
+
+    .modern-form-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin-bottom: 8px;
+        background: linear-gradient(135deg, #f59e0b, #ea580c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .modern-form-subtitle {
+        color: #666;
+        font-size: 16px;
+        font-weight: 400;
+    }
+
+    .modern-form-group {
+        margin-bottom: 24px;
+        position: relative;
+    }
+
+    .modern-form-label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #374151;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .modern-form-input {
+        width: 100%;
+        padding: 16px 20px;
+        border: 2px solid #e5e7eb; /* Solo este borde está permitido */
+        border-radius: 12px;
+        font-size: 16px;
+        background: #fff;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        outline: none;
+        font-family: inherit;
+        box-sizing: border-box;
+    }
+
+        .modern-form-input:focus {
+            border-color: #f59e0b;
+            box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .modern-form-input:valid {
+            border-color: #10b981;
+        }
+
+        .modern-form-input::placeholder {
+            color: #9ca3af;
+            font-weight: 400;
+        }
+
+    .password-container {
+        position: relative;
+    }
+
+    .password-toggle {
+        position: absolute;
+        right: 16px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none; /* Sin borde */
+        cursor: pointer;
+        color: #6b7280;
+        padding: 4px;
+        border-radius: 4px;
+        transition: color 0.2s ease;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .password-toggle:hover {
+            color: #374151;
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        .password-toggle svg {
+            width: 18px;
+            height: 18px;
+            fill: currentColor;
+        }
+
+    .modern-form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .name-age-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+    }
+
+    .buttons-container {
+        display: flex;
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .modern-submit-btn {
+        flex: 1;
+        padding: 16px;
+        background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+        color: white;
+        border: none; /* Sin borde */
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .modern-submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(245, 158, 11, 0.4);
+        }
+
+        .modern-submit-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .modern-submit-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: white;
+        }
+
+    .modern-back-btn {
+        flex: 1;
+        padding: 16px;
+        background: linear-gradient(135deg, #6b7280 0%, #9ca3af 100%);
+        color: white;
+        border: none; /* Sin borde */
+        border-radius: 12px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+    }
+
+        .modern-back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 24px rgba(107, 114, 128, 0.4);
+        }
+
+        .modern-back-btn svg {
+            width: 16px;
+            height: 16px;
+            fill: white;
+        }
+
+    .text-danger {
+        color: #ef4444;
+        font-size: 12px;
+        margin-top: 4px;
+        display: block;
+        font-weight: 500;
+    }
+
+    .password-strength {
+        margin-top: 8px;
+        font-size: 12px;
+        color: #6b7280;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .strength-bar {
+        flex: 1;
+        height: 4px;
+        background: #e5e7eb;
+        border-radius: 2px;
+        overflow: hidden;
+    }
+
+    .strength-fill {
+        height: 100%;
+        width: 0%;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .strength-weak {
+        width: 25%;
+        background: #ef4444;
+    }
+
+    .strength-fair {
+        width: 50%;
+        background: #f59e0b;
+    }
+
+    .strength-good {
+        width: 75%;
+        background: #10b981;
+    }
+
+    .strength-strong {
+        width: 100%;
+        background: #059669;
+    }
+
+    /* Elementos flotantes de fondo - ahora más sutiles para complementar la imagen */
+    .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        overflow: hidden;
+        z-index: 1;
+    }
+
+    .floating-circle {
+        position: absolute;
+        border-radius: 50%;
+        background: rgba(245, 158, 11, 0.08);
+        border: none; /* Sin borde */
+        animation: float 6s ease-in-out infinite;
+    }
+
+        .floating-circle:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-circle:nth-child(2) {
+            width: 120px;
+            height: 120px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-circle:nth-child(3) {
+            width: 60px;
+            height: 60px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+        50% {
+            transform: translateY(-20px);
+        }
+    }
+
+    .user-id-display {
+        background: linear-gradient(135deg, #f59e0b, #ea580c);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 16px;
+    }
+</style>
+
+<div class="modern-form-container">
+    <div class="floating-elements">
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+        <div class="floating-circle"></div>
+    </div>
+
+    <div class="form-card">
+        <div class="modern-form-header">
+            <!-- Icono de Editar Usuario -->
+            <svg class="edit-icon" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet" style="width: 48px; height: 48px; fill: url(#gradient-edit);">
+                <defs>
+                    <linearGradient id="gradient-edit" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" style="stop-color:#f59e0b;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#ea580c;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" stroke="none">
+                    <path d="M1975 4626 c-247 -49 -460 -190 -597 -397 -253 -384 -170 -915 187
+            -1199 86 -67 227 -141 330 -171 102 -30 293 -36 409 -15 378 72 671 377 727
+            758 67 457 -223 892 -672 1009 -106 27 -285 34 -384 15z m347 -339 c197 -72
+            338 -228 384 -425 20 -86 14 -222 -15 -313 -53 -167 -197 -311 -369 -371 -97
+            -33 -277 -33 -374 0 -226 78 -381 281 -396 519 -6 108 10 189 60 293 73 152
+            211 265 380 310 99 27 235 22 330 -13z" />
+                    <path d="M1550 2500 c-391 -40 -678 -206 -869 -501 -139 -215 -212 -502 -198
+            -784 19 -381 202 -622 539 -706 92 -24 99 -24 630 -24 529 0 537 0 565 21 98
+            73 98 195 0 268 -28 21 -41 21 -560 27 -583 6 -573 4 -685 69 -66 39 -116 105
+            -145 195 -20 62 -22 90 -22 255 1 181 1 187 33 280 93 278 310 484 589 562 75
+            21 100 22 623 26 586 4 668 -1 831 -44 80 -22 101 -24 135 -15 81 22 135 113
+            113 193 -17 64 -52 95 -141 123 -176 56 -199 57 -798 60 -305 2 -593 -1 -640
+            -5z" />
+                    <path d="M4170 2499 c-108 -21 -110 -23 -842 -756 -625 -626 -698 -702 -708
+            -741 -7 -29 -10 -139 -8 -330 3 -268 4 -289 24 -322 11 -19 35 -45 54 -57 32
+            -23 37 -23 349 -23 229 1 322 4 337 13 12 7 334 323 716 702 799 793 753 737
+            753 910 0 147 -18 179 -213 377 -164 167 -220 206 -320 227 -60 12 -78 12
+            -142 0z m233 -448 c93 -94 127 -134 127 -152 0 -17 -26 -50 -90 -114 l-90 -90
+            -155 155 -155 155 94 93 c80 79 98 93 118 87 13 -4 80 -64 151 -134z m-436
+            -433 l153 -153 -437 -437 -438 -438 -157 0 -158 0 0 152 0 152 437 438 c241
+            241 440 438 443 438 2 0 73 -69 157 -152z" />
+                </g>
+            </svg>
+            <div>
+                <h1 class="modern-form-title">Editar Usuario</h1>
+                <p class="modern-form-subtitle">Actualizar información del usuario</p>
+            </div>
+        </div>
+
+        @using (Html.BeginForm("Edit", "User", FormMethod.Post, new { role = "form", @class = "modern-form" }))
+        {
+            @Html.HiddenFor(d => d.Id)
+
+            <div class="user-id-display">
+                ID del Usuario: @Model.Id
+            </div>
+
+            <!-- Nombre y Edad en la misma fila -->
+            <div class="name-age-row">
+                <div class="modern-form-group">
+                    @Html.LabelFor(d => d.Nombre, new { @class = "modern-form-label" })
+                    @Html.TextBoxFor(d => d.Nombre, new { @class = "modern-form-input", placeholder = "Ingresa el nombre" })
+                    @Html.ValidationMessageFor(d => d.Nombre, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="modern-form-group">
+                    @Html.LabelFor(d => d.Edad, new { @class = "modern-form-label" })
+                    @Html.TextBoxFor(d => d.Edad, new { @class = "modern-form-input", placeholder = "Edad", type = "number", min = "13", max = "120" })
+                    @Html.ValidationMessageFor(d => d.Edad, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="modern-form-group">
+                @Html.LabelFor(d => d.Email, new { @class = "modern-form-label" })
+                @Html.TextBoxFor(d => d.Email, new { @class = "modern-form-input", placeholder = "usuario@email.com", type = "email" })
+                @Html.ValidationMessageFor(d => d.Email, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="modern-form-row">
+                <div class="modern-form-group">
+                    @Html.LabelFor(d => d.Password, new { @class = "modern-form-label" })
+                    <div class="password-container">
+                        @Html.PasswordFor(d => d.Password, new { @class = "modern-form-input", placeholder = "••••••••", id = "password" })
+                        <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                            <svg class="eye-closed" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+                                <g transform="translate(0,512) scale(0.1,-0.1)">
+                                    <path d="M560 3548 c-48 -33 -72 -70 -77 -120 -6 -55 27 -126 114 -243 61 -82 230 -250 296 -295 l36 -25 -268 -270 c-232 -232 -271 -276 -280 -312 -36 -133 101 -248 222 -187 18 9 163 146 323 305 l290 290 102 -46 c117 -52 295 -112 430 -146 51 -13 91 -28 88 -34 -24 -64 -186 -703 -186 -736 0 -87 65 -149 155 -149 58 0 106 25 133 70 10 16 63 196 118 400 l99 371 110 -8 c124 -9 425 -10 589 -3 l110 5 101 -378 c107 -396 112 -409 177 -443 38 -20 107 -17 148 5 42 22 80 83 80 131 0 19 -43 194 -95 389 -53 195 -94 355 -93 356 2 1 37 10 78 20 119 29 305 91 433 146 l119 52 297 -296 c163 -162 306 -300 318 -306 30 -15 87 -14 127 3 68 28 108 115 87 189 -11 35 -55 85 -282 312 l-268 270 36 25 c66 45 235 213 296 295 87 117 120 188 114 243 -9 79 -77 142 -154 142 -76 0 -113 -29 -183 -146 -52 -88 -218 -249 -335 -326 -274 -182 -662 -313 -1060 -360 -161 -19 -569 -16 -728 5 -394 53 -755 178 -1022 355 -117 77 -283 238 -335 326 -70 117 -107 146 -183 146 -29 0 -55 -8 -77 -22z" />
+                                </g>
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <span id="strengthText">Seguridad:</span>
+                        <div class="strength-bar">
+                            <div class="strength-fill" id="strengthBar"></div>
+                        </div>
+                    </div>
+                    @Html.ValidationMessageFor(d => d.Password, "", new { @class = "text-danger" })
+                </div>
+
+                <div class="modern-form-group">
+                    @Html.LabelFor(d => d.ConfirmPassword, new { @class = "modern-form-label" })
+                    <div class="password-container">
+                        @Html.PasswordFor(d => d.ConfirmPassword, new { @class = "modern-form-input", placeholder = "••••••••", id = "confirmPassword" })
+                        <button type="button" class="password-toggle" onclick="togglePassword('confirmPassword')">
+                            <svg class="eye-closed" version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet">
+                                <g transform="translate(0,512) scale(0.1,-0.1)">
+                                    <path d="M560 3548 c-48 -33 -72 -70 -77 -120 -6 -55 27 -126 114 -243 61 -82 230 -250 296 -295 l36 -25 -268 -270 c-232 -232 -271 -276 -280 -312 -36 -133 101 -248 222 -187 18 9 163 146 323 305 l290 290 102 -46 c117 -52 295 -112 430 -146 51 -13 91 -28 88 -34 -24 -64 -186 -703 -186 -736 0 -87 65 -149 155 -149 58 0 106 25 133 70 10 16 63 196 118 400 l99 371 110 -8 c124 -9 425 -10 589 -3 l110 5 101 -378 c107 -396 112 -409 177 -443 38 -20 107 -17 148 5 42 22 80 83 80 131 0 19 -43 194 -95 389 -53 195 -94 355 -93 356 2 1 37 10 78 20 119 29 305 91 433 146 l119 52 297 -296 c163 -162 306 -300 318 -306 30 -15 87 -14 127 3 68 28 108 115 87 189 -11 35 -55 85 -282 312 l-268 270 36 25 c66 45 235 213 296 295 87 117 120 188 114 243 -9 79 -77 142 -154 142 -76 0 -113 -29 -183 -146 -52 -88 -218 -249 -335 -326 -274 -182 -662 -313 -1060 -360 -161 -19 -569 -16 -728 5 -394 53 -755 178 -1022 355 -117 77 -283 238 -335 326 -70 117 -107 146 -183 146 -29 0 -55 -8 -77 -22z" />
+                                </g>
+                            </svg>
+                        </button>
+                    </div>
+                    @Html.ValidationMessageFor(d => d.ConfirmPassword, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="buttons-container">
+                <input type="button" value="Volver Atrás" class="modern-back-btn" onclick="document.location.href='@Url.Content("~/User/Query")'" />
+                <button type="submit" class="modern-submit-btn">
+                    <!-- Icono de lápiz con color blanco -->
+                    <svg version="1.0" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" preserveAspectRatio="xMidYMid meet" style="width: 24px; height: 24px; fill: white;">
+                        <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" stroke="none">
+                            <path d="M3982 4840 c-23 -5 -70 -21 -105 -36 -58 -26 -123 -88 -1000 -963
+                -553 -551 -954 -959 -977 -993 -60 -90 -264 -618 -326 -845 -54 -199 -8 -339
+                137 -418 82 -44 167 -46 310 -5 244 69 737 260 829 322 31 21 460 443 991 975
+                883 885 937 942 963 1002 40 91 53 183 37 271 -23 128 -55 174 -265 388 -198
+                202 -273 261 -360 288 -63 19 -177 26 -234 14z m135 -320 c42 -16 391 -368
+                404 -408 24 -72 10 -93 -172 -277 l-168 -170 -258 257 -258 258 160 160 c190
+                191 217 207 292 180z m-417 -825 l255 -255 -540 -540 -540 -540 -257 257 -258
+                258 537 537 c296 296 540 538 543 538 3 0 120 -115 260 -255z m-1305 -1305
+                c131 -131 236 -242 233 -245 -13 -13 -411 -169 -563 -221 -172 -58 -195 -63
+                -195 -39 0 56 258 745 279 745 3 0 114 -108 246 -240z" />
+                            <path d="M995 4423 c-338 -40 -586 -243 -696 -568 l-24 -70 -3 -1408 c-2
+                -1377 -2 -1410 18 -1492 70 -299 297 -525 596 -596 80 -19 122 -19 1596 -17
+                l1513 3 70 24 c229 77 394 217 490 416 81 167 80 159 80 687 0 458 0 467 -21
+                495 -73 98 -195 98 -268 0 -20 -28 -21 -42 -26 -480 -5 -447 -6 -453 -29 -512
+                -60 -151 -165 -251 -310 -295 -61 -20 -100 -20 -1525 -20 -1600 0 -1500 -4
+                -1620 57 -64 32 -157 125 -189 189 -60 119 -57 31 -57 1508 0 875 4 1366 11
+                1395 40 177 206 331 389 360 38 6 233 11 463 11 347 0 403 2 433 16 50 24 77
+                68 82 133 5 70 -22 115 -88 149 -44 22 -48 22 -450 21 -223 -1 -418 -4 -435
+                -6z" />
+                        </g>
+                    </svg>
+                    Actualizar Usuario
+                </button>
+            </div>
+        }
+    </div>
+</div>
+
+<script>
+    function togglePassword(inputId) {
+        const input = document.getElementById(inputId);
+        const button = input.nextElementSibling;
+        const eyeIcon = button.querySelector('svg');
+
+        if (input.type === 'password') {
+            input.type = 'text';
+            // Cambiar al SVG del ojo abierto
+            eyeIcon.innerHTML = `
+                <g transform="translate(0,512) scale(0.1,-0.1)">
+                    <path d="M2274 4094 c-456 -55 -912 -230 -1349 -519 -390 -258 -760 -628 -884 -885 -49 -103 -49 -157 0 -260 135 -279 543 -675 968 -939 389 -241 795 -397 1191 -456 230 -35 551 -30 790 11 648 111 1357 510 1833 1032 187 205 292 378 292 482 0 176 -308 552 -708 863 -405 316 -870 536 -1337 636 -234 49 -561 64 -796 35z m536 -308 c248 -30 495 -99 740 -208 473 -209 965 -594 1198 -935 l56 -83 -56 -82 c-234 -344 -729 -730 -1208 -941 -700 -308 -1394 -287 -2095 65 -437 219 -862 566 -1073 875 l-56 83 56 83 c228 335 711 715 1173 924 249 113 537 194 785 222 119 13 355 12 480 -3z"/>
+                    <path d="M2388 3475 c-351 -67 -634 -331 -730 -683 -31 -111 -31 -353 0 -464 90 -327 342 -580 667 -669 116 -32 354 -32 470 0 325 89 577 342 667 669 31 111 31 353 0 464 -90 328 -346 584 -667 669 -106 27 -300 34 -407 14z m67 -156 c79 -29 173 -119 211 -201 26 -56 29 -74 29 -163 0 -92 -3 -106 -32 -167 -40 -85 -106 -151 -191 -191 -61 -29 -76 -32 -162 -32 -86 0 -101 3 -162 32 -83 39 -154 108 -194 188 -27 55 -29 69 -29 170 0 102 2 114 30 169 95 187 303 269 500 195z"/>
+                </g>
+            `;
+        } else {
+            input.type = 'password';
+            // Cambiar al SVG del ojo cerrado
+            eyeIcon.innerHTML = `
+                <g transform="translate(0,512) scale(0.1,-0.1)">
+                    <path d="M560 3548 c-48 -33 -72 -70 -77 -120 -6 -55 27 -126 114 -243 61 -82 230 -250 296 -295 l36 -25 -268 -270 c-232 -232 -271 -276 -280 -312 -36 -133 101 -248 222 -187 18 9 163 146 323 305 l290 290 102 -46 c117 -52 295 -112 430 -146 51 -13 91 -28 88 -34 -24 -64 -186 -703 -186 -736 0 -87 65 -149 155 -149 58 0 106 25 133 70 10 16 63 196 118 400 l99 371 110 -8 c124 -9 425 -10 589 -3 l110 5 101 -378 c107 -396 112 -409 177 -443 38 -20 107 -17 148 5 42 22 80 83 80 131 0 19 -43 194 -95 389 -53 195 -94 355 -93 356 2 1 37 10 78 20 119 29 305 91 433 146 l119 52 297 -296 c163 -162 306 -300 318 -306 30 -15 87 -14 127 3 68 28 108 115 87 189 -11 35 -55 85 -282 312 l-268 270 36 25 c66 45 235 213 296 295 87 117 120 188 114 243 -9 79 -77 142 -154 142 -76 0 -113 -29 -183 -146 -52 -88 -218 -249 -335 -326 -274 -182 -662 -313 -1060 -360 -161 -19 -569 -16 -728 5 -394 53 -755 178 -1022 355 -117 77 -283 238 -335 326 -70 117 -107 146 -183 146 -29 0 -55 -8 -77 -22z"/>
+                </g>
+            `;
+        }
+    }
+
+    function checkPasswordStrength(password) {
+        let strength = 0;
+        let text = 'Muy débil';
+        let className = '';
+
+        if (password.length >= 8) strength++;
+        if (password.match(/[a-z]+/)) strength++;
+        if (password.match(/[A-Z]+/)) strength++;
+        if (password.match(/[0-9]+/)) strength++;
+        if (password.match(/[$#&!]+/)) strength++;
+
+        switch (strength) {
+            case 0:
+            case 1:
+                text = 'Muy débil';
+                className = 'strength-weak';
+                break;
+            case 2:
+                text = 'Débil';
+                className = 'strength-weak';
+                break;
+            case 3:
+                text = 'Regular';
+                className = 'strength-fair';
+                break;
+            case 4:
+                text = 'Fuerte';
+                className = 'strength-good';
+                break;
+            case 5:
+                text = 'Muy fuerte';
+                className = 'strength-strong';
+                break;
+        }
+
+        return { text, className };
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+
+        if (passwordInput) {
+            passwordInput.addEventListener('input', function (e) {
+                const password = e.target.value;
+                const strength = checkPasswordStrength(password);
+                const strengthBar = document.getElementById('strengthBar');
+                const strengthText = document.getElementById('strengthText');
+
+                if (strengthBar && strengthText) {
+                    strengthBar.className = 'strength-fill ' + strength.className;
+                    strengthText.textContent = 'Seguridad: ' + strength.text;
+                }
+            });
+        }
+
+        if (confirmPasswordInput) {
+            confirmPasswordInput.addEventListener('input', function (e) {
+                const password = passwordInput ? passwordInput.value : '';
+                const confirmPassword = e.target.value;
+
+                if (confirmPassword && password !== confirmPassword) {
+                    e.target.style.borderColor = '#ef4444';
+                } else if (confirmPassword) {
+                    e.target.style.borderColor = '#10b981';
+                }
+            });
+        }
+    });
+</script>

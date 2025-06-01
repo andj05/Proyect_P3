@@ -8,6 +8,7 @@
         <EntityTypeShape EntityType="DBMVCModel.mSTATU" Width="1.5" PointX="0.75" PointY="1.375" IsExpanded="true" />
         <EntityTypeShape EntityType="DBMVCModel.USER" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="DBMVCModel.FK_USERS_mSTATUS" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="DBMVCModel.TIPDOC" Width="1.5" PointX="6.125" PointY="1.125" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

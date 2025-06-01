@@ -27,5 +27,6 @@ namespace Proyect_P3.Models
     
         public DbSet<mSTATU> mSTATUS { get; set; }
         public DbSet<USER> USERS { get; set; }
+        public DbSet<TIPDOC> TIPDOCs { get; set; }
     }
 }
