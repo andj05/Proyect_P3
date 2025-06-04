@@ -4,361 +4,498 @@
     Layout = "~/views/shared/_LayoutApp.cshtml";
 }
 
-<style>
-    .edit-page {
-        background: #f8f9fa;
-        min-height: 100vh;
-        padding: 0;
-        margin: 0;
-    }
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/phosphor-icons/web@2.1.1/dist/phosphor.js"></script>
+    <style>
+        /* Estilos Generales y Reseteo */
+        .edit-page {
+            background: #f8f9fa;
+            min-height: 100vh;
+            padding: 2rem 0; /* Añadimos padding vertical para centrado */
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra el contenido horizontalmente */
+        }
 
-    .header-card {
-        background: white;
-        border-radius: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 0;
-        border-left: 4px solid #f39c12;
-    }
+        /* Contenedor Principal del Formulario */
+        .main-content-card {
+            background: white;
+            border-radius: 12px; /* Bordes más suaves */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08); /* Sombra más pronunciada y suave */
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 800px; /* Ancho máximo para el formulario */
+            margin-top: 2rem; /* Espacio superior */
+            border-left: 6px solid #f39c12; /* Borde izquierdo distintivo */
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem; /* Espaciado entre secciones */
+        }
 
-    .page-title {
-        color: #2c3e50;
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .title-icon {
-        color: #f39c12;
-        font-size: 2rem;
-    }
-
-    .edit-subtitle {
-        color: #6c757d;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }
-
-    .record-id {
-        display: inline-block;
-        background: #fff3cd;
-        color: #856404;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        border: 1px solid #ffeaa7;
-    }
-
-    .form-container {
-        background: white;
-        padding: 2.5rem;
-        margin: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .form-section {
-        margin-bottom: 2.5rem;
-        padding-bottom: 2rem;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .form-section:last-child {
-        border-bottom: none;
-        margin-bottom: 0;
-    }
-
-    .section-title {
-        color: #2c3e50;
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #ecf0f1;
-        display: flex;
-        align-items: center;
-    }
-
-    .section-icon {
-        font-size: 1.5rem;
-        margin-right: 0.8rem;
-        color: #3498db;
-    }
-
-    .form-group-modern {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-label-modern {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .required-field::after {
-        content: " *";
-        color: #e74c3c;
-        font-weight: bold;
-    }
-
-    .form-control-modern {
-        width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e9ecef;
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: all 0.3s ease;
-        background: #f8f9fa;
-        color: #2c3e50;
-    }
-
-    .form-control-modern:focus {
-        outline: none;
-        border-color: #f39c12;
-        background: white;
-        box-shadow: 0 0 0 3px rgba(243, 156, 18, 0.1);
-    }
-
-    .form-control-modern.is-invalid {
-        border-color: #e74c3c;
-        background: #fdf2f2;
-    }
-
-    .form-control-modern.is-invalid:focus {
-        border-color: #e74c3c;
-        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-    }
-
-    .select-modern {
-        appearance: none;
-        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-        background-position: right 12px center;
-        background-repeat: no-repeat;
-        background-size: 16px;
-        padding-right: 48px;
-    }
-
-    .textarea-modern {
-        resize: vertical;
-        min-height: 100px;
-    }
-
-    .validation-error {
-        color: #e74c3c;
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
-        display: block;
-        font-weight: 500;
-    }
-
-    .form-row {
-        display: flex;
-        gap: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-col {
-        flex: 1;
-    }
-
-    .current-value-display {
-        background: #e8f4f8;
-        border: 1px solid #bee5eb;
-        border-radius: 4px;
-        padding: 0.75rem;
-        margin-bottom: 0.5rem;
-        font-size: 0.9rem;
-    }
-
-    .current-value-label {
-        color: #0c5460;
-        font-weight: 600;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.25rem;
-    }
-
-    .current-value-text {
-        color: #2c3e50;
-        font-weight: 500;
-    }
-
-    .actions-container {
-        background: #f8f9fa;
-        padding: 2rem;
-        margin: 0;
-        border-top: 1px solid #e9ecef;
-        text-align: center;
-    }
-
-    .btn-modern {
-        border-radius: 8px;
-        font-weight: 500;
-        padding: 12px 24px;
-        transition: all 0.3s ease;
-        border: none;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-        display: inline-block;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .btn-warning-modern {
-        background: linear-gradient(135deg, #f39c12, #e67e22);
-        color: white;
-        box-shadow: 0 2px 8px rgba(243, 156, 18, 0.3);
-    }
-
-    .btn-warning-modern:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(243, 156, 18, 0.4);
-        color: white;
-    }
-
-    .btn-secondary-modern {
-        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        color: white;
-        box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3);
-    }
-
-    .btn-secondary-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
-        color: white;
-    }
-
-    .btn-info-modern {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
-        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
-    }
-
-    .btn-info-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
-        color: white;
-    }
-
-    .btn-modern:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    .info-card {
-        background: linear-gradient(135deg, #f39c12, #e67e22);
-        color: white;
-        padding: 1.2rem;
-        border-radius: 8px;
-        margin-bottom: 1.5rem;
-    }
-
-    .info-card h4 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.1rem;
-        font-weight: 600;
-    }
-
-    .info-card p {
-        margin: 0;
-        font-size: 0.95rem;
-        opacity: 0.9;
-    }
-
-    .status-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-    }
-
-    .status-badge {
-        padding: 0.4rem 0.8rem;
-        border-radius: 4px;
-        font-size: 0.85rem;
-        font-weight: 500;
-    }
-
-    .status-active {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
-
-    .status-inactive {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
+        /* Encabezado del Formulario */
+        .header-section {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
 
         .page-title {
-            font-size: 1.5rem;
+            color: #2c3e50;
+            font-size: 2.2rem; /* Tamaño de fuente más grande */
+            font-weight: 700; /* Más audaz */
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Centrar título e icono */
+            gap: 0.75rem;
+        }
+
+        .title-icon {
+            color: #f39c12;
+            font-size: 2.5rem; /* Icono más grande */
+        }
+
+        .edit-subtitle {
+            color: #6c757d;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .record-id-badge {
+            display: inline-block;
+            background: #fff3cd;
+            color: #856404;
+            padding: 0.6rem 1.2rem;
+            border-radius: 20px; /* Bordes más redondeados */
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 1px solid #ffeaa7;
+            margin-bottom: 1rem;
+        }
+
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase; /* Mayúsculas para el estado */
+        }
+
+        .status-active {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-inactive {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info-card {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+        }
+
+            .info-card h4 {
+                margin: 0 0 0.7rem 0;
+                font-size: 1.2rem;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 0.6rem;
+            }
+
+            .info-card p {
+                margin: 0;
+                font-size: 1rem;
+                opacity: 0.95;
+                line-height: 1.5;
+            }
+
+        /* Secciones del Formulario */
+        .form-section {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 2rem;
+            margin-bottom: 2rem;
+        }
+
+            .form-section:last-child {
+                border-bottom: none;
+                margin-bottom: 0;
+            }
+
+        .section-title {
+            color: #2c3e50;
+            font-size: 1.6rem; /* Títulos de sección más grandes */
+            font-weight: 700;
+            margin-bottom: 1.8rem; /* Más espacio debajo del título de sección */
+            padding-bottom: 0.8rem;
+            border-bottom: 2px solid #ecf0f1;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .section-icon {
+            font-size: 1.8rem;
+            color: #3498db;
+        }
+
+        /* Grupos de Formulario y Campos */
+        .form-group-modern {
+            margin-bottom: 1.8rem; /* Más espacio entre grupos de formulario */
+        }
+
+        .form-label-modern {
+            display: block;
+            margin-bottom: 0.6rem; /* Espacio debajo de la etiqueta */
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .form-control-modern {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fdfdfd; /* Fondo ligeramente blanco */
+            color: #2c3e50;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.06); /* Sombra interna sutil */
+        }
+
+            .form-control-modern:focus {
+                outline: none;
+                border-color: #f39c12;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.15); /* Sombra de enfoque más visible */
+            }
+
+            .form-control-modern.is-invalid {
+                border-color: #e74c3c;
+                background: #fef7f7; /* Fondo más claro para errores */
+            }
+
+                .form-control-modern.is-invalid:focus {
+                    border-color: #e74c3c;
+                    box-shadow: 0 0 0 4px rgba(231, 76, 60, 0.15);
+                }
+
+        .select-modern {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 12px center;
+            background-repeat: no-repeat;
+            background-size: 16px;
+            padding-right: 48px;
+        }
+
+        .textarea-modern {
+            resize: vertical;
+            min-height: 120px; /* Altura mínima para textarea */
+        }
+
+        .validation-error {
+            color: #e74c3c;
+            font-size: 0.9rem;
+            margin-top: 0.6rem;
+            display: block;
+            font-weight: 500;
         }
 
         .form-row {
+            display: flex;
+            gap: 2rem; /* Más espacio entre columnas */
+            margin-bottom: 1rem; /* Ajuste para filas */
+        }
+
+        .form-col {
+            flex: 1;
+        }
+
+        .current-value-display {
+            background: #e8f4f8;
+            border: 1px solid #bee5eb;
+            border-radius: 6px; /* Bordes ligeramente más suaves */
+            padding: 0.8rem 1rem;
+            margin-bottom: 0.8rem; /* Espacio debajo del valor actual */
+            font-size: 0.95rem;
+            display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 0.2rem;
+        }
+
+        .current-value-label {
+            color: #0c5460;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .current-value-text {
+            color: #2c3e50;
+            font-weight: 500;
+        }
+
+        /* Contenedor de Acciones (Botones) */
+        .actions-container {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-top: 1px solid #e9ecef;
+            text-align: center;
+            border-radius: 0 0 12px 12px; /* Redondear solo las esquinas inferiores */
+            margin: 0 -2.5rem -2.5rem -2.5rem; /* Ajustar para ocupar todo el ancho del main-content-card */
+            padding-top: 2rem; /* Espacio superior dentro del contenedor de acciones */
         }
 
         .btn-modern {
-            width: 100%;
-            margin-right: 0;
+            border-radius: 8px;
+            font-weight: 600; /* Botones más audaces */
+            padding: 14px 28px; /* Más padding para botones */
+            transition: all 0.3s ease;
+            border: none;
+            margin: 0.75rem; /* Espacio alrededor de los botones */
+            font-size: 1rem;
+            display: inline-flex; /* Permite iconos dentro */
+            align-items: center;
+            gap: 0.6rem; /* Espacio entre icono y texto */
+            cursor: pointer;
+            text-decoration: none;
+            justify-content: center; /* Centrar contenido del botón */
         }
-    }
-</style>
+
+        .btn-warning-modern {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.25); /* Sombra más definida */
+        }
+
+            .btn-warning-modern:hover:not(:disabled) {
+                transform: translateY(-3px); /* Efecto hover más pronunciado */
+                box-shadow: 0 6px 20px rgba(243, 156, 18, 0.4);
+                color: white;
+            }
+
+        .btn-secondary-modern {
+            background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+            color: white;
+            box-shadow: 0 4px 15px rgba(149, 165, 166, 0.25);
+        }
+
+            .btn-secondary-modern:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(149, 165, 166, 0.4);
+                color: white;
+            }
+
+        .btn-info-modern {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.25);
+        }
+
+            .btn-info-modern:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+                color: white;
+            }
+
+        .btn-modern:disabled {
+            opacity: 0.5; /* Más opaco cuando deshabilitado */
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Media Queries para Responsividad */
+        @@media (max-width: 768px) {
+            .main-content-card {
+                padding: 1.5rem;
+                margin-top: 1rem;
+            }
+
+            .header-section {
+                margin-bottom: 1.5rem;
+            }
+
+            .page-title {
+                font-size: 1.8rem;
+                flex-direction: column; /* Icono y texto apilados en móvil */
+                gap: 0.5rem;
+            }
+
+            .title-icon {
+                font-size: 2rem;
+            }
+
+            .edit-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .record-id-badge, .status-indicator {
+                font-size: 0.85rem;
+                padding: 0.5rem 1rem;
+            }
+
+            .info-card {
+                padding: 1rem;
+                margin-bottom: 1.5rem;
+            }
+
+                .info-card h4 {
+                    font-size: 1rem;
+                }
+
+                .info-card p {
+                    font-size: 0.9rem;
+                }
+
+            .form-section {
+                padding-bottom: 1.5rem;
+                margin-bottom: 1.5rem;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+                margin-bottom: 1.2rem;
+                flex-direction: column; /* Icono y texto apilados en móvil */
+                gap: 0.5rem;
+            }
+
+            .section-icon {
+                font-size: 1.5rem;
+            }
+
+            .form-row {
+                flex-direction: column;
+                gap: 1.2rem;
+            }
+
+            .form-group-modern {
+                margin-bottom: 1.2rem;
+            }
+
+            .form-label-modern {
+                font-size: 0.95rem;
+            }
+
+            .form-control-modern {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+
+            .textarea-modern {
+                min-height: 90px;
+            }
+
+            .current-value-display {
+                padding: 0.6rem 0.8rem;
+                font-size: 0.85rem;
+            }
+
+            .actions-container {
+                padding: 1.5rem;
+                margin: 0 -1.5rem -1.5rem -1.5rem;
+                flex-direction: column; /* Botones apilados en móvil */
+                align-items: center;
+            }
+
+            .btn-modern {
+                width: 90%; /* Ocupar casi todo el ancho */
+                margin: 0.5rem 0; /* Más espacio vertical entre botones */
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+        }
+
+        @@media (max-width: 480px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .title-icon {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.2rem;
+            }
+
+            .section-icon {
+                font-size: 1.4rem;
+            }
+
+            .btn-modern {
+                font-size: 0.9rem;
+                padding: 10px 15px;
+            }
+        }
+    </style>
+</head>
 
 <div class="edit-page">
-    <!-- Header -->
-    <div class="header-card">
-        <h1 class="page-title">
-            <span class="title-icon">✏️</span>
-            Editar Tipo de Documento
-        </h1>
-        <p class="edit-subtitle">Modifique la información del registro seleccionado</p>
-        <div class="record-id">ID: @Model.Id</div>
+    <div class="main-content-card">
+        <header class="header-section">
+            <h1 class="page-title">
+                <i class="ph ph-pencil-simple title-icon"></i> Editar Tipo de Documento
+            </h1>
+            <p class="edit-subtitle">Modifique la información del registro seleccionado</p>
+            <div class="record-id-badge">ID: @Model.Id</div>
 
-        <div class="status-indicator">
-            <span>Estado actual:</span>
-            <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
-                @(Model.Estatus == 1 ? "Activo" : "Inactivo")
-            </span>
-        </div>
+            <div class="status-indicator">
+                <span>Estado actual:</span>
+                <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
+                    @(Model.Estatus == 1 ? "Activo" : "Inactivo")
+                </span>
+            </div>
 
-        <div class="info-card">
-            <h4>⚠️ Importante</h4>
-            <p>Los cambios realizados afectarán todos los documentos futuros que utilicen este tipo. Revise cuidadosamente antes de guardar.</p>
-        </div>
-    </div>
+            <div class="info-card">
+                <h4><i class="ph ph-warning-octagon"></i> Importante</h4>
+                <p>Los cambios realizados afectarán todos los documentos futuros que utilicen este tipo. Revise cuidadosamente antes de guardar.</p>
+            </div>
+        </header>
 
-    <!-- Formulario -->
-    @using (Html.BeginForm("Edit", "Tipdoc", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
-    {
-        @Html.HiddenFor(m => m.Id)
+        @using (Html.BeginForm("Edit", "Tipdoc", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
+        {
+            @Html.HiddenFor(m => m.Id)
 
-        <div class="form-container">
-            <!-- Información Básica -->
-            <div class="form-section">
+            <section class="form-section">
                 <h3 class="section-title">
-                    <span class="section-icon">📋</span>
-                    Información Básica
+                    <i class="ph ph-clipboard-text section-icon"></i> Información Básica
                 </h3>
 
                 <div class="form-row">
-                    <!-- Tipo de Documento -->
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern required-field">Tipo de Documento</label>
+                            <label for="TipoDoc" class="form-label-modern required-field">Tipo de Documento</label>
                             <div class="current-value-display">
-                                <div class="current-value-label">Valor Actual</div>
-                                <div class="current-value-text">@Model.TipoDoc</div>
+                                <span class="current-value-label">Valor Actual</span>
+                                <span class="current-value-text">@Model.TipoDoc</span>
                             </div>
                             @Html.DropDownListFor(m => m.TipoDoc, new List<SelectListItem>
                             {
@@ -367,19 +504,20 @@
                                 new SelectListItem { Text = "Nota de Crédito", Value = "NC", Selected = Model.TipoDoc == "NC" }
                             }, new
                             {
-                                @class = "form-control-modern select-modern"
+                                @id = "TipoDoc",
+                                @class = "form-control-modern select-modern",
+                                @required = "required" /* Añadido required en HTML */
                             })
                             @Html.ValidationMessageFor(m => m.TipoDoc, "", new { @class = "validation-error" })
                         </div>
                     </div>
 
-                    <!-- Origen -->
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern required-field">Origen</label>
+                            <label for="Origen" class="form-label-modern required-field">Origen</label>
                             <div class="current-value-display">
-                                <div class="current-value-label">Valor Actual</div>
-                                <div class="current-value-text">@Model.Origen</div>
+                                <span class="current-value-label">Valor Actual</span>
+                                <span class="current-value-text">@Model.Origen</span>
                             </div>
                             @Html.DropDownListFor(m => m.Origen, new List<SelectListItem>
                             {
@@ -388,7 +526,9 @@
                                 new SelectListItem { Text = "Externo", Value = "E", Selected = Model.Origen == "E" }
                             }, new
                             {
-                                @class = "form-control-modern select-modern"
+                                @id = "Origen",
+                                @class = "form-control-modern select-modern",
+                                @required = "required" /* Añadido required en HTML */
                             })
                             @Html.ValidationMessageFor(m => m.Origen, "", new { @class = "validation-error" })
                         </div>
@@ -396,35 +536,35 @@
                 </div>
 
                 <div class="form-group-modern">
-                    <label class="form-label-modern required-field">Descripción</label>
+                    <label for="Descripcion" class="form-label-modern required-field">Descripción</label>
                     <div class="current-value-display">
-                        <div class="current-value-label">Valor Actual</div>
-                        <div class="current-value-text">@Model.Descripcion</div>
+                        <span class="current-value-label">Valor Actual</span>
+                        <span class="current-value-text">@Model.Descripcion</span>
                     </div>
                     @Html.TextAreaFor(m => m.Descripcion, new
                     {
+                        @id = "Descripcion",
                         @class = "form-control-modern textarea-modern",
                         @placeholder = "Descripción detallada del tipo de documento...",
-                        @maxlength = "50"
+                        @maxlength = "50",
+                        @required = "required" /* Añadido required en HTML */
                     })
                     @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "validation-error" })
                 </div>
-            </div>
+            </section>
 
-            <!-- Configuración del Sistema -->
-            <div class="form-section">
+            <section class="form-section">
                 <h3 class="section-title">
-                    <span class="section-icon">⚙️</span>
-                    Configuración del Sistema
+                    <i class="ph ph-gear section-icon"></i> Configuración del Sistema
                 </h3>
 
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Estado</label>
+                            <label for="Estatus" class="form-label-modern">Estado</label>
                             <div class="current-value-display">
-                                <div class="current-value-label">Valor Actual</div>
-                                <div class="current-value-text">@(Model.Estatus == 1 ? "Activo" : Model.Estatus == 2 ? "Inactivo" : "Borrado")</div>
+                                <span class="current-value-label">Valor Actual</span>
+                                <span class="current-value-text">@(Model.Estatus == 1 ? "Activo" : Model.Estatus == 2 ? "Inactivo" : "Borrado")</span>
                             </div>
                             @Html.DropDownListFor(m => m.Estatus, new List<SelectListItem>
                             {
@@ -433,6 +573,7 @@
                                 new SelectListItem { Text = "Borrado", Value = "3", Selected = Model.Estatus == 3 }
                             }, new
                             {
+                                @id = "Estatus",
                                 @class = "form-control-modern select-modern"
                             })
                             @Html.ValidationMessageFor(m => m.Estatus, "", new { @class = "validation-error" })
@@ -441,42 +582,33 @@
 
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Contador</label>
+                            <label for="Contador" class="form-label-modern">Contador</label>
                             <div class="current-value-display">
-                                <div class="current-value-label">Valor Actual</div>
-                                <div class="current-value-text">@Model.Contador</div>
+                                <span class="current-value-label">Valor Actual</span>
+                                <span class="current-value-text">@Model.Contador</span>
                             </div>
-                            @Html.TextBoxFor(m => m.Contador, new
-                            {
-                                @class = "form-control-modern",
-                                @placeholder = "Ej: 12345",
-                                @type = "number",
-                                @min = "0",
-                                @maxlength = "10"
-                            })
                             @Html.ValidationMessageFor(m => m.Contador, "", new { @class = "validation-error" })
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Configuración Contable -->
-            <div class="form-section">
+            <section class="form-section">
                 <h3 class="section-title">
-                    <span class="section-icon">💰</span>
-                    Configuración Contable
+                    <i class="ph ph-currency-dollar section-icon"></i> Configuración Contable
                 </h3>
 
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Cuenta Débito</label>
+                            <label for="CuentaDebito" class="form-label-modern">Cuenta Débito</label>
                             <div class="current-value-display">
-                                <div class="current-value-label">Valor Actual</div>
-                                <div class="current-value-text">@(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")</div>
+                                <span class="current-value-label">Valor Actual</span>
+                                <span class="current-value-text">@(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")</span>
                             </div>
                             @Html.TextBoxFor(m => m.CuentaDebito, new
                             {
+                                @id = "CuentaDebito",
                                 @class = "form-control-modern",
                                 @placeholder = "Código de cuenta débito",
                                 @maxlength = "20"
@@ -487,13 +619,14 @@
 
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Cuenta Crédito</label>
+                            <label for="CuentaCredito" class="form-label-modern">Cuenta Crédito</label>
                             <div class="current-value-display">
-                                <div class="current-value-label">Valor Actual</div>
-                                <div class="current-value-text">@(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")</div>
+                                <span class="current-value-label">Valor Actual</span>
+                                <span class="current-value-text">@(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")</span>
                             </div>
                             @Html.TextBoxFor(m => m.CuentaCredito, new
                             {
+                                @id = "CuentaCredito",
                                 @class = "form-control-modern",
                                 @placeholder = "Código de cuenta crédito",
                                 @maxlength = "20"
@@ -502,96 +635,101 @@
                         </div>
                     </div>
                 </div>
-            </div>
-        </div>
+            </section>
 
-        <!-- Botones de Acción -->
-        <div class="actions-container">
-            <button type="submit" class="btn btn-modern btn-warning-modern" id="updateBtn">
-                💾 Actualizar Registro
-            </button>
-            <input type="button"
-                   value="👁️ Ver Detalles"
-                   class="btn btn-modern btn-info-modern"
-                   onclick="document.location.href='@Url.Content("~/Tipdoc/Details/" + Model.Id)'" />
-            <input type="button"
-                   value="📋 Ver Lista"
-                   class="btn btn-modern btn-secondary-modern"
-                   onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
-            <input type="button"
-                   value="↩️ Cancelar"
-                   class="btn btn-modern btn-secondary-modern"
-                   onclick="window.history.back()" />
-        </div>
-    }
+            <div class="actions-container">
+                <button type="submit" class="btn-modern btn-warning-modern" id="updateBtn">
+                    <i class="ph ph-floppy-disk"></i> Actualizar Registro
+                </button>
+                <button type="button"
+                        class="btn-modern btn-info-modern"
+                        onclick="document.location.href='@Url.Content("~/Tipdoc/Details/" + Model.Id)'">
+                    <i class="ph ph-info"></i> Ver Detalles
+                </button>
+                <button type="button"
+                        class="btn-modern btn-secondary-modern"
+                        onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'">
+                    <i class="ph ph-list"></i> Ver Lista
+                </button>
+                <button type="button"
+                        class="btn-modern btn-secondary-modern"
+                        onclick="window.history.back()">
+                    <i class="ph ph-x"></i> Cancelar
+                </button>
+            </div>
+        }
+    </div>
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Validación en tiempo real
+    document.addEventListener('DOMContentLoaded', function () {
         const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+        // Usar la clase `required-field` para identificar campos requeridos en el JS
+        const inputs = form.querySelectorAll('.required-field + .current-value-display + .form-control-modern, .required-field + .form-control-modern');
 
         inputs.forEach(input => {
             input.addEventListener('blur', validateField);
             input.addEventListener('input', clearValidation);
         });
 
-        // Validación del formulario al enviar
-        form.addEventListener('submit', function(e) {
+        form.addEventListener('submit', function (e) {
             if (!validateForm()) {
                 e.preventDefault();
                 showNotification('Por favor, complete todos los campos requeridos correctamente.', 'error');
                 return false;
             }
 
-            // Confirmar actualización
             if (!confirm('¿Está seguro de que desea actualizar este registro? Los cambios afectarán todos los documentos futuros.')) {
                 e.preventDefault();
                 return false;
             }
 
-            // Mostrar indicador de carga
             showLoading(true);
             document.getElementById('updateBtn').disabled = true;
         });
 
-        // Resaltar cambios
         highlightChanges();
     });
 
     function validateField(e) {
         const field = e.target;
         const value = field.value.trim();
+        let isValid = true;
 
-        if (field.hasAttribute('required') && !value) {
+        // Validación para campos requeridos marcados con la clase `required-field` en la etiqueta
+        const label = field.previousElementSibling; // Obtener la etiqueta (label)
+        // Algunos campos como Descripcion no tienen .current-value-display, ajustamos la selección
+        let actualLabel = label;
+        if (label && label.classList.contains('current-value-display')) {
+            actualLabel = label.previousElementSibling;
+        }
+
+        if (actualLabel && actualLabel.classList.contains('required-field') && !value) {
             field.classList.add('is-invalid');
             showFieldError(field, 'Este campo es requerido.');
-            return false;
+            isValid = false;
+        } else {
+            // Validaciones específicas
+            if (field.id === 'TipoDoc' && value.length < 2) {
+                field.classList.add('is-invalid');
+                showFieldError(field, 'El tipo de documento debe tener al menos 2 caracteres.');
+                isValid = false;
+            } else if (field.id === 'Descripcion' && value.length < 10) {
+                field.classList.add('is-invalid');
+                showFieldError(field, 'La descripción debe tener al menos 10 caracteres.');
+                isValid = false;
+            } else if (field.type === 'number' && value && parseInt(value) < 0) {
+                field.classList.add('is-invalid');
+                showFieldError(field, 'El valor debe ser mayor o igual a 0.');
+                isValid = false;
+            }
         }
 
-        // Validaciones específicas
-        if (field.name === 'TipoDoc' && value.length < 2) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'El tipo de documento debe tener al menos 2 caracteres.');
-            return false;
+        if (isValid) {
+            field.classList.remove('is-invalid');
+            hideFieldError(field);
         }
-
-        if (field.name === 'Descripcion' && value.length < 10) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'La descripción debe tener al menos 10 caracteres.');
-            return false;
-        }
-
-        if (field.type === 'number' && value && parseInt(value) < 0) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'El valor debe ser mayor o igual a 0.');
-            return false;
-        }
-
-        field.classList.remove('is-invalid');
-        hideFieldError(field);
-        return true;
+        return isValid;
     }
 
     function clearValidation(e) {
@@ -604,15 +742,16 @@
 
     function validateForm() {
         const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
+        // Asegúrate de seleccionar todos los campos relevantes para la validación
+        const inputsToValidate = form.querySelectorAll('select.form-control-modern[required], textarea.form-control-modern[required], input.form-control-modern[required], .required-field + .current-value-display + .form-control-modern, .required-field + .form-control-modern');
+
         let isValid = true;
 
-        inputs.forEach(input => {
-            if (!validateField({target: input})) {
+        inputsToValidate.forEach(input => {
+            if (!validateField({ target: input })) {
                 isValid = false;
             }
         });
-
         return isValid;
     }
 
@@ -632,13 +771,15 @@
     }
 
     function highlightChanges() {
-        const inputs = document.querySelectorAll('input, select, textarea');
+        const inputs = document.querySelectorAll('.form-control-modern'); // Seleccionamos solo los campos con esta clase
         inputs.forEach(input => {
-            const originalValue = input.defaultValue || input.defaultSelected;
+            // Para select y textarea, `defaultValue` o `defaultSelected` no siempre funcionan como se espera.
+            // Es mejor guardar el valor inicial al cargar.
+            const initialValue = input.type === 'checkbox' ? input.checked : input.value;
 
-            input.addEventListener('input', function() {
+            input.addEventListener('input', function () {
                 const currentValue = this.type === 'checkbox' ? this.checked : this.value;
-                const hasChanged = currentValue !== originalValue;
+                const hasChanged = currentValue !== initialValue;
 
                 if (hasChanged) {
                     this.style.borderLeftWidth = '4px';
@@ -667,13 +808,15 @@
                     justify-content: center;
                     align-items: center;
                     z-index: 9999;
+                    backdrop-filter: blur(4px); /* Efecto de desenfoque */
                 `;
                 overlay.innerHTML = `
-                    <div style="background: white; padding: 2.5rem; border-radius: 8px; text-align: center;">
-                        <div class="spinner-border text-warning" role="status" style="width: 3rem; height: 3rem;">
+                    <div style="background: white; padding: 2.5rem; border-radius: 12px; text-align: center; box-shadow: 0 5px 25px rgba(0,0,0,0.2);">
+                        <div class="spinner-border text-warning" role="status" style="width: 3.5rem; height: 3.5rem; border-width: 0.35em; color: #f39c12;">
                             <span class="sr-only">Actualizando...</span>
                         </div>
-                        <p style="margin-top: 1.5rem; color: #2c3e50; font-size: 1.2rem;">Actualizando registro...</p>
+                        <p style="margin-top: 1.8rem; color: #2c3e50; font-size: 1.3rem; font-weight: 600;">Actualizando registro...</p>
+                        <p style="color: #6c757d; font-size: 0.95rem;">Por favor, espere un momento.</p>
                     </div>
                 `;
                 document.body.appendChild(overlay);
@@ -689,6 +832,8 @@
 
     function showNotification(message, type) {
         const bgColor = type === 'success' ? '#27ae60' : '#e74c3c';
+        const iconHtml = type === 'success' ? '<i class="ph ph-check-circle" style="font-size: 1.5rem; margin-right: 0.8rem;"></i>' : '<i class="ph ph-x-circle" style="font-size: 1.5rem; margin-right: 0.8rem;"></i>';
+
         const notification = document.createElement('div');
         notification.style.cssText = `
             position: fixed;
@@ -697,21 +842,38 @@
             background: ${bgColor};
             color: white;
             padding: 1.2rem 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            border-radius: 10px; /* Más redondeado */
+            box-shadow: 0 6px 20px rgba(0,0,0,0.25); /* Sombra más suave */
             z-index: 10000;
             font-weight: 500;
             font-size: 1.1rem;
-            max-width: 400px;
+            max-width: 380px; /* Ancho ajustado */
+            display: flex; /* Para el icono */
+            align-items: center;
+            opacity: 0; /* Inicialmente oculto para animación */
+            transform: translateY(-20px); /* Para animación */
+            transition: all 0.4s ease-out; /* Animación */
         `;
-        notification.textContent = message;
+        notification.innerHTML = iconHtml + message;
 
         document.body.appendChild(notification);
 
-        setTimeout(function() {
-            if (notification.parentNode) {
-                notification.remove();
-            }
+        // Animar entrada
+        setTimeout(() => {
+            notification.style.opacity = '1';
+            notification.style.transform = 'translateY(0)';
+        }, 100);
+
+
+        setTimeout(function () {
+            // Animar salida
+            notification.style.opacity = '0';
+            notification.style.transform = 'translateY(-20px)';
+            notification.addEventListener('transitionend', () => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, { once: true });
         }, 4000);
     }
 </script>

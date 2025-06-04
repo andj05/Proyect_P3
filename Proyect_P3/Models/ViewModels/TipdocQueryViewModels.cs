@@ -62,7 +62,6 @@ namespace Proyect_P3.Models.ViewModels
         [Display(Name = "Descripción")]
         public string Descripcion { get; set; }
 
-        [Required]
         [Display(Name = "Contador")]
         public string Contador { get; set; }
 

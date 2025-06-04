@@ -330,11 +330,43 @@
 
     <!-- Buscador -->
     <div class="search-container">
-        <input type="text" 
-               class="search-input" 
-               id="searchInput" 
-               placeholder="🔍 Buscar por ID, Tipo....." 
-               onkeyup="searchTable()" />
+        <div style="display: flex; align-items: center;">
+            <div style="width: 24px; height: 24px; margin-right: 8px;">
+                <?xml version="1.0" standalone="no" ?>
+                <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 20010904//EN"
+                          "http://www.w3.org/TR/2001/REC-SVG-20010904/DTD/svg10.dtd">
+                <svg version="1.0" xmlns="http://www.w3.org/2000/svg"
+                     width="24" height="24" viewBox="0 0 512.000000 512.000000"
+                     preserveAspectRatio="xMidYMid meet">
+                    <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)"
+                       fill="#000000" stroke="none">
+                        <path d="M1803 4930 c-325 -41 -636 -166 -892 -358 -512 -386 -790 -1024 -720
+                    -1660 45 -419 226 -796 525 -1096 349 -349 802 -536 1294 -536 390 0 755 117
+                    1069 343 l83 60 114 -114 114 -114 137 138 138 137 -114 114 -114 114 60 83
+                    c159 221 269 481 319 754 27 143 27 489 0 630 -70 379 -244 710 -512 979 -272
+                    271 -605 443 -989 512 -106 18 -408 27 -512 14z m304 -580 c232 -21 408 -82
+                    596 -206 282 -188 471 -478 538 -825 18 -96 16 -348 -5 -444 -42 -196 -119
+                    -368 -230 -516 -185 -245 -444 -407 -761 -475 -122 -26 -350 -23 -485 5 -503
+                    107 -881 495 -975 1001 -21 112 -21 329 0 439 76 398 318 720 671 894 143 71
+                    289 113 437 126 51 5 94 9 97 10 3 0 55 -4 117 -9z" />
+                        <path d="M1114 3548 c-26 -12 -37 -32 -68 -125 -70 -207 -60 -501 24 -699 25
+                    -58 43 -74 85 -74 36 0 75 35 75 67 0 11 -11 50 -24 86 -65 172 -73 380 -21
+                    547 15 47 29 103 32 126 4 36 1 44 -22 63 -30 23 -49 25 -81 9z" />
+                        <path d="M1261 2524 c-30 -38 -26 -68 15 -114 29 -32 43 -40 70 -40 78 0 100
+                    81 39 143 -46 47 -93 51 -124 11z" />
+                        <path d="M3637 1482 c-176 -176 -227 -233 -227 -252 0 -20 102 -127 488 -511
+                    556 -554 529 -534 687 -534 77 0 98 4 147 27 73 34 142 103 176 176 23 49 27
+                    70 27 147 0 158 20 131 -534 688 -385 387 -491 487 -511 487 -20 0 -76 -51
+                    -253 -228z" />
+                    </g>
+                </svg>
+            </div>
+            <input type="text"
+                   class="search-input"
+                   id="searchInput"
+                   placeholder="Buscar por ID, Tipo....."
+                   onkeyup="searchTable()" />
+        </div>
     </div>
 
     <!-- Tabla de pantalla completa -->
@@ -351,39 +383,39 @@
                         <th>Acciones</th>
                     </tr>
                 </thead>
-               <tbody>
-                   @foreach (var item in Model)
-                   {
-                       <tr>
-                           <td class="doc-id">@item.Id</td>
-                           <td><span class="doc-tipo">@item.TipoDoc</span></td>
-                           <td class="doc-descripcion">@item.Descripcion</td>
-                           <td>
-                               <span class="doc-origen @(item.Origen == "S" ? "origen-sistema" :
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="doc-id">@item.Id</td>
+                            <td><span class="doc-tipo">@item.TipoDoc</span></td>
+                            <td class="doc-descripcion">@item.Descripcion</td>
+                            <td>
+                                <span class="doc-origen @(item.Origen == "S" ? "origen-sistema" :
                                          item.Origen == "U" ? "origen-usuario" :
                                          item.Origen == "E" ? "origen-externo" : "origen-default")">
-                                   @(item.Origen == "S" ? "Sistema" :
+                                    @(item.Origen == "S" ? "Sistema" :
                                     item.Origen == "U" ? "Usuario" :
                                      item.Origen == "E" ? "Externo" : "Desconocido")
-                               </span>
-                           </td>
-                           <td>
-                               <input type="button"
-                                      class="btn btn-action btn-info-modern"
-                                      onclick="viewTipdoc(@item.Id)"
-                                      value="Ver" />
-                               <input type="button"
-                                      class="btn btn-action btn-warning-modern"
-                                      onclick="editTipdoc(@item.Id)"
-                                      value="Editar" />
-                               <input type="button"
-                                      class="btn btn-action btn-danger-modern"
-                                      onclick="jsDelete(@item.Id, '@item.Descripcion')"
-                                      value="Eliminar" />
-                           </td>
-                       </tr>
-                   }
-               </tbody>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="button"
+                                       class="btn btn-action btn-info-modern"
+                                       onclick="viewTipdoc(@item.Id)"
+                                       value="Ver" />
+                                <input type="button"
+                                       class="btn btn-action btn-warning-modern"
+                                       onclick="editTipdoc(@item.Id)"
+                                       value="Editar" />
+                                <input type="button"
+                                       class="btn btn-action btn-danger-modern"
+                                       onclick="jsDelete(@item.Id, '@item.Descripcion')"
+                                       value="Eliminar" />
+                            </td>
+                        </tr>
+                    }
+                </tbody>
             </table>
         }
         else

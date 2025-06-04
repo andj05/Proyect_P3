@@ -1,61 +1,96 @@
 ﻿@model Proyect_P3.Models.ViewModels.AddTipdocViewModels
 @{
-    ViewBag.Title = "Agregar Tipo de Documento";
+    ViewBag.Title = "Agregar Nuevo Tipo de Documento";
     Layout = "~/views/shared/_LayoutApp.cshtml";
 }
 
 <style>
-    .page-container {
-        background: #f8f9fa;
-        min-height: 100vh;
-        padding: 0;
-        margin: 0;
+    /* Variables CSS para una gestión más fácil de colores y espaciados */
+    :root {
+        --primary-color: #3498db; /* Azul vibrante */
+        --success-color: #2ecc71; /* Verde esmeralda */
+        --secondary-color: #95a5a6; /* Gris neutro */
+        --danger-color: #e74c3c; /* Rojo intenso */
+        --text-dark: #2c3e50; /* Texto oscuro */
+        --text-light: #f8f9fa; /* Fondo claro */
+        --border-light: #e9ecef;
+        --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        --border-radius-base: 10px;
+        --spacing-unit: 1.5rem; /* Unidad base para márgenes y paddings */
     }
 
-    .header-card {
+    body {
+        font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.6;
+        color: var(--text-dark);
+        background-color: var(--text-light);
+    }
+
+    .page-container {
+        max-width: 900px;
+        margin: 2rem auto;
         background: white;
-        border-radius: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        padding: 1.5rem;
-        margin-bottom: 0;
+        border-radius: var(--border-radius-base);
+        box-shadow: var(--box-shadow);
+        overflow: hidden; /* Para asegurar que los bordes internos se vean bien */
+    }
+
+    .header-section {
+        background: linear-gradient(to right, var(--primary-color), #2980b9);
+        color: white;
+        padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+        text-align: center;
+        border-top-left-radius: var(--border-radius-base);
+        border-top-right-radius: var(--border-radius-base);
     }
 
     .page-title {
-        color: #2c3e50;
-        font-size: 1.8rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        border-bottom: 3px solid #27ae60;
-        padding-bottom: 0.5rem;
-        display: inline-block;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
     }
 
-    .form-container {
-        background: white;
-        padding: 2rem;
-        margin: 0;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    .page-subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-top: 0;
+    }
+
+    .form-main-content {
+        padding: calc(var(--spacing-unit) * 1.5);
     }
 
     .form-section {
-        margin-bottom: 2rem;
+        background: white;
+        padding: calc(var(--spacing-unit) * 1);
+        border: 1px solid var(--border-light);
+        border-radius: var(--border-radius-base);
+        margin-bottom: var(--spacing-unit);
     }
 
-    .section-title {
-        color: #2c3e50;
-        font-size: 1.3rem;
-        font-weight: 600;
-        margin-bottom: 1.5rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 2px solid #ecf0f1;
+    .section-header {
         display: flex;
         align-items: center;
+        padding-bottom: 0.75rem;
+        margin-bottom: 1.25rem;
+        border-bottom: 2px solid #ecf0f1;
     }
 
     .section-icon {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
         margin-right: 0.8rem;
-        color: #3498db;
+        color: var(--primary-color);
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--text-dark);
+        margin: 0;
     }
 
     .form-group-modern {
@@ -64,45 +99,49 @@
 
     .form-label-modern {
         display: block;
-        margin-bottom: 0.5rem;
-        color: #2c3e50;
+        margin-bottom: 0.6rem;
+        color: var(--text-dark);
         font-weight: 600;
-        font-size: 1rem;
+        font-size: 0.95rem;
     }
 
     .required-field::after {
         content: " *";
-        color: #e74c3c;
+        color: var(--danger-color);
         font-weight: bold;
+        margin-left: 3px;
     }
 
     .form-control-modern {
         width: 100%;
-        padding: 12px 16px;
-        border: 2px solid #e9ecef;
+        padding: 12px 15px;
+        border: 1px solid var(--border-light);
         border-radius: 8px;
         font-size: 1rem;
+        color: var(--text-dark);
+        background-color: #fcfdff;
         transition: all 0.3s ease;
-        background: #f8f9fa;
-        color: #2c3e50;
     }
 
-    .form-control-modern:focus {
-        outline: none;
-        border-color: #3498db;
-        background: white;
-        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-    }
+        .form-control-modern:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
+            background-color: white;
+        }
 
-    .form-control-modern.is-invalid {
-        border-color: #e74c3c;
-        background: #fdf2f2;
-    }
+        .form-control-modern::placeholder {
+            color: #b0bec5;
+        }
 
-    .form-control-modern.is-invalid:focus {
-        border-color: #e74c3c;
-        box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.1);
-    }
+        .form-control-modern.is-invalid {
+            border-color: var(--danger-color);
+            background-color: #fffafa;
+        }
+
+            .form-control-modern.is-invalid:focus {
+                box-shadow: 0 0 0 3px rgba(231, 76, 60, 0.15);
+            }
 
     .select-modern {
         appearance: none;
@@ -110,235 +149,316 @@
         background-position: right 12px center;
         background-repeat: no-repeat;
         background-size: 16px;
-        padding-right: 48px;
+        padding-right: 40px; /* Espacio para el icono de flecha */
     }
 
     .textarea-modern {
         resize: vertical;
-        min-height: 100px;
+        min-height: 90px;
     }
 
     .validation-error {
-        color: #e74c3c;
-        font-size: 0.9rem;
-        margin-top: 0.5rem;
+        color: var(--danger-color);
+        font-size: 0.85rem;
+        margin-top: 0.6rem;
         display: block;
         font-weight: 500;
-    }
-
-    .btn-modern {
-        border-radius: 8px;
-        font-weight: 500;
-        padding: 12px 24px;
-        transition: all 0.3s ease;
-        border: none;
-        margin-right: 0.5rem;
-        margin-bottom: 0.5rem;
-        font-size: 1rem;
-        display: inline-block;
-        cursor: pointer;
-        text-decoration: none;
-    }
-
-    .btn-success-modern {
-        background: linear-gradient(135deg, #27ae60, #2ecc71);
-        color: white;
-        box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
-    }
-
-    .btn-success-modern:hover:not(:disabled) {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(39, 174, 96, 0.4);
-        color: white;
-    }
-
-    .btn-secondary-modern {
-        background: linear-gradient(135deg, #95a5a6, #7f8c8d);
-        color: white;
-        box-shadow: 0 2px 8px rgba(149, 165, 166, 0.3);
-    }
-
-    .btn-secondary-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(149, 165, 166, 0.4);
-        color: white;
-    }
-
-    .btn-primary-modern {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
-        box-shadow: 0 2px 8px rgba(52, 152, 219, 0.3);
-    }
-
-    .btn-primary-modern:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.4);
-        color: white;
-    }
-
-    .btn-modern:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    .actions-container {
-        background: #f8f9fa;
-        padding: 2rem;
-        margin: 0;
-        border-top: 1px solid #e9ecef;
-        text-align: center;
     }
 
     .form-row {
         display: flex;
         gap: 1.5rem;
-        margin-bottom: 1.5rem;
     }
 
     .form-col {
         flex: 1;
+        min-width: 0; /* Permite que el contenido se encoja si es necesario */
     }
 
-    .info-card {
-        background: linear-gradient(135deg, #3498db, #2980b9);
-        color: white;
-        padding: 1.2rem;
+    .actions-container {
+        padding: var(--spacing-unit) calc(var(--spacing-unit) * 1.5);
+        background: var(--text-light);
+        border-top: 1px solid var(--border-light);
+        display: flex;
+        justify-content: flex-end; /* Alinear botones a la derecha */
+        gap: 0.75rem;
+        border-bottom-left-radius: var(--border-radius-base);
+        border-bottom-right-radius: var(--border-radius-base);
+    }
+
+    .btn-modern {
         border-radius: 8px;
-        margin-bottom: 1.5rem;
-    }
-
-    .info-card h4 {
-        margin: 0 0 0.5rem 0;
-        font-size: 1.1rem;
         font-weight: 600;
-    }
-
-    .info-card p {
-        margin: 0;
+        padding: 12px 25px;
+        transition: all 0.3s ease;
+        border: none;
         font-size: 0.95rem;
-        opacity: 0.9;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
     }
 
-    .counter-input {
-        text-align: right;
+    .btn-success-modern {
+        background: linear-gradient(135deg, var(--success-color), #27ae60);
+        color: white;
+        box-shadow: 0 4px 10px rgba(46, 204, 113, 0.25);
     }
 
+        .btn-success-modern:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(46, 204, 113, 0.35);
+        }
 
-        .header-card, .form-container, .actions-container {
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, var(--secondary-color), #7f8c8d);
+        color: white;
+        box-shadow: 0 4px 10px rgba(149, 165, 166, 0.25);
+    }
+
+        .btn-secondary-modern:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(149, 165, 166, 0.35);
+        }
+
+    .btn-primary-modern {
+        background: linear-gradient(135deg, var(--primary-color), #2980b9);
+        color: white;
+        box-shadow: 0 4px 10px rgba(52, 152, 219, 0.25);
+    }
+
+        .btn-primary-modern:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(52, 152, 219, 0.35);
+        }
+
+    .btn-modern:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+        transform: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Estilos para el overlay de carga */
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        backdrop-filter: blur(3px);
+        -webkit-backdrop-filter: blur(3px);
+    }
+
+        #loadingOverlay div {
+            background: white;
+            padding: 3rem;
+            border-radius: var(--border-radius-base);
+            text-align: center;
+            box-shadow: var(--box-shadow);
+        }
+
+    .spinner-border {
+        display: inline-block;
+        width: 4rem;
+        height: 4rem;
+        vertical-align: -0.125em;
+        border: 0.3em solid currentColor;
+        border-right-color: transparent;
+        border-radius: 50%;
+        -webkit-animation: .75s linear infinite spinner-border;
+        animation: .75s linear infinite spinner-border;
+        color: var(--success-color); /* Color del spinner */
+    }
+
+    @@-webkit-keyframes spinner-border {
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    @@keyframes spinner-border {
+        to {
+            -webkit-transform: rotate(360deg);
+            transform: rotate(360deg);
+        }
+    }
+
+    .loading-text {
+        margin-top: 1.5rem;
+        color: var(--text-dark);
+        font-size: 1.25rem;
+        font-weight: 500;
+    }
+
+    /* Estilos para notificaciones toast */
+    .toast-notification {
+        position: fixed;
+        top: 25px;
+        right: 25px;
+        background: var(--success-color);
+        color: white;
+        padding: 1.2rem 2rem;
+        border-radius: 8px;
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+        z-index: 10000;
+        font-weight: 500;
+        font-size: 1.05rem;
+        max-width: 350px;
+        animation: slideIn 0.5s forwards, fadeOut 0.5s 3.5s forwards;
+    }
+
+        .toast-notification.error {
+            background: var(--danger-color);
+        }
+
+    @@keyframes slideIn {
+        from {
+            transform: translateX(100%);
+            opacity: 0;
+        }
+
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+
+    @@keyframes fadeOut {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0;
+            display: none;
+        }
+    }
+
+    /* Responsive adjustments */
+    @@media (max-width: 768px) {
+        .page-container {
+            margin: 1rem auto;
+            border-radius: 0;
+            box-shadow: none;
+        }
+
+        .header-section, .form-main-content, .actions-container {
             padding: 1rem;
         }
 
         .page-title {
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+        }
+
+        .form-row {
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .actions-container {
+            flex-direction: column;
+            align-items: stretch;
         }
 
         .btn-modern {
             width: 100%;
-            margin-right: 0;
         }
-
-    .text-primary {
-        color: blue;
     }
-
-    .text-success {
-        color: green;
-    }
-
-    .text-danger {
-        color: red;
-    }
-    }
-
 </style>
 
 <div class="page-container">
-    <!-- Header -->
-    <div class="header-card">
-        <h2 class="page-title">✨ Agregar Nuevo Tipo de Documento</h2>
-
-        <div class="info-card">
-            <h4>💡 Información Importante</h4>
-            <p>Complete todos los campos marcados con (*) para crear un nuevo tipo de documento en el sistema.</p>
-        </div>
+    <div class="header-section">
+        <h2 class="page-title">
+            <span class="material-icons">description</span> Agregar Nuevo Tipo de Documento
+        </h2>
+        <p class="page-subtitle">Complete los detalles a continuación para registrar un nuevo tipo de documento en el sistema.</p>
     </div>
 
-    <!-- Formulario -->
     @using (Html.BeginForm("Add", "Tipdoc", FormMethod.Post, new { @class = "needs-validation", @novalidate = "novalidate" }))
     {
-        <div class="form-container">
-            <!-- Información Básica -->
+        <div class="form-main-content">
             <div class="form-section">
-                <h3 class="section-title">
-                    <span class="section-icon">📋</span>
-                    Información Básica
-                </h3>
+                <div class="section-header">
+                    <span class="section-icon material-icons">info</span>
+                    <h3 class="section-title">Información Básica</h3>
+                </div>
 
                 <div class="form-row">
-                    <!-- Tipo de Documento -->
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern required-field">Tipo de Documento</label>
+                            <label class="form-label-modern required-field" for="TipoDoc">Código de Documento</label>
                             @Html.DropDownListFor(m => m.TipoDoc, new List<SelectListItem>
                             {
-                                new SelectListItem { Text = "Factura", Value = "FAC" },
-                                new SelectListItem { Text = "Recibo", Value = "REC" },
-                                new SelectListItem { Text = "Nota de Crédito", Value = "NC" }
-                            }, new
+                                new SelectListItem { Text = "Factura (FAC)", Value = "FAC" },
+                                new SelectListItem { Text = "Recibo (REC)", Value = "REC" },
+                                new SelectListItem { Text = "Nota de Crédito (NC)", Value = "NC" },
+                                new SelectListItem { Text = "Orden de Compra (OC)", Value = "OC" }
+                            }, "Seleccione un tipo", new
                             {
-                                @class = "form-control-modern select-modern"
+                                @class = "form-control-modern select-modern",
+                                @id = "TipoDoc",
+                                @required = "required"
                             })
                             @Html.ValidationMessageFor(m => m.TipoDoc, "", new { @class = "validation-error" })
                         </div>
                     </div>
 
-                       <!-- Origen -->
-    <div class="form-col">
-        <div class="form-group-modern">
-            <label class="form-label-modern required-field">Origen</label>
-            @Html.DropDownListFor(m => m.Origen, new List<SelectListItem>
-            {
-                new SelectListItem { Text = "Sistema", Value = "S" },
-                new SelectListItem { Text = "Usuario", Value = "U" },
-                new SelectListItem { Text = "Externo", Value = "E" }
-            }, new
-            {
-                @class = "form-control-modern select-modern",
-                id = "OrigenDropdown"
-            })
-            @Html.ValidationMessageFor(m => m.Origen, "", new { @class = "validation-error" })
-        </div>
-    </div>
-</div>
+                    <div class="form-col">
+                        <div class="form-group-modern">
+                            <label class="form-label-modern required-field" for="Origen">Origen del Documento</label>
+                            @Html.DropDownListFor(m => m.Origen, new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Sistema (Generado Automáticamente)", Value = "S" },
+                                new SelectListItem { Text = "Usuario (Ingresado Manualmente)", Value = "U" },
+                                new SelectListItem { Text = "Externo (Importado)", Value = "E" }
+                            }, "Seleccione el origen", new
+                            {
+                                @class = "form-control-modern select-modern",
+                                @id = "Origen",
+                                @required = "required"
+                            })
+                            @Html.ValidationMessageFor(m => m.Origen, "", new { @class = "validation-error" })
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group-modern">
-                    <label class="form-label-modern required-field">Descripción</label>
+                    <label class="form-label-modern required-field" for="Descripcion">Descripción Detallada</label>
                     @Html.TextAreaFor(m => m.Descripcion, new
                     {
                         @class = "form-control-modern textarea-modern",
-                        @placeholder = "Descripción detallada del tipo de documento...",
-                        @maxlength = "50"
+                        @id = "Descripcion",
+                        @placeholder = "Escriba una descripción clara y concisa para el tipo de documento (máx. 50 caracteres)...",
+                        @maxlength = "50",
+                        @required = "required",
+                        @rows = "3"
                     })
                     @Html.ValidationMessageFor(m => m.Descripcion, "", new { @class = "validation-error" })
                 </div>
             </div>
 
-            <!-- Configuración Contable -->
             <div class="form-section">
-                <h3 class="section-title">
-                    <span class="section-icon">💰</span>
-                    Configuración Contable
-                </h3>
+                <div class="section-header">
+                    <span class="section-icon material-icons">account_balance</span>
+                    <h3 class="section-title">Configuración Contable y Estatus</h3>
+                </div>
 
                 <div class="form-row">
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Cuenta Débito</label>
+                            <label class="form-label-modern" for="CuentaDebito">Cuenta Débito</label>
                             @Html.TextBoxFor(m => m.CuentaDebito, new
                             {
                                 @class = "form-control-modern",
-                                @placeholder = "Código de cuenta débito",
+                                @id = "CuentaDebito",
+                                @placeholder = "Ej: 11010100 (opcional)",
                                 @maxlength = "20"
                             })
                             @Html.ValidationMessageFor(m => m.CuentaDebito, "", new { @class = "validation-error" })
@@ -347,11 +467,12 @@
 
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Cuenta Crédito</label>
+                            <label class="form-label-modern" for="CuentaCredito">Cuenta Crédito</label>
                             @Html.TextBoxFor(m => m.CuentaCredito, new
                             {
                                 @class = "form-control-modern",
-                                @placeholder = "Código de cuenta crédito",
+                                @id = "CuentaCredito",
+                                @placeholder = "Ej: 21010100 (opcional)",
                                 @maxlength = "20"
                             })
                             @Html.ValidationMessageFor(m => m.CuentaCredito, "", new { @class = "validation-error" })
@@ -359,232 +480,173 @@
                     </div>
                 </div>
 
-                <div class="form-row">
                     <div class="form-col">
                         <div class="form-group-modern">
-                            <label class="form-label-modern">Contador</label>
-                            @Html.TextBoxFor(m => m.Contador, new
-                            {
-                                @class = "form-control-modern",
-                                @placeholder = "Ej: 12345",
-                                @maxlength = "10"
-                            })
-                            @Html.ValidationMessageFor(m => m.Contador, "", new { @class = "validation-error" })
-                        </div>
-                    </div>
-
-                    <div class="form-col">
-                        <div class="form-group-modern">
-                            <label class="form-label-modern">Estatus</label>
+                            <label class="form-label-modern required-field" for="Estatus">Estatus</label>
                             @Html.DropDownListFor(m => m.Estatus, new List<SelectListItem>
                             {
                                 new SelectListItem { Text = "Activo", Value = "1" },
                                 new SelectListItem { Text = "Inactivo", Value = "2" },
-                                new SelectListItem { Text = "Borrado", Value = "3" }
-                            }, new
+                                new SelectListItem { Text = "Borrado (No Usar)", Value = "3" }
+                            }, "Seleccione el estatus", new
                             {
-                                @class = "form-control-modern select-modern"
+                                @class = "form-control-modern select-modern",
+                                @id = "Estatus",
+                                @required = "required"
                             })
                             @Html.ValidationMessageFor(m => m.Estatus, "", new { @class = "validation-error" })
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <!-- Botones de Acción -->
         <div class="actions-container">
-            <button type="submit" class="btn btn-modern btn-success-modern" id="submitBtn">
-                💾 Guardar Tipo de Documento
+            <button type="submit" class="btn-modern btn-success-modern" id="submitBtn">
+                <span class="material-icons">save</span> Guardar Tipo de Documento
             </button>
-            <input type="button"
-                   value="📋 Ver Lista"
-                   class="btn btn-modern btn-primary-modern"
-                   onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
-            <input type="button"
-                   value="↩️ Volver Atrás"
-                   class="btn btn-modern btn-secondary-modern"
-                   onclick="window.history.back()" />
+            <a href="@Url.Action("TipdocQuery", "Tipdoc")" class="btn-modern btn-primary-modern">
+                <span class="material-icons">list_alt</span> Ver Lista
+            </a>
+            <button type="button" class="btn-modern btn-secondary-modern" onclick="window.history.back()">
+                <span class="material-icons">arrow_back</span> Volver Atrás
+            </button>
         </div>
     }
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Validación en tiempo real
-        const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
-
-        inputs.forEach(input => {
-            input.addEventListener('blur', validateField);
-            input.addEventListener('input', clearValidation);
-        });
-
-        // Validación del formulario al enviar
-        form.addEventListener('submit', function(e) {
-            if (!validateForm()) {
-                e.preventDefault();
-                showNotification('Por favor, complete todos los campos requeridos correctamente.', 'error');
-                return false;
+    document.addEventListener('DOMContentLoaded', function () {
+        // Función para agregar iconos de Material Design si no están ya enlazados en el _Layout
+        function loadMaterialIcons() {
+            if (!document.querySelector('link[href*="material-icons"]')) {
+                const link = document.createElement('link');
+                link.rel = 'stylesheet';
+                link.href = 'https://fonts.googleapis.com/icon?family=Material+Icons';
+                document.head.appendChild(link);
             }
+        }
+        loadMaterialIcons();
 
-            // Mostrar indicador de carga
-            showLoading(true);
-            document.getElementById('submitBtn').disabled = true;
+        const form = document.querySelector('form');
+        const submitBtn = document.getElementById('submitBtn');
+
+        // Seleccionar todos los campos que tienen la clase 'required-field'
+        const requiredFields = form.querySelectorAll('.required-field + .form-control-modern');
+
+        // Agrega listeners a los campos requeridos para validación en tiempo real
+        requiredFields.forEach(field => {
+            field.addEventListener('input', function () {
+                validateField(field);
+                checkFormValidity();
+            });
+            field.addEventListener('blur', function () {
+                validateField(field);
+                checkFormValidity();
+            });
         });
-    });
 
-    function validateField(e) {
-        const field = e.target;
-        const value = field.value.trim();
+        // Habilita/Deshabilita el botón de submit inicialmente y en cada cambio
+        checkFormValidity();
 
-        if (field.hasAttribute('required') && !value) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'Este campo es requerido.');
-            return false;
-        }
+        // Manejo del envío del formulario
+        form.addEventListener('submit', function (e) {
+            // Re-validar todos los campos al enviar para asegurar
+            let formIsValid = true;
+            requiredFields.forEach(field => {
+                if (!validateField(field)) {
+                    formIsValid = false;
+                }
+            });
 
-        // Validaciones específicas
-        if (field.name === 'TipoDoc' && value.length < 2) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'El tipo de documento debe tener al menos 2 caracteres.');
-            return false;
-        }
+            if (!formIsValid) {
+                e.preventDefault(); // Detiene el envío si hay errores
+                showNotification('Por favor, complete todos los campos obligatorios.', 'error');
+                submitBtn.disabled = false; // Asegura que el botón se habilite si falla la validación
+            } else {
+                showLoading(true); // Muestra el overlay de carga
+                submitBtn.disabled = true; // Deshabilita el botón al enviar
+            }
+        });
 
-        if (field.name === 'Descripcion' && value.length < 10) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'La descripción debe tener al menos 10 caracteres.');
-            return false;
-        }
+        function validateField(field) {
+            const value = field.value.trim();
+            const validationMessageElement = field.parentNode.querySelector('.validation-error');
+            let isValid = true;
+            let errorMessage = '';
 
-        if (field.type === 'number' && value && parseInt(value) < 0) {
-            field.classList.add('is-invalid');
-            showFieldError(field, 'El valor debe ser mayor o igual a 0.');
-            return false;
-        }
-
-        field.classList.remove('is-invalid');
-        hideFieldError(field);
-        return true;
-    }
-
-    function clearValidation(e) {
-        const field = e.target;
-        if (field.classList.contains('is-invalid')) {
+            // Limpiar errores previos
             field.classList.remove('is-invalid');
-            hideFieldError(field);
-        }
-    }
-
-    function validateForm() {
-        const form = document.querySelector('form');
-        const inputs = form.querySelectorAll('input[required], select[required], textarea[required]');
-        let isValid = true;
-
-        inputs.forEach(input => {
-            if (!validateField({target: input})) {
-                isValid = false;
+            if (validationMessageElement) {
+                validationMessageElement.textContent = '';
             }
-        });
 
-        return isValid;
-    }
+            if (field.hasAttribute('required') && !value) {
+                isValid = false;
+                errorMessage = 'Este campo es obligatorio.';
+            } else if (field.id === 'TipoDoc' && value.length < 3) {
+                isValid = false;
+                errorMessage = 'El código de documento debe tener 3 caracteres.';
+            } else if (field.id === 'Descripcion' && (value.length < 5 || value.length > 50)) {
+                isValid = false;
+                errorMessage = 'La descripción debe tener entre 5 y 50 caracteres.';
+            }
 
-    function showFieldError(field, message) {
-        hideFieldError(field);
-        const errorDiv = document.createElement('span');
-        errorDiv.className = 'validation-error field-error';
-        errorDiv.textContent = message;
-        field.parentNode.appendChild(errorDiv);
-    }
-
-    function hideFieldError(field) {
-        const existingError = field.parentNode.querySelector('.field-error');
-        if (existingError) {
-            existingError.remove();
+            if (!isValid) {
+                field.classList.add('is-invalid');
+                if (validationMessageElement) {
+                    validationMessageElement.textContent = errorMessage;
+                } else { // Crear el elemento de error si no existe
+                    const newErrorDiv = document.createElement('span');
+                    newErrorDiv.className = 'validation-error';
+                    newErrorDiv.textContent = errorMessage;
+                    field.parentNode.appendChild(newErrorDiv);
+                }
+            }
+            return isValid;
         }
-    }
 
-    function showLoading(show) {
-        if (show) {
-            if (!document.getElementById('loadingOverlay')) {
-                const overlay = document.createElement('div');
+        // Función para verificar la validez del formulario y habilitar/deshabilitar el botón
+        function checkFormValidity() {
+            let allFieldsValid = true;
+            requiredFields.forEach(field => {
+                // Solo verifica si el campo está vacío, no si es inválido por otras reglas
+                if (field.hasAttribute('required') && field.value.trim() === '') {
+                    allFieldsValid = false;
+                }
+            });
+            submitBtn.disabled = !allFieldsValid; // Deshabilita si no todos los campos requeridos están llenos
+        }
+
+
+        // Función para mostrar/ocultar el overlay de carga
+        function showLoading(show) {
+            let overlay = document.getElementById('loadingOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
                 overlay.id = 'loadingOverlay';
-                overlay.style.cssText = `
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.5);
-                    display: flex;
-                    justify-content: center;
-                    align-items: center;
-                    z-index: 9999;
-                `;
                 overlay.innerHTML = `
-                    <div style="background: white; padding: 2.5rem; border-radius: 8px; text-align: center;">
-                        <div class="spinner-border text-success" role="status" style="width: 3rem; height: 3rem;">
-                            <span class="sr-only">Guardando...</span>
+                    <div>
+                        <div class="spinner-border" role="status">
+                            <span class="sr-only">Cargando...</span>
                         </div>
-                        <p style="margin-top: 1.5rem; color: #2c3e50; font-size: 1.2rem;">Guardando tipo de documento...</p>
+                        <p class="loading-text">Guardando tipo de documento...</p>
                     </div>
                 `;
                 document.body.appendChild(overlay);
             }
-            document.getElementById('loadingOverlay').style.display = 'flex';
-        } else {
-            const overlay = document.getElementById('loadingOverlay');
-            if (overlay) {
-                overlay.style.display = 'none';
-            }
+            overlay.style.display = show ? 'flex' : 'none';
         }
-    }
 
-    function showNotification(message, type) {
-        const bgColor = type === 'success' ? '#27ae60' : '#e74c3c';
-        const notification = document.createElement('div');
-        notification.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: ${bgColor};
-            color: white;
-            padding: 1.2rem 2rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-            z-index: 10000;
-            font-weight: 500;
-            font-size: 1.1rem;
-            max-width: 400px;
-        `;
-        notification.textContent = message;
+        // Función para mostrar notificaciones tipo "toast"
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.className = `toast-notification ${type}`;
+            notification.textContent = message;
+            document.body.appendChild(notification);
 
-        document.body.appendChild(notification);
-
-        setTimeout(function() {
-            if (notification.parentNode) {
+            setTimeout(() => {
                 notification.remove();
-            }
-        }, 4000);
-    }
-
-    // Auto-formatear campos
-    document.addEventListener('DOMContentLoaded', function() {
-        // Convertir tipo de documento a mayúsculas
-        const tipoDocInput = document.querySelector('input[name="TipoDoc"]');
-        if (tipoDocInput) {
-            tipoDocInput.addEventListener('input', function() {
-                this.value = this.value.toUpperCase();
-            });
-        }
-
-        // Limitar contador a números enteros positivos
-        const contadorInput = document.querySelector('input[name="Contador"]');
-        if (contadorInput) {
-            contadorInput.addEventListener('input', function() {
-                if (this.value < 0) this.value = 0;
-            });
+            }, 4000); // La notificación desaparecerá después de 4 segundos
         }
     });
 </script>

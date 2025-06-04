@@ -1,426 +1,508 @@
-﻿
-        }@model Proyect_P3.Models.ViewModels.DetailsTipdocQueryViewModels
-        @{
-            ViewBag.Title = "Detalles del Tipo de Documento";
-            Layout = "~/views/shared/_LayoutApp.cshtml";
-        }
+﻿@model Proyect_P3.Models.ViewModels.DetailsTipdocQueryViewModels
+@{
+    ViewBag.Title = "Detalles del Tipo de Documento";
+    Layout = "~/views/shared/_LayoutApp.cshtml";
+}
 
-        <style>
-    .details-page {
-        background-color: #f8f9fa;
-        min-height: 100vh;
-        padding: 2rem 0;
-    }
+<style>
+.details-page {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    padding: 2rem 0;
+}
 
-    .details-container {
-        max-width: 900px;
-        margin: 0 auto;
-        padding: 0 1rem;
-    }
+.details-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
 
-    .page-header {
-        background: white;
-        border-radius: 8px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        border-left: 4px solid #495057;
-        text-align: center;
-    }
+.page-header {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #495057;
+    text-align: center;
+}
 
-    .page-title {
-        color: #343a40;
-        font-size: 1.75rem;
-        font-weight: 600;
-        margin: 0 0 0.5rem 0;
-    }
+.page-title {
+    color: #343a40;
+    font-size: 1.75rem;
+    font-weight: 600;
+    margin: 0 0 0.5rem 0;
+}
 
-    .page-subtitle {
-        color: #6c757d;
-        font-size: 1rem;
-        margin: 0 0 1rem 0;
-    }
+.page-subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin: 0 0 1rem 0;
+}
 
-    .document-id {
-        display: inline-block;
-        background: #f8f9fa;
-        color: #495057;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        border: 1px solid #dee2e6;
-    }
+.document-id {
+    display: inline-block;
+    background: #f8f9fa;
+    color: #495057;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    border: 1px solid #dee2e6;
+}
 
-    .details-card {
-        background: white;
-        border-radius: 8px;
-        padding: 2rem;
-        margin-bottom: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    }
+.details-card {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
 
-    .section-title {
-        color: #495057;
-        font-size: 1.2rem;
-        font-weight: 600;
-        margin: 0 0 1.5rem 0;
-        padding-bottom: 0.75rem;
-        border-bottom: 2px solid #f8f9fa;
-    }
+.section-title {
+    color: #495057;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f8f9fa;
+}
 
-    .detail-row {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-        margin-bottom: 2rem;
-        align-items: flex-start;
-    }
+.detail-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+    align-items: flex-start;
+}
 
-    .detail-row:last-child {
-        margin-bottom: 0;
-    }
+.detail-row:last-child {
+    margin-bottom: 0;
+}
 
-    .detail-item {
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-label {
+    color: #6c757d;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.detail-value {
+    color: #343a40;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.document-type {
+    background: #495057;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    display: inline-block;
+}
+
+.origin-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.origin-sistema {
+    background: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
+
+.origin-usuario {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.origin-externo {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeaa7;
+}
+
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+.status-active {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-inactive {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+.counter-display {
+    background: #f8f9fa;
+    border: 2px solid #e9ecef;
+    border-radius: 4px;
+    padding: 1rem;
+    text-align: center;
+}
+
+.counter-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #495057;
+    margin: 0;
+    line-height: 1;
+}
+
+.counter-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.25rem;
+}
+
+.account-info {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1rem;
+}
+
+.account-label {
+    color: #6c757d;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.account-number {
+    color: #495057;
+    font-size: 1.1rem;
+    font-weight: 600;
+    font-family: 'Courier New', monospace;
+}
+
+.no-account {
+    color: #6c757d;
+    font-style: italic;
+}
+
+.description-section {
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin-top: 1rem;
+}
+
+.description-text {
+    color: #495057;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0;
+}
+
+/* Estilos mejorados para la sección de acciones */
+.actions-section {
+    background: white;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.actions-title {
+    color: #495057;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0 0 1.5rem 0;
+    text-align: center;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #f8f9fa;
+}
+
+    .buttons-container {
         display: flex;
-        flex-direction: column;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap; /* Permite que los botones se ajusten si el espacio es limitado */
     }
+.btn-action {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    border: 2px solid transparent;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-height: 50px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 
-    .detail-label {
-        color: #6c757d;
-        font-size: 0.9rem;
-        font-weight: 500;
-        margin-bottom: 0.5rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
+.btn-action:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
 
-    .detail-value {
-        color: #343a40;
-        font-size: 1rem;
-        font-weight: 500;
-    }
+.btn-action:active {
+    transform: translateY(0);
+}
 
-    .document-type {
-        background: #495057;
-        color: white;
-        padding: 0.75rem 1.5rem;
-        border-radius: 4px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        display: inline-block;
-    }
+.btn-pdf {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border-color: #dc3545;
+}
 
-    .origin-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        display: inline-block;
-    }
+.btn-pdf:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    border-color: #bd2130;
+    color: white;
+}
 
-    .origin-sistema {
-        background: #d1ecf1;
-        color: #0c5460;
-        border: 1px solid #bee5eb;
-    }
+.btn-pdf:before {
+    content: "📋";
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
 
-    .origin-usuario {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
+.btn-edit {
+    background: linear-gradient(135deg, #ffc107, #e0a800);
+    color: #212529;
+    border-color: #ffc107;
+}
 
-    .origin-externo {
-        background: #fff3cd;
-        color: #856404;
-        border: 1px solid #ffeaa7;
-    }
+.btn-edit:hover {
+    background: linear-gradient(135deg, #e0a800, #d39e00);
+    border-color: #d39e00;
+    color: #212529;
+}
 
-    .status-badge {
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        display: inline-block;
-    }
+.btn-edit:before {
+    content: "✏️";
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
 
-    .status-active {
-        background: #d4edda;
-        color: #155724;
-        border: 1px solid #c3e6cb;
-    }
+.btn-list {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    border-color: #6c757d;
+}
 
-    .status-inactive {
-        background: #f8d7da;
-        color: #721c24;
-        border: 1px solid #f5c6cb;
-    }
+.btn-list:hover {
+    background: linear-gradient(135deg, #5a6268, #545b62);
+    border-color: #545b62;
+    color: white;
+}
+
+.btn-list:before {
+    content: "📋";
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.btn-back {
+    background: linear-gradient(135deg, #6c757d, #5a6268);
+    color: white;
+    border-color: #6c757d;
+}
+
+.btn-back:hover {
+    background: linear-gradient(135deg, #5a6268, #495057);
+    border-color: #495057;
+    color: white;
+}
+
+.btn-back:before {
+    content: "⬅️";
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}
+
 
     .counter-display {
-        background: #f8f9fa;
-        border: 2px solid #e9ecef;
-        border-radius: 4px;
-        padding: 1rem;
-        text-align: center;
+        width: 100%;
     }
 
-    .counter-number {
-        font-size: 2rem;
-        font-weight: 700;
-        color: #495057;
-        margin: 0;
-        line-height: 1;
-    }
-
-    .counter-label {
-        font-size: 0.8rem;
-        color: #6c757d;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-top: 0.25rem;
-    }
-
-    .account-info {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        padding: 1rem;
-    }
-
-    .account-label {
-        color: #6c757d;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        margin-bottom: 0.5rem;
-    }
-
-    .account-number {
-        color: #495057;
-        font-size: 1.1rem;
-        font-weight: 600;
-        font-family: 'Courier New', monospace;
-    }
-
-    .no-account {
-        color: #6c757d;
-        font-style: italic;
-    }
-
-    .description-section {
-        background: #f8f9fa;
-        border: 1px solid #dee2e6;
-        border-radius: 4px;
-        padding: 1.5rem;
-        margin-top: 1rem;
-    }
-
-    .description-text {
-        color: #495057;
-        font-size: 1rem;
-        line-height: 1.6;
-        margin: 0;
-    }
-
-    .actions-section {
-        background: white;
-        border-radius: 8px;
-        padding: 2rem;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        text-align: center;
+    .buttons-container {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
     }
 
     .btn-action {
-        display: inline-block;
-        padding: 0.75rem 2rem;
-        margin: 0 0.5rem;
-        border: 1px solid transparent;
-        border-radius: 4px;
-        font-size: 0.9rem;
-        font-weight: 500;
-        text-decoration: none;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        cursor: pointer;
-        transition: all 0.2s ease;
+        padding: 1rem;
+        font-size: 0.85rem;
     }
+}
 
-    .btn-edit {
-        background: #ffc107;
-        color: #212529;
-        border-color: #ffc107;
+    50% {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
     }
-
-    .btn-edit:hover {
-        background: #e0a800;
-        border-color: #d39e00;
-        color: #212529;
+    100% {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
+}
 
-    .btn-list {
-        background: #6c757d;
-        color: white;
-        border-color: #6c757d;
-    }
+.btn-pdf:hover {
+    animation: pulse 2s infinite;
+}
+</style>
 
-    .btn-list:hover {
-        background: #5a6268;
-        border-color: #545b62;
-        color: white;
-    }
+<div class="details-page">
+    <div class="details-container">
 
-    .btn-back {
-        background: transparent;
-        color: #6c757d;
-        border-color: #6c757d;
-    }
+        <!-- Encabezado -->
+        <div class="page-header">
+            <h1 class="page-title">Detalles del Tipo de Documento</h1>
+            <p class="page-subtitle">Información completa del registro seleccionado</p>
+            <div class="document-id">ID: @Model.Id</div>
+        </div>
 
-    .btn-back:hover {
-        background: #6c757d;
-        color: white;
-    }
+        <!-- Información Principal -->
+        <div class="details-card">
+            <h2 class="section-title">Información Principal</h2>
 
-        .page-header,
-        .details-card,
-        .actions-section {
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .detail-row {
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
-
-        .counter-display {
-            width: 100%;
-        }
-    }
-        </style>
-
-        <div class="details-page">
-            <div class="details-container">
-
-                <!-- Encabezado -->
-                <div class="page-header">
-                    <h1 class="page-title">Detalles del Tipo de Documento</h1>
-                    <p class="page-subtitle">Información completa del registro seleccionado</p>
-                    <div class="document-id">ID: @Model.Id</div>
-                </div>
-
-                <!-- Información Principal -->
-                <div class="details-card">
-                    <h2 class="section-title">Información Principal</h2>
-
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <div class="detail-label">Tipo de Documento</div>
-                            <div class="detail-value">
-                                <div class="document-type">@Model.TipoDoc</div>
-                            </div>
-                        </div>
-
-                        <div class="detail-item">
-                            <div class="detail-label">Origen</div>
-                            <div class="detail-value">
-                                <span class="origin-badge @(Model.Origen == "Sistema" ? "origin-sistema" :
-                                                  Model.Origen == "Usuario" ? "origin-usuario" : "origin-externo")">
-                                    @Model.Origen
-                                </span>
-                            </div>
-                        </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <div class="detail-label">Tipo de Documento</div>
+                    <div class="detail-value">
+                        <div class="document-type">@Model.TipoDoc</div>
                     </div>
-
-                    @if (!string.IsNullOrEmpty(Model.Descripcion))
-                    {
-                        <div class="detail-row">
-                            <div class="detail-item">
-                                <div class="detail-label">Descripción</div>
-                                <div class="detail-value">
-                                    <div class="description-section">
-                                        <p class="description-text">@Model.Descripcion</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    }
                 </div>
 
-                <!-- Configuración del Sistema -->
-                <div class="details-card">
-                    <h2 class="section-title">Configuración del Sistema</h2>
+                <div class="detail-item">
+                    <div class="detail-label">Origen</div>
+                    <div class="detail-value">
+                        <span class="origin-badge @(Model.Origen == "Sistema" ? "origin-sistema" :
+                                          Model.Origen == "Usuario" ? "origin-usuario" : "origin-externo")">
+                            @Model.Origen
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <div class="detail-label">Estado</div>
-                            <div class="detail-value">
-                                <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
-                                    @(Model.Estatus == 1 ? "Activo" : "Inactivo")
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="detail-item">
-                            <div class="detail-label">Contador</div>
-                            <div class="detail-value">
-                                <div class="counter-display">
-                                    <div class="counter-number">@Model.Contador</div>
-                                    <div class="counter-label">Actual</div>
-                                </div>
+            @if (!string.IsNullOrEmpty(Model.Descripcion))
+            {
+                <div class="detail-row">
+                    <div class="detail-item">
+                        <div class="detail-label">Descripción</div>
+                        <div class="detail-value">
+                            <div class="description-section">
+                                <p class="description-text">@Model.Descripcion</p>
                             </div>
                         </div>
                     </div>
                 </div>
+            }
+        </div>
 
-                <!-- Información Contable -->
-                <div class="details-card">
-                    <h2 class="section-title">Configuración Contable</h2>
+        <!-- Configuración del Sistema -->
+        <div class="details-card">
+            <h2 class="section-title">Configuración del Sistema</h2>
 
-                    <div class="detail-row">
-                        <div class="detail-item">
-                            <div class="detail-label">Cuenta Débito</div>
-                            <div class="detail-value">
-                                <div class="account-info">
-                                    <div class="account-label">Débito</div>
-                                    <div class="account-number @(string.IsNullOrEmpty(Model.CuentaDebito) ? "no-account" : "")">
-                                        @(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="detail-item">
-                            <div class="detail-label">Cuenta Crédito</div>
-                            <div class="detail-value">
-                                <div class="account-info">
-                                    <div class="account-label">Crédito</div>
-                                    <div class="account-number @(string.IsNullOrEmpty(Model.CuentaCredito) ? "no-account" : "")">
-                                        @(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="detail-row">
+                <div class="detail-item">
+                    <div class="detail-label">Estado</div>
+                    <div class="detail-value">
+                        <span class="status-badge @(Model.Estatus == 1 ? "status-active" : "status-inactive")">
+                            @(Model.Estatus == 1 ? "Activo" : "Inactivo")
+                        </span>
                     </div>
                 </div>
 
-                <!-- Botones de Acción -->
-                <div class="actions-section">
-                    <input type="button"
-                           value="Editar"
-                           class="btn-action btn-edit"
-                           onclick="document.location.href='@Url.Content("~/Tipdoc/Edit/" + Model.Id)'" />
-                    <input type="button"
-                           value="Ver Listado"
-                           class="btn-action btn-list"
-                           onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
-                    <input type="button"
-                           value="Volver"
-                           class="btn-action btn-back"
-                           onclick="window.history.back()" />
+                <div class="detail-item">
+                    <div class="detail-label">Contador</div>
+                    <div class="detail-value">
+                        <div class="counter-display">
+                            <div class="counter-number">@Model.Contador</div>
+                            <div class="counter-label">Actual</div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </div>
+
+        <!-- Información Contable -->
+        <div class="details-card">
+            <h2 class="section-title">Configuración Contable</h2>
+
+            <div class="detail-row">
+                <div class="detail-item">
+                    <div class="detail-label">Cuenta Débito</div>
+                    <div class="detail-value">
+                        <div class="account-info">
+                            <div class="account-label">Débito</div>
+                            <div class="account-number @(string.IsNullOrEmpty(Model.CuentaDebito) ? "no-account" : "")">
+                                @(!string.IsNullOrEmpty(Model.CuentaDebito) ? Model.CuentaDebito : "No configurada")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-item">
+                    <div class="detail-label">Cuenta Crédito</div>
+                    <div class="detail-value">
+                        <div class="account-info">
+                            <div class="account-label">Crédito</div>
+                            <div class="account-number @(string.IsNullOrEmpty(Model.CuentaCredito) ? "no-account" : "")">
+                                @(!string.IsNullOrEmpty(Model.CuentaCredito) ? Model.CuentaCredito : "No configurada")
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción Mejorados -->
+        <div class="actions-section">
+            <h3 class="actions-title">Acciones Disponibles</h3>
+            <div class="buttons-container">
+                <input type="button"
+                       value="Generar PDF"
+                       class="btn-action btn-pdf"
+                       onclick="window.open('@Url.Content("~/Tipdoc/GeneratePdf/" + Model.Id)', '_blank')" />
+                <input type="button"
+                       value="Editar"
+                       class="btn-action btn-edit"
+                       onclick="document.location.href='@Url.Content("~/Tipdoc/Edit/" + Model.Id)'" />
+                <input type="button"
+                       value="Ver Listado"
+                       class="btn-action btn-list"
+                       onclick="document.location.href='@Url.Content("~/Tipdoc/TipdocQuery")'" />
+                <input type="button"
+                       value="Volver"
+                       class="btn-action btn-back"
+                       onclick="window.history.back()" />
+            </div>
+        </div>
+
+    </div>
+</div>
