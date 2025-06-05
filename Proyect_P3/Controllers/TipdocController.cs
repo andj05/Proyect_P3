@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Proyect_P3.Controllers
@@ -29,7 +28,8 @@ namespace Proyect_P3.Controllers
                            Id = d.ID,
                            TipoDoc = d.TIPDOC1,
                            Descripcion = d.DESCRIPCION,
-                           Origen = d.ORIGEN
+                           Origen = d.ORIGEN,
+                           Contador = d.CONTADOR
                        }).ToList();
             }
 

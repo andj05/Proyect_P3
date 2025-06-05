@@ -16,7 +16,9 @@ namespace Proyect_P3.Models.ViewModels
         public string TipoDoc{ get; set; }
         public string Origen { get; set; }
         public string Descripcion { get; set; }
-       
+
+        public string Contador { get; set; }
+
     }
 
     public class AddTipdocViewModels

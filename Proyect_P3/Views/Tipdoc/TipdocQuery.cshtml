@@ -380,6 +380,7 @@
                         <th>Tipo de Documento</th>
                         <th>Descripción</th>
                         <th>Origen</th>
+                        <th>Contador</th> <!-- Add this header -->
                         <th>Acciones</th>
                     </tr>
                 </thead>
@@ -392,13 +393,14 @@
                             <td class="doc-descripcion">@item.Descripcion</td>
                             <td>
                                 <span class="doc-origen @(item.Origen == "S" ? "origen-sistema" :
-                                         item.Origen == "U" ? "origen-usuario" :
-                                         item.Origen == "E" ? "origen-externo" : "origen-default")">
+                         item.Origen == "U" ? "origen-usuario" :
+                         item.Origen == "E" ? "origen-externo" : "origen-default")">
                                     @(item.Origen == "S" ? "Sistema" :
-                                    item.Origen == "U" ? "Usuario" :
-                                     item.Origen == "E" ? "Externo" : "Desconocido")
+                    item.Origen == "U" ? "Usuario" :
+                     item.Origen == "E" ? "Externo" : "Desconocido")
                                 </span>
                             </td>
+                            <td>@item.Contador</td> <!-- Render the Contador value -->
                             <td>
                                 <input type="button"
                                        class="btn btn-action btn-info-modern"
