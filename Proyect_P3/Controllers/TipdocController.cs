@@ -199,12 +199,8 @@ namespace Proyect_P3.Controllers
 
             return View(model); // Enviamos el modelo a la vista
         }
-
-        /// <summary>
-        /// Método HTTP GET que genera un PDF para un documento específico basado en su ID
-        /// </summary>
-        /// <param name="id">ID del documento a procesar</param>
-        /// <returns>Archivo PDF para descarga o error 404 si no se encuentra</returns>
+        // Método HTTP GET que genera un PDF para un documento específico basado en su ID
+        // Archivo PDF para descarga o error 404 si no se encuentra
         [HttpGet]
         public ActionResult GeneratePdf(int id)
         {
@@ -250,11 +246,9 @@ namespace Proyect_P3.Controllers
             return File(pdfBytes, "application/pdf", fileName);
         }
 
-        /// <summary>
-        /// Método privado que genera el contenido del PDF formateado
-        /// </summary>
-        /// <param name="model">Modelo con los datos a incluir en el PDF</param>
-        /// <returns>Array de bytes del PDF generado</returns>
+        // Método privado que genera el contenido del PDF formateado
+ 
+       // Array de bytes del PDF generado
         private byte[] GenerateFormattedPdf(DetailsTipdocQueryViewModels model)
         {
             // Usar MemoryStream para manejar el PDF en memoria
@@ -315,14 +309,9 @@ namespace Proyect_P3.Controllers
             }
         }
 
-        /// <summary>
-        /// Agrega el encabezado del documento con título, información básica y logo
-        /// </summary>
-        /// <param name="document">Documento PDF donde agregar el encabezado</param>
-        /// <param name="model">Modelo con los datos del documento</param>
-        /// <param name="titleFont">Fuente para el título principal</param>
-        /// <param name="labelFont">Fuente para las etiquetas</param>
-        /// <param name="valueFont">Fuente para los valores</param>
+
+        // Agrega el encabezado del documento con título, información básica y logo
+
         private void AddSimpleHeader(Document document, DetailsTipdocQueryViewModels model, Font titleFont, Font labelFont, Font valueFont)
         {
             // Crear tabla para el encabezado con 2 columnas
@@ -422,13 +411,9 @@ namespace Proyect_P3.Controllers
             document.Add(headerTable);
         }
 
-        /// <summary>
+
         /// Agrega la información detallada del documento (tipo, descripción, origen, estado)
-        /// </summary>
-        /// <param name="document">Documento PDF donde agregar la información</param>
-        /// <param name="model">Modelo con los datos del documento</param>
-        /// <param name="labelFont">Fuente para las etiquetas</param>
-        /// <param name="valueFont">Fuente para los valores</param>
+
         private void AddDocumentInfo(Document document, DetailsTipdocQueryViewModels model, Font labelFont, Font valueFont)
         {
             // Crear tabla de una sola columna para la información del documento
@@ -470,13 +455,8 @@ namespace Proyect_P3.Controllers
             document.Add(infoTable);
         }
 
-        /// <summary>
-        /// Agrega la tabla principal con la configuración del documento
-        /// </summary>
-        /// <param name="document">Documento PDF donde agregar la tabla</param>
-        /// <param name="model">Modelo con los datos del documento</param>
-        /// <param name="headerFont">Fuente para los encabezados de columna</param>
-        /// <param name="cellFont">Fuente para el contenido de las celdas</param>
+        // Agrega la tabla principal con la configuración del documento
+
         private void AddMainTable(Document document, DetailsTipdocQueryViewModels model, Font headerFont, Font cellFont)
         {
             // Crear tabla con 4 columnas
@@ -525,12 +505,9 @@ namespace Proyect_P3.Controllers
             document.Add(mainTable);
         }
 
-        /// <summary>
-        /// Agrega una celda de encabezado a la tabla
-        /// </summary>
-        /// <param name="table">Tabla donde agregar el encabezado</param>
-        /// <param name="text">Texto del encabezado</param>
-        /// <param name="font">Fuente para el texto</param>
+
+        // Agrega una celda de encabezado a la tabla
+
         private void AddTableHeader(PdfPTable table, string text, Font font)
         {
             // Crear celda de encabezado
@@ -541,15 +518,8 @@ namespace Proyect_P3.Controllers
             table.AddCell(cell);
         }
 
-        /// <summary>
         /// Agrega una fila de datos a la tabla principal
-        /// </summary>
-        /// <param name="table">Tabla donde agregar la fila</param>
-        /// <param name="config">Texto de configuración</param>
-        /// <param name="tipo">Tipo de dato</param>
-        /// <param name="valor">Valor actual</param>
-        /// <param name="estado">Estado de la configuración</param>
-        /// <param name="font">Fuente base para el texto</param>
+
         private void AddTableRow(PdfPTable table, string config, string tipo, string valor, string estado, Font font)
         {
             // === CELDA DE CONFIGURACIÓN ===
@@ -584,13 +554,8 @@ namespace Proyect_P3.Controllers
             table.AddCell(estadoCell);
         }
 
-        /// <summary>
-        /// Agrega la sección de resumen con mensaje de confirmación y estado final
-        /// </summary>
-        /// <param name="document">Documento PDF donde agregar el resumen</param>
-        /// <param name="model">Modelo con los datos del documento</param>
-        /// <param name="labelFont">Fuente para las etiquetas</param>
-        /// <param name="valueFont">Fuente para los valores</param>
+        // Agrega la sección de resumen con mensaje de confirmación y estado final
+
         private void AddSummarySection(Document document, DetailsTipdocQueryViewModels model, Font labelFont, Font valueFont)
         {
             // === LÍNEA SEPARADORA ===
@@ -645,11 +610,9 @@ namespace Proyect_P3.Controllers
             document.Add(summaryTable);
         }
 
-        /// <summary>
-        /// Agrega el pie de página con información del sistema y contacto
-        /// </summary>
-        /// <param name="document">Documento PDF donde agregar el pie de página</param>
-        /// <param name="footerFont">Fuente para el texto del pie de página</param>
+
+        // Agrega el pie de página con información del sistema y contacto
+
         private void AddSimpleFooter(Document document, Font footerFont)
         {
             // === LÍNEA SEPARADORA SUPERIOR ===
