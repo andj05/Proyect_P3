@@ -199,6 +199,7 @@ namespace Proyect_P3.Controllers
 
             return View(model); // Enviamos el modelo a la vista
         }
+
         // Método HTTP GET que genera un PDF para un documento específico basado en su ID
         // Archivo PDF para descarga o error 404 si no se encuentra
         [HttpGet]
