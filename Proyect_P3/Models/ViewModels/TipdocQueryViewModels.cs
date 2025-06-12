@@ -43,7 +43,7 @@ namespace Proyect_P3.Models.ViewModels
         [StringLength(20, ErrorMessage = "La cuenta crédito no puede exceder 20 caracteres.")]
         public string CuentaCredito { get; set; }
 
-        public int? Estatus { get; set; } // Permitir nulos para
+        public int? Estatus { get; set; } 
     }
 
     public class EditTipdocViewModels
