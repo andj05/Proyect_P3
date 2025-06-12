@@ -14,7 +14,7 @@ namespace Proyect_P3.Utilities
 
         public byte[] GenerateFormattedPdf(DetailsTipdocQueryViewModels model)
         {
-            // Usar MemoryStream para manejar el PDF en memoria
+            
             using (var ms = new MemoryStream())
             {
                 // Crear documento PDF con tamaño A4 y márgenes (izq, der, arriba, abajo)

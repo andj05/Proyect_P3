@@ -5,7 +5,7 @@ using Proyect_P3.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Proyect_P3.Utilities; // Add this namespace to access PdfGenerator
+using Proyect_P3.Utilities; 
 using System.Linq;
 using System.Web.Mvc;
 
