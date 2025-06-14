@@ -157,16 +157,16 @@ namespace Proyect_P3.Controllers
                         tipdoc.ESTATUS = 3; // Marcamos el registro como inactivo
                         db.Entry(tipdoc).State = System.Data.EntityState.Modified; // Marcamos como modificado
                         db.SaveChanges();
-                        return Json("1"); // Éxito
+                        return Json("1"); 
                     }
                 }
             }
             catch (Exception)
             {
-                return Json("0"); // Error
+                return Json("0"); 
             }
 
-            return Json("0"); // Error por defecto
+            return Json("0"); 
         }
 
         [HttpGet]
