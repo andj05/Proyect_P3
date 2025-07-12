@@ -93,7 +93,6 @@ namespace Proyect_P3.Controllers
                     return Json(new { respuesta = false, error = "Descripción requerida" });
                 }
 
-                // Procesar imagen si existe
                 if (!string.IsNullOrEmpty(ImagenBase64))
                 {
                     try
@@ -107,13 +106,14 @@ namespace Proyect_P3.Controllers
                         return Json(new { respuesta = false, error = "Error al procesar imagen" });
                     }
                 }
-
-                // Establecer valores por defecto para nuevos registros
-                if (oMarca.IdMarca == 0)
+                else
                 {
-                    oMarca.FechaRegistro = DateTime.Now;
-                    oMarca.Estatus = oMarca.Estatus ?? true;
-                    System.Diagnostics.Debug.WriteLine("Es nuevo registro - estableciendo defaults");
+                    // 🔥 IMPORTANTE: Para modificaciones sin nueva imagen, dejar en null
+                    if (oMarca.IdMarca > 0)
+                    {
+                        oMarca.Imagen = null; // Esto le dice al SP que no cambie la imagen
+                        System.Diagnostics.Debug.WriteLine("✅ Modificación SIN nueva imagen - manteniendo imagen existente");
+                    }
                 }
 
                 bool respuesta = false;
@@ -131,20 +131,23 @@ namespace Proyect_P3.Controllers
 
                 System.Diagnostics.Debug.WriteLine($"Resultado final: {respuesta}");
 
-                // IMPORTANTE: Devolver respuesta clara
                 if (respuesta)
                 {
-                    return Json(new { respuesta = true, mensaje = "Operación exitosa" });
+                    return Json(new { respuesta = true, mensaje = "Marca guardada exitosamente" });
                 }
                 else
                 {
-                    return Json(new { respuesta = false, error = "Error en la operación de base de datos" });
+                    // Mensaje más específico para modificaciones
+                    string errorMsg = oMarca.IdMarca == 0 ?
+                        "Error al crear la marca" :
+                        "Error al modificar la marca - posible duplicado o problema de validación";
+
+                    return Json(new { respuesta = false, error = errorMsg });
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine($"EXCEPCIÓN en controlador: {ex.Message}");
-                System.Diagnostics.Debug.WriteLine($"StackTrace: {ex.StackTrace}");
                 return Json(new { respuesta = false, error = $"Error interno: {ex.Message}" });
             }
         }

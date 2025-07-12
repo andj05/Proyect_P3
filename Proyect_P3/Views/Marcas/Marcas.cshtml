@@ -29,6 +29,18 @@
         overflow: hidden;
     }
 
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="brand-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M2 10 L8 10 L10 8 L14 8 L16 10 L18 10" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none"/></pattern></defs><rect width="100" height="20" fill="url(%23brand-pattern)"/></svg>') repeat;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
     .header-content {
         position: relative;
         z-index: 2;
@@ -78,11 +90,11 @@
         box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
     }
 
-    .btn-marcas:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
-        color: white;
-    }
+        .btn-marcas:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(37, 99, 235, 0.6);
+            color: white;
+        }
 
     .btn-secondary-modern {
         background: linear-gradient(135deg, #6c757d, #495057);
@@ -90,11 +102,11 @@
         box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
     }
 
-    .btn-secondary-modern:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
-        color: white;
-    }
+        .btn-secondary-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
+            color: white;
+        }
 
     .stats-info {
         background: rgba(255, 255, 255, 0.15);
@@ -143,44 +155,73 @@
         flex: 1;
     }
 
-    .table-modern thead th {
-        background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
-        color: white;
-        font-weight: 700;
-        padding: 1.5rem 1rem;
-        border: none;
-        text-align: center;
-        font-size: 1rem;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-        position: sticky;
-        top: 0;
-        z-index: 10;
+        .table-modern thead th {
+            background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+            color: white;
+            font-weight: 700;
+            padding: 1.5rem 1rem;
+            border: none;
+            text-align: center;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+            .table-modern tbody tr:hover {
+                background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(59, 130, 246, 0.05));
+                transform: scale(1.01);
+            }
+
+        .table-modern tbody td {
+            padding: 1.5rem 1rem;
+            border: none;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
+            min-height: 80px;
+        }
+
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .dataTables_wrapper {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
     }
 
-    .table-modern tbody tr {
-        transition: all 0.3s ease;
-        border: none;
+    .dataTables_scroll {
+        flex: 1;
     }
 
-    .table-modern tbody tr:hover {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(59, 130, 246, 0.05));
-        transform: scale(1.01);
+    .dataTables_scrollBody {
+        min-height: 400px;
     }
 
-    .table-modern tbody td {
-        padding: 1.5rem 1rem;
-        border: none;
-        border-bottom: 1px solid #e9ecef;
-        vertical-align: middle;
-        text-align: center;
-        word-wrap: break-word;
-        min-height: 80px;
+    .dataTables_empty {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(59, 130, 246, 0.05)) !important;
+        color: #666 !important;
+        font-size: 1.2rem !important;
+        padding: 3rem !important;
+        text-align: center !important;
     }
 
-    .table-modern tbody tr:last-child td {
-        border-bottom: none;
-    }
+        .dataTables_empty:before {
+            content: "🏷️ ";
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
 
     .btn-action {
         border-radius: 20px;
@@ -200,11 +241,11 @@
         box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
     }
 
-    .btn-edit-marcas:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
-        color: white;
-    }
+        .btn-edit-marcas:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
+            color: white;
+        }
 
     .btn-delete-marcas {
         background: linear-gradient(135deg, #dc3545, #c82333);
@@ -212,10 +253,16 @@
         box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
     }
 
-    .btn-delete-marcas:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(220, 53, 69, 0.5);
-        color: white;
+        .btn-delete-marcas:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.5);
+            color: white;
+        }
+
+    .marca-id {
+        color: #2563eb;
+        font-weight: 700;
+        font-size: 1.2rem;
     }
 
     .marca-descripcion {
@@ -289,18 +336,54 @@
         margin: 0 auto 1rem;
     }
 
-    .no-data-placeholder {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(59, 130, 246, 0.05));
-        padding: 4rem 2rem;
-        text-align: center;
-        border-radius: 15px;
-        margin: 2rem;
+    body {
+        margin: 0;
+        padding: 0;
     }
 
-    .no-data-placeholder i {
-        font-size: 4rem;
-        color: #2563eb;
-        margin-bottom: 1rem;
+    .container.body-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        background: #f8f9fa;
+        padding: 1rem;
+        margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_length {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        border-bottom: 1px solid #e9ecef;
+        text-align: right;
+    }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 20px;
+            border: 2px solid #2563eb;
+            padding: 8px 15px;
+            margin-left: 0.5rem;
+        }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+        border: none !important;
+        color: white !important;
+        border-radius: 5px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+        border: none !important;
+        color: white !important;
     }
 
     .debug-panel {
@@ -317,6 +400,20 @@
         max-width: 300px;
         display: none;
     }
+
+    .no-data-placeholder {
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.05), rgba(59, 130, 246, 0.05));
+        padding: 4rem 2rem;
+        text-align: center;
+        border-radius: 15px;
+        margin: 2rem;
+    }
+
+        .no-data-placeholder i {
+            font-size: 4rem;
+            color: #2563eb;
+            margin-bottom: 1rem;
+        }
 </style>
 
 <div class="page-container">

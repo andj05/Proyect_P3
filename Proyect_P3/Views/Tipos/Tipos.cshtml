@@ -585,7 +585,7 @@
     });
 
     function cargarTiposSimple() {
-        console.log('Cargando tipos sin DataTables...');
+        console.log('Cargando tipos con soporte para imágenes...');
 
         $.ajax({
             url: '/Tipos/ConsultaTipos',
@@ -600,40 +600,46 @@
                     tbody.empty();
 
                     response.data.forEach(function (tipo) {
+                        // 🔥 CORRECCIÓN: Mostrar imágenes correctamente
+                        let imagenHtml = '';
+                        if (tipo.ImagenBase64 && tipo.ImagenBase64.length > 0) {
+                            imagenHtml = `<img src="data:image/jpeg;base64,${tipo.ImagenBase64}" 
+                                         class="image-preview" 
+                                         alt="Imagen tipo"
+                                         style="max-width: 80px; max-height: 60px; border-radius: 8px; object-fit: cover;">`;
+                        } else {
+                            imagenHtml = '<span class="text-muted"><i class="fas fa-image"></i> Sin imagen</span>';
+                        }
+
+                        // 🔥 CORRECCIÓN: Usar "Estatus" en lugar de "Activo"
+                        let estatusHtml = tipo.Estatus === true ?
+                            '<span class="status-badge status-active"><i class="fas fa-check me-1"></i>Activo</span>' :
+                            '<span class="status-badge status-inactive"><i class="fas fa-times me-1"></i>Inactivo</span>';
+
                         let fila = `
-                          <tr>
-                              <td><span class="tipo-id">${tipo.IDTipo}</span></td>
-                              <td><span class="tipo-descripcion">${tipo.Descripcion || 'Sin descripción'}</span></td>
-                              <td>
-                               ${tipo.ImagenBase64 ?
-                                `<img src="data:image/jpeg;base64,${tipo.ImagenBase64}" class="image-preview" alt="Imagen tipo">` :
-                                '<span class="text-muted"><i class="fas fa-image"></i> Sin imagen</span>'
-}
-                              </td>
-                              <td>
-                                  ${tipo.Activo ?
-                                '<span class="status-badge status-active"><i class="fas fa-check me-1"></i>Activo</span>' :
-                                '<span class="status-badge status-inactive"><i class="fas fa-times me-1"></i>Inactivo</span>'
-                            }
-                              </td>
-                              <td>
-                                  ${tipo.FechaRegistro ?
+                        <tr>
+                            <td><span class="tipo-id">${tipo.IDTipo}</span></td>
+                            <td><span class="tipo-descripcion">${tipo.Descripcion || 'Sin descripción'}</span></td>
+                            <td>${imagenHtml}</td>
+                            <td>${estatusHtml}</td>
+                            <td>
+                                ${tipo.FechaRegistro ?
                                 new Date(tipo.FechaRegistro).toLocaleDateString('es-ES') :
                                 '<span class="text-muted">-</span>'
                             }
-                              </td>
-                              <td>
-                                  <div class="btn-group" role="group">
-                                      <button type="button" class="btn btn-action btn-edit-supercarros" onclick="editarTipo(${tipo.IDTipo})">
-                                          <i class="fas fa-edit"></i> Editar
-                                      </button>
-                                      <button type="button" class="btn btn-action btn-delete-supercarros" onclick="eliminarTipo(${tipo.IDTipo})">
-                                          <i class="fas fa-trash"></i> Eliminar
-                                      </button>
-                                  </div>
-                              </td>
-                          </tr>
-                      `;
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-action btn-edit-supercarros" onclick="editarTipo(${tipo.IDTipo})">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button type="button" class="btn btn-action btn-delete-supercarros" onclick="eliminarTipo(${tipo.IDTipo})">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
                         tbody.append(fila);
                     });
 
@@ -702,8 +708,9 @@
         let tipo = {
             IDTipo: parseInt($('#txtIdTipo').val()) || 0,
             Descripcion: $('#txtDescripcion').val().trim(),
-            Activo: $('#selectActivo').val() === 'true'
+            Estatus: $('#selectActivo').val() === 'true'
         };
+
 
         // Capturar imagen si existe
         const fileInput = document.getElementById('fileImagen');
@@ -711,10 +718,8 @@
             const file = fileInput.files[0];
             debugLog('Archivo de imagen seleccionado:', { name: file.name, size: file.size, type: file.type });
 
-            // Convertir imagen a Base64
             const reader = new FileReader();
             reader.onload = function (e) {
-                // Remover el prefijo data:image/...;base64,
                 const base64String = e.target.result.split(',')[1];
                 tipo.ImagenBase64 = base64String;
                 debugLog('Imagen convertida a Base64, enviando datos...');
@@ -742,24 +747,19 @@
             return;
         }
 
-        if (tipo.Descripcion.length < 2) {
-            debugLog('ERROR: Descripción muy corta');
-            Swal.fire({
-                title: 'Error',
-                text: 'La descripción debe tener al menos 2 caracteres',
-                icon: 'error',
-                confirmButtonColor: '#e53e3e'
-            });
-            return;
-        }
-
         showLoading(true);
         debugLog('Enviando AJAX request...');
 
         $.ajax({
             url: '/Tipos/InsertarTipos',
             type: 'POST',
-            data: tipo,
+            data: {
+                // 🔥 ESTRUCTURA CORRECTA DE PARÁMETROS
+                'oCat.IDTipo': tipo.IDTipo,
+                'oCat.Descripcion': tipo.Descripcion,
+                'oCat.Estatus': tipo.Estatus, // ⭐ USAR ESTATUS
+                'ImagenBase64': tipo.ImagenBase64 || null
+            },
             success: function (response) {
                 debugLog('Respuesta recibida:', response);
                 showLoading(false);
@@ -773,8 +773,7 @@
                         confirmButtonColor: '#e53e3e'
                     }).then(() => {
                         $('#modalTipos').modal('hide');
-                        // RECARGAR AUTOMÁTICAMENTE
-                        cargarTiposSimple();
+                        cargarTiposSimple(); // RECARGAR
                     });
                 } else {
                     debugLog('ERROR: Respuesta negativa del servidor', response);
@@ -813,7 +812,6 @@
     function editarTipo(id) {
         debugLog('Editando tipo con ID:', id);
 
-        // Cargar datos del tipo para edición
         showLoading(true);
 
         $.ajax({
@@ -826,7 +824,18 @@
                     if (tipo) {
                         $('#txtIdTipo').val(tipo.IDTipo);
                         $('#txtDescripcion').val(tipo.Descripcion || '');
-                        $('#selectActivo').val(tipo.Activo ? 'true' : 'false');
+                        // 🔥 CORRECCIÓN: Usar "Estatus" en lugar de "Activo"
+                        $('#selectActivo').val(tipo.Estatus ? 'true' : 'false');
+
+                        // 🔥 MOSTRAR IMAGEN EXISTENTE SI EXISTE
+                        if (tipo.ImagenBase64) {
+                            $('#previewImg').attr('src', 'data:image/jpeg;base64,' + tipo.ImagenBase64).show();
+                            $('#noImageText').hide();
+                        } else {
+                            $('#previewImg').hide();
+                            $('#noImageText').show();
+                        }
+
                         $('#modalTipos').modal('show');
                         debugLog('Datos cargados para edición:', tipo);
                     } else {
@@ -917,7 +926,7 @@
         debugLog('Limpiando modal...');
         $('#txtIdTipo').val('0');
         $('#txtDescripcion').val('');
-        $('#selectActivo').val('true');
+        $('#selectActivo').val('true'); // Activo por defecto
         $('#fileImagen').val('');
         $('#previewImg').hide();
         $('#noImageText').show();

@@ -151,29 +151,64 @@ namespace Proyect_P3.Metodos
 
         public bool Modificar(Marcas oMarcas)
         {
-            bool respuesta = true;
+            bool respuesta = false;
             using (SqlConnection oConn = new SqlConnection(Conexion.Bd))
             {
                 try
                 {
+                    System.Diagnostics.Debug.WriteLine("=== MODIFICAR MARCA ===");
+                    System.Diagnostics.Debug.WriteLine($"IdMarca: {oMarcas.IdMarca}");
+                    System.Diagnostics.Debug.WriteLine($"Descripcion: {oMarcas.Descripcion}");
+                    System.Diagnostics.Debug.WriteLine($"Estatus: {oMarcas.Estatus}");
+                    System.Diagnostics.Debug.WriteLine($"Imagen: {(oMarcas.Imagen != null ? $"{oMarcas.Imagen.Length} bytes" : "NULL - no se cambiará")}");
+
                     oConn.Open();
                     SqlCommand cmd = new SqlCommand("sp_ModificaMarcas", oConn);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    // Parámetros obligatorios
                     cmd.Parameters.AddWithValue("@IdMarca", oMarcas.IdMarca);
                     cmd.Parameters.AddWithValue("@Descripcion", oMarcas.Descripcion ?? (object)DBNull.Value);
                     cmd.Parameters.AddWithValue("@Estatus", oMarcas.Estatus ?? (object)DBNull.Value);
-                    cmd.Parameters.AddWithValue("@Imagen", (object)oMarcas.Imagen ?? DBNull.Value);
+
+                    // 🔥 CORRECCIÓN: Parámetro de imagen condicional
+                    if (oMarcas.Imagen != null && oMarcas.Imagen.Length > 0)
+                    {
+                        cmd.Parameters.AddWithValue("@Imagen", oMarcas.Imagen);
+                        System.Diagnostics.Debug.WriteLine("✅ Enviando nueva imagen al SP");
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@Imagen", DBNull.Value);
+                        System.Diagnostics.Debug.WriteLine("✅ NO enviando imagen (se mantendrá la existente)");
+                    }
 
                     // Parámetro de salida
                     cmd.Parameters.Add("@Resultado", SqlDbType.Bit).Direction = ParameterDirection.Output;
-                    cmd.CommandType = CommandType.StoredProcedure;
 
                     cmd.ExecuteNonQuery();
                     respuesta = Convert.ToBoolean(cmd.Parameters["@Resultado"].Value);
+
+                    System.Diagnostics.Debug.WriteLine($"@Resultado del SP: {respuesta}");
+
+                    if (!respuesta)
+                    {
+                        System.Diagnostics.Debug.WriteLine("❌ El SP devolvió False - revisar duplicados o validaciones");
+                    }
                 }
                 catch (Exception ex)
                 {
                     respuesta = false;
-                    System.Diagnostics.Debug.WriteLine($"ERROR AL MODIFICAR: {ex.Message}");
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR AL MODIFICAR: {ex.Message}");
+
+                    if (ex is SqlException sqlEx)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"SQL Error Number: {sqlEx.Number}");
+                        System.Diagnostics.Debug.WriteLine($"SQL Error State: {sqlEx.State}");
+                        System.Diagnostics.Debug.WriteLine($"SQL Error Severity: {sqlEx.Class}");
+                        System.Diagnostics.Debug.WriteLine($"SQL Error Line: {sqlEx.LineNumber}");
+                    }
+
                     Console.WriteLine("Error al modificar marca: " + ex.Message);
                 }
             }

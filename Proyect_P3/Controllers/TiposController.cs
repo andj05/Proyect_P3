@@ -29,20 +29,38 @@ namespace Proyect_P3.Controllers
 
                 System.Diagnostics.Debug.WriteLine($"Método Listar retornó {oLista?.Count ?? 0} elementos");
 
-                // Convertir imágenes a Base64 para la vista
+                // 🔥 CONVERTIR IMÁGENES A BASE64 IGUAL QUE EN MARCAS
                 if (oLista != null && oLista.Count > 0)
                 {
                     foreach (var tipo in oLista)
                     {
                         if (tipo.Imagen != null && tipo.Imagen.Length > 0)
                         {
-                            // Crear propiedad temporal para JavaScript
-                            ViewBag.ImagenBase64 = Convert.ToBase64String(tipo.Imagen);
+                            try
+                            {
+                                tipo.ImagenBase64 = Convert.ToBase64String(tipo.Imagen);
+                                System.Diagnostics.Debug.WriteLine($"Tipo {tipo.IDTipo}: ImagenBase64 creada - {tipo.ImagenBase64.Length} caracteres");
+                            }
+                            catch (Exception imgEx)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"Error al convertir imagen para tipo {tipo.IDTipo}: {imgEx.Message}");
+                                tipo.ImagenBase64 = null;
+                            }
+                        }
+                        else
+                        {
+                            System.Diagnostics.Debug.WriteLine($"Tipo {tipo.IDTipo}: Sin imagen");
                         }
                     }
                 }
 
-                return Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+                System.Diagnostics.Debug.WriteLine($"Retornando {oLista.Count} tipos con imágenes convertidas");
+
+                // 🔥 SOLUCIÓN: Aumentar MaxJsonLength como en Marcas
+                var jsonResult = Json(new { data = oLista }, JsonRequestBehavior.AllowGet);
+                jsonResult.MaxJsonLength = int.MaxValue; // Sin límite
+
+                return jsonResult;
             }
             catch (Exception ex)
             {
@@ -87,7 +105,20 @@ namespace Proyect_P3.Controllers
                     catch (Exception imgEx)
                     {
                         System.Diagnostics.Debug.WriteLine($"ERROR al convertir imagen: {imgEx.Message}");
-                        oCat.Imagen = null;
+                        // 🔥 Para modificaciones, mantener imagen existente
+                        if (oCat.IDTipo > 0)
+                        {
+                            oCat.Imagen = null; // No cambiar imagen si hay error
+                        }
+                    }
+                }
+                else
+                {
+                    // 🔥 IMPORTANTE: Para modificaciones sin nueva imagen, dejar en null
+                    if (oCat.IDTipo > 0)
+                    {
+                        oCat.Imagen = null; // Esto le dice al método que no cambie la imagen
+                        System.Diagnostics.Debug.WriteLine("✅ Modificación SIN nueva imagen - manteniendo imagen existente");
                     }
                 }
 
@@ -95,7 +126,11 @@ namespace Proyect_P3.Controllers
                 if (oCat.IDTipo == 0)
                 {
                     oCat.FechaRegistro = DateTime.Now;
-                    oCat.Estatus = oCat.Estatus ?? true; // Usar Estatus, no Activo
+                    // 🔥 Si no se especifica Estatus, usar true por defecto
+                    if (!oCat.Estatus.HasValue)
+                    {
+                        oCat.Estatus = true;
+                    }
                 }
 
                 bool respuesta = false;
@@ -112,7 +147,20 @@ namespace Proyect_P3.Controllers
                 }
 
                 System.Diagnostics.Debug.WriteLine($"Resultado final: {respuesta}");
-                return Json(new { respuesta = respuesta }, JsonRequestBehavior.AllowGet);
+
+                if (respuesta)
+                {
+                    return Json(new { respuesta = true, mensaje = "Tipo guardado exitosamente" }, JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                    // Mensaje más específico
+                    string errorMsg = oCat.IDTipo == 0 ?
+                        "Error al crear el tipo" :
+                        "Error al modificar el tipo - posible duplicado o problema de validación";
+
+                    return Json(new { respuesta = false, error = errorMsg }, JsonRequestBehavior.AllowGet);
+                }
             }
             catch (Exception ex)
             {
@@ -129,16 +177,62 @@ namespace Proyect_P3.Controllers
             return Json(new { respuesta = respuesta }, JsonRequestBehavior.AllowGet);
         }
 
+        // 🔥 AGREGAR MÉTODOS ÚTILES COMO EN MARCAS
+        [HttpGet]
+        public JsonResult ObtenerTipoPorId(int idTipo)
+        {
+            Tipos oTipo = TiposMetodos.Instance.ObtenerPorId(idTipo);
+
+            // Convertir imagen si existe
+            if (oTipo != null && oTipo.Imagen != null && oTipo.Imagen.Length > 0)
+            {
+                try
+                {
+                    oTipo.ImagenBase64 = Convert.ToBase64String(oTipo.Imagen);
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Error al convertir imagen para tipo {oTipo.IDTipo}: {ex.Message}");
+                }
+            }
+
+            return Json(new { data = oTipo }, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public JsonResult ConsultaTiposActivos()
+        {
+            List<Tipos> oLista = new List<Tipos>();
+            oLista = TiposMetodos.Instance.Listar();
+            var tiposActivos = oLista.FindAll(t => t.Estatus == true);
+
+            // Convertir imágenes
+            foreach (var tipo in tiposActivos)
+            {
+                if (tipo.Imagen != null && tipo.Imagen.Length > 0)
+                {
+                    try
+                    {
+                        tipo.ImagenBase64 = Convert.ToBase64String(tipo.Imagen);
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"Error al convertir imagen: {ex.Message}");
+                    }
+                }
+            }
+
+            return Json(new { data = tiposActivos }, JsonRequestBehavior.AllowGet);
+        }
+
+        // 🔥 MÉTODO PARA TESTING
         [HttpGet]
         public JsonResult TestConexion()
         {
             try
             {
-                using (SqlConnection conn = new SqlConnection(Conexion.Bd))
-                {
-                    conn.Open();
-                    return Json(new { success = true, mensaje = "Conexión exitosa" }, JsonRequestBehavior.AllowGet);
-                }
+                List<Tipos> test = TiposMetodos.Instance.Listar();
+                return Json(new { success = true, count = test.Count, message = "Conexión exitosa" }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
