@@ -134,6 +134,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccederController.cs" />
+    <Compile Include="Controllers\CategoriasController.cs" />
     <Compile Include="Controllers\CerrarSeccionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\MarcasController.cs" />
@@ -144,6 +145,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Metodos\CategoriasMetodos.cs" />
     <Compile Include="Metodos\Conexion.cs" />
     <Compile Include="Metodos\MarcasMetodos.cs" />
     <Compile Include="Metodos\TiposMetodos.cs" />
@@ -168,6 +170,9 @@
     <Compile Include="Models\MARCA.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\MOTORE.cs">
+      <DependentUpon>DBmodel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\mSTATU.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
@@ -180,7 +185,10 @@
     <Compile Include="Models\USER.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\ArticulosFotos.cs" />
+    <Compile Include="Models\ViewModels\Categorias.cs" />
     <Compile Include="Models\ViewModels\Marcas.cs" />
+    <Compile Include="Models\ViewModels\Motores.cs" />
     <Compile Include="Models\ViewModels\QueryViewModels.cs" />
     <Compile Include="Models\ViewModels\TipdocQueryViewModels.cs" />
     <Compile Include="Models\ViewModels\Tipos.cs" />
@@ -271,6 +279,7 @@
     <Content Include="Views\Tipos\Tipos.cshtml" />
     <Content Include="Views\Marcas\Marcas.cshtml" />
     <Content Include="Views\Catalogo\Catalogo.cshtml" />
+    <Content Include="Views\Categorias\Categorias.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

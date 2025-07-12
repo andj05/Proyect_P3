@@ -12,6 +12,7 @@
         <EntityTypeShape EntityType="DBMVCModel.CATEGORIA" Width="1.5" PointX="0.75" PointY="4.75" />
         <EntityTypeShape EntityType="DBMVCModel.MARCA" Width="1.5" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="DBMVCModel.TIPOS" Width="1.5" PointX="4.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DBMVCModel.MOTORE" Width="1.5" PointX="7.125" PointY="4.875" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

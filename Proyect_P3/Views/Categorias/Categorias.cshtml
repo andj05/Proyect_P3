@@ -1,0 +1,1102 @@
+﻿@{
+    ViewBag.Title = "Categorías de Vehículos";
+}
+
+<!-- Solo CSS en el HEAD -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+
+<style>
+    .page-container {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+        min-height: 100vh;
+        padding: 0;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .header-card {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        border-radius: 0;
+        box-shadow: 0 4px 15px rgba(255, 239, 194, 0.3);
+        padding: 2rem;
+        margin-bottom: 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .header-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="category-pattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M2 2 L8 2 L8 8 L2 8 Z M12 2 L18 2 L18 8 L12 8 Z M2 12 L8 12 L8 18 L2 18 Z M12 12 L18 12 L18 18 L12 18 Z" stroke="rgba(255,255,255,0.1)" stroke-width="1" fill="none"/></pattern></defs><rect width="100" height="20" fill="url(%23category-pattern)"/></svg>') repeat;
+            opacity: 0.1;
+            z-index: 1;
+        }
+
+    .header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .page-title {
+        color: #2c2c2c;
+        font-size: 2.2rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+    }
+
+    .category-icon {
+        background: rgba(44, 44, 44, 0.1);
+        color: #2c2c2c;
+        padding: 12px;
+        border-radius: 50%;
+        margin-right: 15px;
+        font-size: 1.5rem;
+    }
+
+    .subtitle {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        margin-bottom: 1.5rem;
+    }
+
+    .btn-modern {
+        border-radius: 25px;
+        font-weight: 600;
+        padding: 12px 30px;
+        transition: all 0.3s ease;
+        border: none;
+        margin-right: 0.5rem;
+        margin-bottom: 0.5rem;
+        font-size: 1rem;
+        display: inline-block;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-categorias {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        border: 2px solid #e6d89f;
+        box-shadow: 0 4px 15px rgba(255, 239, 194, 0.4);
+    }
+
+        .btn-categorias:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 239, 194, 0.6);
+            color: #2c2c2c;
+            background: linear-gradient(135deg, #fff5d6, #ffeca0);
+        }
+
+    .btn-secondary-modern {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: white;
+        box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+    }
+
+        .btn-secondary-modern:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(108, 117, 125, 0.5);
+            color: white;
+        }
+
+    .stats-info {
+        background: rgba(44, 44, 44, 0.1);
+        backdrop-filter: blur(10px);
+        color: #2c2c2c;
+        padding: 1.5rem;
+        border-radius: 15px;
+        text-align: center;
+        margin-bottom: 1.5rem;
+        border: 1px solid rgba(44, 44, 44, 0.2);
+    }
+
+    .stats-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .stats-label {
+        font-size: 1.1rem;
+        opacity: 0.9;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    .table-container {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+        background: white;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .table-modern {
+        width: 100%;
+        margin: 0;
+        border: none;
+        background: white;
+        border-radius: 0;
+        overflow: hidden;
+        height: 100%;
+        flex: 1;
+    }
+
+        .table-modern thead th {
+            background: linear-gradient(135deg, #1a1a1a, #2c2c2c);
+            color: white;
+            font-weight: 700;
+            padding: 1.5rem 1rem;
+            border: none;
+            text-align: center;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .table-modern tbody tr {
+            transition: all 0.3s ease;
+            border: none;
+        }
+
+            .table-modern tbody tr:hover {
+                background: linear-gradient(135deg, rgba(255, 239, 194, 0.15), rgba(255, 245, 214, 0.15));
+                transform: scale(1.01);
+            }
+
+        .table-modern tbody td {
+            padding: 1.5rem 1rem;
+            border: none;
+            border-bottom: 1px solid #e9ecef;
+            vertical-align: middle;
+            text-align: center;
+            word-wrap: break-word;
+            min-height: 80px;
+        }
+
+        .table-modern tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+    .dataTables_wrapper {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .dataTables_scroll {
+        flex: 1;
+    }
+
+    .dataTables_scrollBody {
+        min-height: 400px;
+    }
+
+    .dataTables_empty {
+        background: linear-gradient(135deg, rgba(255, 239, 194, 0.15), rgba(255, 245, 214, 0.15)) !important;
+        color: #666 !important;
+        font-size: 1.2rem !important;
+        padding: 3rem !important;
+        text-align: center !important;
+    }
+
+        .dataTables_empty:before {
+            content: "🏷️ ";
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+    .btn-action {
+        border-radius: 20px;
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 4px;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-block;
+        text-transform: uppercase;
+    }
+
+    .btn-edit-categorias {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+        .btn-edit-categorias:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(40, 167, 69, 0.5);
+            color: white;
+        }
+
+    .btn-delete-categorias {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+        .btn-delete-categorias:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.5);
+            color: white;
+        }
+
+    .categoria-id {
+        color: #d4a574;
+        font-weight: 700;
+        font-size: 1.2rem;
+    }
+
+    .categoria-descripcion {
+        color: #2c2c2c;
+        font-weight: 600;
+        font-size: 1.1rem;
+    }
+
+    .status-badge {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .status-active {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .status-inactive {
+        background: linear-gradient(135deg, #6c757d, #495057);
+        color: white;
+        box-shadow: 0 2px 8px rgba(108, 117, 125, 0.3);
+    }
+
+    .actions-buttons {
+        margin-bottom: 1.5rem;
+        padding-top: 1rem;
+    }
+
+    .image-preview {
+        max-width: 120px;
+        max-height: 100px;
+        border-radius: 10px;
+        border: 3px solid #ffefc2;
+        box-shadow: 0 4px 15px rgba(255, 239, 194, 0.3);
+    }
+
+    .loading-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loading-content {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .spinner-categorias {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #ffefc2;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+    }
+
+    .container.body-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .dataTables_wrapper .dataTables_length,
+    .dataTables_wrapper .dataTables_filter,
+    .dataTables_wrapper .dataTables_info,
+    .dataTables_wrapper .dataTables_paginate {
+        background: #f8f9fa;
+        padding: 1rem;
+        margin: 0;
+    }
+
+    .dataTables_wrapper .dataTables_length {
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .dataTables_wrapper .dataTables_filter {
+        border-bottom: 1px solid #e9ecef;
+        text-align: right;
+    }
+
+        .dataTables_wrapper .dataTables_filter input {
+            border-radius: 20px;
+            border: 2px solid #ffefc2;
+            padding: 8px 15px;
+            margin-left: 0.5rem;
+        }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6) !important;
+        border: 1px solid #e6d89f !important;
+        color: #2c2c2c !important;
+        border-radius: 5px !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6) !important;
+        border: 1px solid #e6d89f !important;
+        color: #2c2c2c !important;
+    }
+
+    .debug-panel {
+        position: fixed;
+        top: 10px;
+        right: 10px;
+        background: rgba(0,0,0,0.8);
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 12px;
+        z-index: 10000;
+        max-width: 300px;
+        display: none;
+    }
+</style>
+
+<div class="page-container">
+    <!-- Header con información y botones -->
+    <div class="header-card">
+        <div class="header-content">
+            <h2 class="page-title">
+                <span class="category-icon"><i class="fas fa-tags"></i></span>
+                Categorías de Vehículos Anddy Motors
+            </h2>
+            <p class="subtitle">Gestiona las categorías de tu inventario: Económicos, Premium, Lujo, Comerciales y más</p>
+
+            <div class="stats-info">
+                <div class="stats-number" id="categoriasCount">0</div>
+                <div class="stats-label">Categorías Registradas</div>
+            </div>
+
+            <div class="actions-buttons">
+                <button type="button" class="btn btn-modern btn-categorias" data-bs-toggle="modal" data-bs-target="#modalCategorias">
+                    <i class="fas fa-plus me-2"></i>Nueva Categoría
+                </button>
+                <input type="button"
+                       value="Volver Atrás"
+                       class="btn btn-modern btn-secondary-modern"
+                       onclick="document.location.href='@Url.Content("~/")'" />
+                <button type="button" class="btn btn-modern btn-secondary-modern" onclick="testConexion()">
+                    <i class="fas fa-database me-2"></i>Test Conexión
+                </button>
+                <button type="button" class="btn btn-modern btn-secondary-modern" onclick="toggleDebug()">
+                    <i class="fas fa-bug me-2"></i>Debug
+                </button>
+                <button type="button" class="btn btn-modern btn-secondary-modern" onclick="testDirecto()">
+                    <i class="fas fa-search me-2"></i>Test Direct
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabla de pantalla completa -->
+    <div class="table-container">
+        <table class="table table-modern" id="tablaCategorias">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-hashtag me-2"></i>ID</th>
+                    <th><i class="fas fa-tag me-2"></i>Descripción</th>
+                    <th><i class="fas fa-image me-2"></i>Imagen</th>
+                    <th><i class="fas fa-toggle-on me-2"></i>Estado</th>
+                    <th><i class="fas fa-calendar me-2"></i>Fecha Registro</th>
+                    <th><i class="fas fa-cogs me-2"></i>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be loaded via AJAX -->
+            </tbody>
+        </table>
+
+        <!-- Placeholder cuando no hay datos -->
+        <div class="no-data-placeholder d-none" id="noDataPlaceholder">
+            <i class="fas fa-tags"></i>
+            <h3>¡Comienza a gestionar tus categorías de vehículos!</h3>
+            <p>No tienes categorías registradas aún. Haz clic en "Nueva Categoría" para agregar tu primera categoría como Económico, Premium, Lujo o Comercial.</p>
+            <button type="button" class="btn btn-categorias mt-3" data-bs-toggle="modal" data-bs-target="#modalCategorias">
+                <i class="fas fa-plus me-2"></i>Agregar Primera Categoría
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Panel de Debug -->
+<div class="debug-panel" id="debugPanel">
+    <div id="debugContent">Debug activo...</div>
+</div>
+
+<!-- Loading Overlay -->
+<div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-content">
+        <div class="spinner-categorias"></div>
+        <p>Cargando categorías de vehículos...</p>
+    </div>
+</div>
+
+<!-- Modal para Categorías -->
+<div class="modal fade" id="modalCategorias" tabindex="-1" aria-labelledby="modalCategoriasLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ffefc2, #fff5d6); color: #2c2c2c; border-bottom: 2px solid #e6d89f;">
+                <h5 class="modal-title" id="modalCategoriasLabel">
+                    <i class="fas fa-tags me-2"></i>Gestión de Categoría de Vehículo
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="formCategorias">
+                    <input type="hidden" id="txtIdCategoria" value="0">
+
+                    <div class="row">
+                        <div class="col-md-12 mb-3">
+                            <label for="txtDescripcion" class="form-label">
+                                <i class="fas fa-tag me-2"></i>Descripción de la Categoría
+                            </label>
+                            <input type="text" class="form-control" id="txtDescripcion" placeholder="Ej: Económico, Premium, Lujo, Comercial..." required>
+                            <div class="form-text">Especifica la categoría del vehículo (Económico, Premium, Lujo, etc.)</div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="fileImagen" class="form-label">
+                                <i class="fas fa-image me-2"></i>Imagen de la Categoría
+                            </label>
+                            <input type="file" class="form-control" id="fileImagen" accept="image/*">
+                            <div class="form-text">Selecciona una imagen representativa de la categoría</div>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Vista previa</label>
+                            <div id="imagePreview" class="text-center">
+                                <img id="previewImg" class="image-preview" style="display: none;" alt="Vista previa">
+                                <p class="text-muted" id="noImageText">Sin imagen seleccionada</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="selectActivo" class="form-label">
+                                <i class="fas fa-toggle-on me-2"></i>Estado
+                            </label>
+                            <select class="form-select" id="selectActivo">
+                                <option value="true">Activo</option>
+                                <option value="false">Inactivo</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-2"></i>Cancelar
+                </button>
+                <button type="button" class="btn btn-categorias" id="btnGuardar">
+                    <i class="fas fa-save me-2"></i>Guardar Categoría
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- SCRIPTS AL FINAL - ORDEN CRÍTICO -->
+<!-- 1. jQuery PRIMERO -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- 2. Bootstrap -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+
+<!-- 3. DataTables (versión más nueva y estable) -->
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<!-- 4. SweetAlert2 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.js"></script>
+
+<!-- 5. Nuestro código JavaScript AL FINAL -->
+<script>
+    // Variables globales
+    let tabla;
+    let debugMode = false;
+
+    $(document).ready(function () {
+        console.log('Document ready - jQuery version:', $.fn.jquery);
+
+        // Verificar jQuery
+        if (typeof $ === 'undefined') {
+            alert('ERROR: jQuery no está cargado');
+            return;
+        }
+
+        // Solo configurar event handlers
+        setupEventHandlers();
+    });
+
+    $(document).ready(function () {
+        cargarCategoriasSimple();
+    });
+
+    function cargarCategoriasSimple() {
+        console.log('Cargando categorías con soporte para imágenes...');
+
+        $.ajax({
+            url: '/Categorias/ConsultaCategorias',
+            type: 'GET',
+            success: function (response) {
+                console.log('Respuesta:', response);
+
+                if (response && response.data && response.data.length > 0) {
+                    $('#categoriasCount').text(response.data.length);
+
+                    let tbody = $('#tablaCategorias tbody');
+                    tbody.empty();
+
+                    response.data.forEach(function (categoria) {
+                        // Mostrar imágenes correctamente
+                        let imagenHtml = '';
+                        if (categoria.ImagenBase64 && categoria.ImagenBase64.length > 0) {
+                            imagenHtml = `<img src="data:image/jpeg;base64,${categoria.ImagenBase64}"
+                                         class="image-preview"
+                                         alt="Imagen categoría"
+                                         style="max-width: 80px; max-height: 60px; border-radius: 8px; object-fit: cover;">`;
+                        } else {
+                            imagenHtml = '<span class="text-muted"><i class="fas fa-image"></i> Sin imagen</span>';
+                        }
+
+                        // Usar "Estatus" en lugar de "Activo"
+                        let estatusHtml = categoria.Estatus === true ?
+                            '<span class="status-badge status-active"><i class="fas fa-check me-1"></i>Activo</span>' :
+                            '<span class="status-badge status-inactive"><i class="fas fa-times me-1"></i>Inactivo</span>';
+
+                        let fila = `
+                        <tr>
+                            <td><span class="categoria-id">${categoria.IdCategoria}</span></td>
+                            <td><span class="categoria-descripcion">${categoria.Descripcion || 'Sin descripción'}</span></td>
+                            <td>${imagenHtml}</td>
+                            <td>${estatusHtml}</td>
+                            <td>
+                                ${categoria.FechaRegistro ?
+                                new Date(categoria.FechaRegistro).toLocaleDateString('es-ES') :
+                                '<span class="text-muted">-</span>'
+                            }
+                            </td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <button type="button" class="btn btn-action btn-edit-categorias" onclick="editarCategoria(${categoria.IdCategoria})">
+                                        <i class="fas fa-edit"></i> Editar
+                                    </button>
+                                    <button type="button" class="btn btn-action btn-delete-categorias" onclick="eliminarCategoria(${categoria.IdCategoria})">
+                                        <i class="fas fa-trash"></i> Eliminar
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                        tbody.append(fila);
+                    });
+
+                    $('#tablaCategorias').show();
+                    $('#noDataPlaceholder').addClass('d-none');
+
+                    console.log(`✅ ${response.data.length} categorías cargadas exitosamente`);
+                } else {
+                    $('#categoriasCount').text('0');
+                    $('#tablaCategorias').hide();
+                    $('#noDataPlaceholder').removeClass('d-none');
+                    console.log('❌ No hay datos o estructura incorrecta');
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error('Error al cargar categorías:', error);
+                $('#categoriasCount').text('0');
+                alert('Error al cargar categorías: ' + error);
+            }
+        });
+    }
+
+    // Función para recargar después de guardar/eliminar
+    window.recargarCategoriasSimple = cargarCategoriasSimple;
+
+    function setupEventHandlers() {
+        debugLog('Configurando event handlers...');
+
+        // Preview de imagen
+        $('#fileImagen').change(function () {
+            const file = this.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#previewImg').attr('src', e.target.result).show();
+                    $('#noImageText').hide();
+                }
+                reader.readAsDataURL(file);
+            } else {
+                $('#previewImg').hide();
+                $('#noImageText').show();
+            }
+        });
+
+        // Guardar categoría
+        $('#btnGuardar').click(function () {
+            debugLog('Botón guardar clickeado');
+            guardarCategoria();
+        });
+
+        // Limpiar modal al cerrar
+        $('#modalCategorias').on('hidden.bs.modal', function () {
+            debugLog('Modal cerrado, limpiando campos...');
+            limpiarModal();
+        });
+
+        // Debug cuando se abre el modal
+        $('#modalCategorias').on('shown.bs.modal', function () {
+            debugLog('Modal abierto');
+        });
+    }
+
+    function guardarCategoria() {
+        debugLog('=== INICIANDO GUARDAR CATEGORÍA ===');
+
+        let categoria = {
+            IdCategoria: parseInt($('#txtIdCategoria').val()) || 0,
+            Descripcion: $('#txtDescripcion').val().trim(),
+            Estatus: $('#selectActivo').val() === 'true'
+        };
+
+        // Capturar imagen si existe
+        const fileInput = document.getElementById('fileImagen');
+        if (fileInput.files && fileInput.files[0]) {
+            const file = fileInput.files[0];
+            debugLog('Archivo de imagen seleccionado:', { name: file.name, size: file.size, type: file.type });
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const base64String = e.target.result.split(',')[1];
+                categoria.ImagenBase64 = base64String;
+                debugLog('Imagen convertida a Base64, enviando datos...');
+                enviarDatos(categoria);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            debugLog('No hay imagen seleccionada, enviando sin imagen...');
+            enviarDatos(categoria);
+        }
+    }
+
+    function enviarDatos(categoria) {
+        debugLog('Datos de la categoría a enviar:', categoria);
+
+        // Validaciones
+        if (!categoria.Descripcion) {
+            debugLog('ERROR: Descripción vacía');
+            Swal.fire({
+                title: 'Error',
+                text: 'La descripción es obligatoria',
+                icon: 'error',
+                confirmButtonColor: '#d4a574'
+            });
+            return;
+        }
+
+        showLoading(true);
+        debugLog('Enviando AJAX request...');
+
+        $.ajax({
+            url: '/Categorias/InsertarCategorias',
+            type: 'POST',
+            data: {
+                // Estructura correcta de parámetros
+                'oCat.IdCategoria': categoria.IdCategoria,
+                'oCat.Descripcion': categoria.Descripcion,
+                'oCat.Estatus': categoria.Estatus,
+                'ImagenBase64': categoria.ImagenBase64 || null
+            },
+            success: function (response) {
+                debugLog('Respuesta recibida:', response);
+                showLoading(false);
+
+                if (response && response.respuesta === true) {
+                    debugLog('Categoría guardada exitosamente');
+                    Swal.fire({
+                        title: 'Éxito',
+                        text: 'Categoría guardada correctamente',
+                        icon: 'success',
+                        confirmButtonColor: '#d4a574'
+                    }).then(() => {
+                        $('#modalCategorias').modal('hide');
+                        cargarCategoriasSimple(); // RECARGAR
+                    });
+                } else {
+                    debugLog('ERROR: Respuesta negativa del servidor', response);
+                    Swal.fire({
+                        title: 'Error',
+                        text: response.error || 'No se pudo guardar la categoría',
+                        icon: 'error',
+                        confirmButtonColor: '#d4a574'
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                debugLog('ERROR AJAX:', { xhr: xhr.responseText, status: status, error: error });
+                showLoading(false);
+
+                let errorMsg = 'Error de conexión';
+                try {
+                    let response = JSON.parse(xhr.responseText);
+                    if (response.error) {
+                        errorMsg = response.error;
+                    }
+                } catch (e) {
+                    errorMsg = error || 'Error desconocido';
+                }
+
+                Swal.fire({
+                    title: 'Error',
+                    text: errorMsg,
+                    icon: 'error',
+                    confirmButtonColor: '#d4a574'
+                });
+            }
+        });
+    }
+
+    function editarCategoria(id) {
+        debugLog('Editando categoría con ID:', id);
+
+        showLoading(true);
+
+        $.ajax({
+            url: '/Categorias/ConsultaCategorias',
+            type: 'GET',
+            success: function (response) {
+                showLoading(false);
+                if (response && response.data) {
+                    let categoria = response.data.find(c => c.IdCategoria == id);
+                    if (categoria) {
+                        $('#txtIdCategoria').val(categoria.IdCategoria);
+                        $('#txtDescripcion').val(categoria.Descripcion || '');
+                        // Usar "Estatus" en lugar de "Activo"
+                        $('#selectActivo').val(categoria.Estatus ? 'true' : 'false');
+
+                        // Mostrar imagen existente si existe
+                        if (categoria.ImagenBase64) {
+                            $('#previewImg').attr('src', 'data:image/jpeg;base64,' + categoria.ImagenBase64).show();
+                            $('#noImageText').hide();
+                        } else {
+                            $('#previewImg').hide();
+                            $('#noImageText').show();
+                        }
+
+                        $('#modalCategorias').modal('show');
+                        debugLog('Datos cargados para edición:', categoria);
+                    } else {
+                        debugLog('ERROR: Categoría no encontrada');
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'No se encontró la categoría a editar',
+                            icon: 'error',
+                            confirmButtonColor: '#d4a574'
+                        });
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                showLoading(false);
+                debugLog('ERROR al cargar categoría para edición:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error al cargar los datos de la categoría',
+                    icon: 'error',
+                    confirmButtonColor: '#d4a574'
+                });
+            }
+        });
+    }
+
+    function eliminarCategoria(id) {
+        debugLog('Intentando eliminar categoría con ID:', id);
+
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d4a574',
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                showLoading(true);
+                debugLog('Enviando request de eliminación...');
+
+                $.ajax({
+                    url: '/Categorias/BorrarCategorias',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        debugLog('Respuesta de eliminación:', response);
+                        showLoading(false);
+                        if (response && response.respuesta === true) {
+                            debugLog('Categoría eliminada exitosamente');
+                            Swal.fire({
+                                title: 'Eliminado',
+                                text: 'Categoría eliminada correctamente',
+                                icon: 'success',
+                                confirmButtonColor: '#d4a574'
+                            }).then(() => {
+                                // RECARGAR AUTOMÁTICAMENTE
+                                cargarCategoriasSimple();
+                            });
+                        } else {
+                            debugLog('ERROR: No se pudo eliminar la categoría');
+                            Swal.fire({
+                                title: 'Error',
+                                text: 'No se pudo eliminar la categoría',
+                                icon: 'error',
+                                confirmButtonColor: '#d4a574'
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        debugLog('ERROR AJAX al eliminar:', error);
+                        showLoading(false);
+                        Swal.fire({
+                            title: 'Error',
+                            text: 'Error de conexión al eliminar',
+                            icon: 'error',
+                            confirmButtonColor: '#d4a574'
+                        });
+                    }
+                });
+            }
+        });
+    }
+
+    function limpiarModal() {
+        debugLog('Limpiando modal...');
+        $('#txtIdCategoria').val('0');
+        $('#txtDescripcion').val('');
+        $('#selectActivo').val('true'); // Activo por defecto
+        $('#fileImagen').val('');
+        $('#previewImg').hide();
+        $('#noImageText').show();
+        debugLog('Modal limpiado');
+    }
+
+    function showLoading(show) {
+        if (show) {
+            $('#loadingOverlay').css('display', 'flex');
+        } else {
+            $('#loadingOverlay').hide();
+        }
+    }
+
+    function testConexion() {
+        debugLog('Probando conexión...');
+        showLoading(true);
+
+        $.ajax({
+            url: '/Categorias/TestConexion',
+            type: 'GET',
+            success: function (response) {
+                showLoading(false);
+                debugLog('Test de conexión:', response);
+
+                if (response.success) {
+                    Swal.fire({
+                        title: 'Conexión Exitosa',
+                        text: 'La conexión a la base de datos está funcionando correctamente',
+                        icon: 'success',
+                        confirmButtonColor: '#d4a574'
+                    });
+                } else {
+                    Swal.fire({
+                        title: 'Error de Conexión',
+                        text: response.error || 'Error desconocido',
+                        icon: 'error',
+                        confirmButtonColor: '#d4a574'
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                showLoading(false);
+                debugLog('ERROR en test de conexión:', error);
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Error al probar la conexión: ' + error,
+                    icon: 'error',
+                    confirmButtonColor: '#d4a574'
+                });
+            }
+        });
+    }
+
+    function testDirecto() {
+        debugLog('=== TEST DIRECTO ===');
+        debugLog('Enviando request a /Categorias/ConsultaCategorias...');
+
+        $.ajax({
+            url: '/Categorias/ConsultaCategorias',
+            type: 'GET',
+            success: function (data) {
+                debugLog('✅ Respuesta recibida:');
+                debugLog('Tipo de respuesta: ' + typeof data);
+                debugLog('Datos: ' + JSON.stringify(data, null, 2));
+
+                if (data && data.data) {
+                    debugLog('✅ Propiedad data existe con ' + data.data.length + ' elementos');
+                    if (data.data.length > 0) {
+                        debugLog('✅ Primer elemento: ' + JSON.stringify(data.data[0], null, 2));
+
+                        // Mostrar en alerta
+                        Swal.fire({
+                            title: 'Datos encontrados',
+                            text: `Se encontraron ${data.data.length} categorías en la base de datos`,
+                            icon: 'success',
+                            confirmButtonColor: '#d4a574'
+                        });
+                    } else {
+                        debugLog('❌ Array de data está vacío');
+                        Swal.fire({
+                            title: 'Sin datos',
+                            text: 'La consulta fue exitosa pero no hay categorías en la base de datos',
+                            icon: 'info',
+                            confirmButtonColor: '#6f42c1'
+                        });
+                    }
+                } else {
+                    debugLog('❌ Propiedad data no existe o es null');
+                    Swal.fire({
+                        title: 'Error en estructura',
+                        text: 'La respuesta no tiene la estructura esperada',
+                        icon: 'error',
+                        confirmButtonColor: '#6f42c1'
+                    });
+                }
+            },
+            error: function (xhr, status, error) {
+                debugLog('❌ ERROR AJAX:');
+                debugLog('Status: ' + status);
+                debugLog('Error: ' + error);
+                debugLog('Response: ' + xhr.responseText);
+
+                Swal.fire({
+                    title: 'Error de conexión',
+                    text: 'Error: ' + error,
+                    icon: 'error',
+                    confirmButtonColor: '#6f42c1'
+                });
+            }
+        });
+    }
+
+    function toggleDebug() {
+        debugMode = !debugMode;
+        let panel = $('#debugPanel');
+
+        if (debugMode) {
+            panel.show();
+            debugLog('Debug mode activado');
+        } else {
+            panel.hide();
+            debugLog('Debug mode desactivado');
+        }
+    }
+
+    function debugLog(message, data = null) {
+        let timestamp = new Date().toLocaleTimeString();
+        let logMessage = `[${timestamp}] ${message}`;
+
+        console.log(logMessage, data || '');
+
+        if (debugMode) {
+            let debugContent = $('#debugContent');
+            let currentContent = debugContent.html();
+            let newLine = `<div>${logMessage}${data ? ' - ' + JSON.stringify(data) : ''}</div>`;
+            debugContent.html(newLine + currentContent);
+
+            // Mantener solo las últimas 20 líneas
+            let lines = debugContent.children();
+            if (lines.length > 20) {
+                lines.slice(20).remove();
+            }
+        }
+    }
+
+    // Funciones globales para debugging
+    window.recargarTabla = function () {
+        debugLog('Recargando tabla manualmente...');
+        if (tabla) {
+            tabla.ajax.reload();
+        } else {
+            debugLog('ERROR: Tabla no inicializada');
+        }
+    };
+
+    window.verificarDatos = function () {
+        debugLog('Verificando datos en la tabla...');
+        $.ajax({
+            url: '/Categorias/ConsultaCategorias',
+            type: 'GET',
+            success: function (response) {
+                debugLog('Datos actuales:', response);
+                console.table(response.data);
+            },
+            error: function (xhr, status, error) {
+                debugLog('ERROR al verificar datos:', error);
+            }
+        });
+    };
+</script>

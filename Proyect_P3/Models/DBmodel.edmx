@@ -25,6 +25,15 @@
           <Property Name="FechaRegistro" Type="datetime" />
           <Property Name="Imagen" Type="varbinary(max)" />
         </EntityType>
+        <EntityType Name="MOTORES">
+          <Key>
+            <PropertyRef Name="IdMotor" />
+          </Key>
+          <Property Name="IdMotor" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="nchar" MaxLength="50" />
+          <Property Name="Combustible" Type="nchar" MaxLength="50" />
+          <Property Name="Transmisión" Type="nchar" MaxLength="50" />
+        </EntityType>
         <EntityType Name="mSTATUS">
           <Key>
             <PropertyRef Name="idStatus" />
@@ -82,6 +91,7 @@
         <EntityContainer Name="DBMVCModelStoreContainer">
           <EntitySet Name="CATEGORIAS" EntityType="Self.CATEGORIAS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MARCAS" EntityType="Self.MARCAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MOTORES" EntityType="Self.MOTORES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mSTATUS" EntityType="Self.mSTATUS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TIPDOC" EntityType="Self.TIPDOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TIPOS" EntityType="Self.TIPOS" Schema="dbo" store:Type="Tables" />
@@ -139,6 +149,7 @@
           <EntitySet Name="CATEGORIAS" EntityType="DBMVCModel.CATEGORIA" />
           <EntitySet Name="MARCAS" EntityType="DBMVCModel.MARCA" />
           <EntitySet Name="TIPOS" EntityType="DBMVCModel.TIPOS" />
+          <EntitySet Name="MOTORES" EntityType="DBMVCModel.MOTORE" />
         </EntityContainer>
         <EntityType Name="TIPDOC">
           <Key>
@@ -182,6 +193,15 @@
           <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Estatus" Type="Boolean" />
           <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MOTORE">
+          <Key>
+            <PropertyRef Name="IdMotor" />
+          </Key>
+          <Property Name="IdMotor" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Combustible" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <Property Name="Transmisión" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -254,6 +274,16 @@
                 <ScalarProperty Name="Imagen" ColumnName="Imagen" />
                 <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
                 <ScalarProperty Name="IDTipo" ColumnName="IDTipo" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MOTORES">
+            <EntityTypeMapping TypeName="DBMVCModel.MOTORE">
+              <MappingFragment StoreEntitySet="MOTORES">
+                <ScalarProperty Name="Transmisión" ColumnName="Transmisión" />
+                <ScalarProperty Name="Combustible" ColumnName="Combustible" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IdMotor" ColumnName="IdMotor" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
