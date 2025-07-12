@@ -5,6 +5,26 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DBMVCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="CATEGORIAS">
+          <Key>
+            <PropertyRef Name="IdCategoria" />
+          </Key>
+          <Property Name="IdCategoria" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="100" />
+          <Property Name="Estatus" Type="bit" />
+          <Property Name="Imagen" Type="varbinary(max)" />
+          <Property Name="FechaRegistro" Type="datetime" />
+        </EntityType>
+        <EntityType Name="MARCAS">
+          <Key>
+            <PropertyRef Name="IdMarca" />
+          </Key>
+          <Property Name="IdMarca" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="100" />
+          <Property Name="Estatus" Type="bit" />
+          <Property Name="FechaRegistro" Type="datetime" />
+          <Property Name="Imagen" Type="varbinary(max)" />
+        </EntityType>
         <EntityType Name="mSTATUS">
           <Key>
             <PropertyRef Name="idStatus" />
@@ -24,6 +44,16 @@
           <Property Name="CTADEBITO" Type="nvarchar" MaxLength="20" />
           <Property Name="CTACREDITO" Type="nvarchar" MaxLength="20" />
           <Property Name="ESTATUS" Type="int" />
+        </EntityType>
+        <EntityType Name="TIPOS">
+          <Key>
+            <PropertyRef Name="IDTipo" />
+          </Key>
+          <Property Name="IDTipo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Descripcion" Type="varchar" MaxLength="100" />
+          <Property Name="Imagen" Type="image" />
+          <Property Name="Estatus" Type="bit" />
+          <Property Name="FechaRegistro" Type="datetime" />
         </EntityType>
         <EntityType Name="USERS">
           <Key>
@@ -50,8 +80,11 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="DBMVCModelStoreContainer">
+          <EntitySet Name="CATEGORIAS" EntityType="Self.CATEGORIAS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MARCAS" EntityType="Self.MARCAS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mSTATUS" EntityType="Self.mSTATUS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TIPDOC" EntityType="Self.TIPDOC" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TIPOS" EntityType="Self.TIPOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USERS" EntityType="Self.USERS" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_USERS_mSTATUS" Association="Self.FK_USERS_mSTATUS">
             <End Role="mSTATUS" EntitySet="mSTATUS" />
@@ -103,6 +136,9 @@
             <End Role="USERS" EntitySet="USERS" />
           </AssociationSet>
           <EntitySet Name="TIPDOCs" EntityType="DBMVCModel.TIPDOC" />
+          <EntitySet Name="CATEGORIAS" EntityType="DBMVCModel.CATEGORIA" />
+          <EntitySet Name="MARCAS" EntityType="DBMVCModel.MARCA" />
+          <EntitySet Name="TIPOS" EntityType="DBMVCModel.TIPOS" />
         </EntityContainer>
         <EntityType Name="TIPDOC">
           <Key>
@@ -116,6 +152,36 @@
           <Property Name="CTADEBITO" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="CTACREDITO" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
           <Property Name="ESTATUS" Type="Int32" />
+        </EntityType>
+        <EntityType Name="CATEGORIA">
+          <Key>
+            <PropertyRef Name="IdCategoria" />
+          </Key>
+          <Property Name="IdCategoria" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Estatus" Type="Boolean" />
+          <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="MARCA">
+          <Key>
+            <PropertyRef Name="IdMarca" />
+          </Key>
+          <Property Name="IdMarca" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Estatus" Type="Boolean" />
+          <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+          <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="TIPOS">
+          <Key>
+            <PropertyRef Name="IDTipo" />
+          </Key>
+          <Property Name="IDTipo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Descripcion" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Estatus" Type="Boolean" />
+          <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
         </EntityType>
       </Schema>
     </edmx:ConceptualModels>
@@ -155,6 +221,39 @@
                 <ScalarProperty Name="ORIGEN" ColumnName="ORIGEN" />
                 <ScalarProperty Name="TIPDOC1" ColumnName="TIPDOC" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CATEGORIAS">
+            <EntityTypeMapping TypeName="DBMVCModel.CATEGORIA">
+              <MappingFragment StoreEntitySet="CATEGORIAS">
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+                <ScalarProperty Name="Estatus" ColumnName="Estatus" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MARCAS">
+            <EntityTypeMapping TypeName="DBMVCModel.MARCA">
+              <MappingFragment StoreEntitySet="MARCAS">
+                <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Estatus" ColumnName="Estatus" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IdMarca" ColumnName="IdMarca" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TIPOS">
+            <EntityTypeMapping TypeName="DBMVCModel.TIPOS">
+              <MappingFragment StoreEntitySet="TIPOS">
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Estatus" ColumnName="Estatus" />
+                <ScalarProperty Name="Imagen" ColumnName="Imagen" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="IDTipo" ColumnName="IDTipo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

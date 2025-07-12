@@ -9,6 +9,9 @@
         <EntityTypeShape EntityType="DBMVCModel.USER" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="DBMVCModel.FK_USERS_mSTATUS" ManuallyRouted="false" />
         <EntityTypeShape EntityType="DBMVCModel.TIPDOC" Width="1.5" PointX="6.125" PointY="1.125" />
+        <EntityTypeShape EntityType="DBMVCModel.CATEGORIA" Width="1.5" PointX="0.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DBMVCModel.MARCA" Width="1.5" PointX="2.75" PointY="4.75" />
+        <EntityTypeShape EntityType="DBMVCModel.TIPOS" Width="1.5" PointX="4.75" PointY="4.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -136,11 +136,19 @@
     <Compile Include="Controllers\AccederController.cs" />
     <Compile Include="Controllers\CerrarSeccionController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MarcasController.cs" />
     <Compile Include="Controllers\TipdocController.cs" />
+    <Compile Include="Controllers\TiposController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Filters\VerificaSession.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
+    </Compile>
+    <Compile Include="Metodos\Conexion.cs" />
+    <Compile Include="Metodos\MarcasMetodos.cs" />
+    <Compile Include="Metodos\TiposMetodos.cs" />
+    <Compile Include="Models\CATEGORIA.cs">
+      <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\DBmodel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -157,17 +165,25 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DBmodel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\MARCA.cs">
+      <DependentUpon>DBmodel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\mSTATU.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\TIPDOC.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\TIPOS.cs">
+      <DependentUpon>DBmodel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\USER.cs">
       <DependentUpon>DBmodel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\ViewModels\Marcas.cs" />
     <Compile Include="Models\ViewModels\QueryViewModels.cs" />
     <Compile Include="Models\ViewModels\TipdocQueryViewModels.cs" />
+    <Compile Include="Models\ViewModels\Tipos.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\PdfGenerator.cs" />
   </ItemGroup>
@@ -252,10 +268,14 @@
     <Content Include="Views\Tipdoc\Add.cshtml" />
     <Content Include="Views\Tipdoc\Details.cshtml" />
     <Content Include="Views\Tipdoc\Edit.cshtml" />
+    <Content Include="Views\Tipos\Tipos.cshtml" />
+    <Content Include="Views\Marcas\Marcas.cshtml" />
+    <Content Include="Views\Catalogo\Catalogo.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\CerrarSeccion\" />
+    <Folder Include="Views\Vehiculos\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

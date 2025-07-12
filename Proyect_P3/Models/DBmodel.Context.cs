@@ -28,5 +28,8 @@ namespace Proyect_P3.Models
         public DbSet<mSTATU> mSTATUS { get; set; }
         public DbSet<USER> USERS { get; set; }
         public DbSet<TIPDOC> TIPDOCs { get; set; }
+        public DbSet<CATEGORIA> CATEGORIAS { get; set; }
+        public DbSet<MARCA> MARCAS { get; set; }
+        public DbSet<TIPOS> TIPOS { get; set; }
     }
 }
