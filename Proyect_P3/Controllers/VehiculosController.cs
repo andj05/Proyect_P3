@@ -104,11 +104,14 @@ namespace Proyect_P3.Controllers
                 }
 
                 bool respuesta = false;
+                int idInsertado = oVehiculo.IDVehiculo;
 
                 if (oVehiculo.IDVehiculo == 0)
                 {
                     System.Diagnostics.Debug.WriteLine("Ejecutando REGISTRAR...");
                     respuesta = VehiculosMetodos.Instance.Registrar(oVehiculo);
+                    // Asumiendo que Registrar actualiza oVehiculo.IDVehiculo con el nuevo ID
+                    idInsertado = oVehiculo.IDVehiculo;
                 }
                 else
                 {
@@ -120,7 +123,7 @@ namespace Proyect_P3.Controllers
 
                 if (respuesta)
                 {
-                    return Json(new { respuesta = true, mensaje = "Vehículo guardado exitosamente" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { respuesta = true, mensaje = "Vehículo guardado exitosamente", idVehiculo = idInsertado }, JsonRequestBehavior.AllowGet);
                 }
                 else
                 {
@@ -483,8 +486,6 @@ namespace Proyect_P3.Controllers
             }
         }
 
-        // 📸 MÉTODOS EN VehiculosController.cs PARA MANEJAR FOTOS
-
         // Añade estos métodos a tu VehiculosController.cs existente:
 
         [HttpPost]
@@ -494,37 +495,27 @@ namespace Proyect_P3.Controllers
             {
                 System.Diagnostics.Debug.WriteLine($"=== SUBIENDO FOTOS PARA VEHÍCULO {idVehiculo} ===");
 
-                // Obtener el ID del usuario (debes adaptarlo según tu sistema de sesiones)
                 int idUsuario = Session["UsuarioID"] != null ? Convert.ToInt32(Session["UsuarioID"]) : 1;
-
                 List<byte[]> fotos = new List<byte[]>();
 
-                // Procesar cada archivo subido
                 for (int i = 0; i < Request.Files.Count; i++)
                 {
                     HttpPostedFileBase archivo = Request.Files[i];
-
                     if (archivo != null && archivo.ContentLength > 0)
                     {
-                        // Validar tipo de archivo
                         if (!EsTipoImagenValido(archivo.ContentType))
                         {
                             return Json(new { respuesta = false, error = $"Tipo de archivo no válido: {archivo.FileName}" }, JsonRequestBehavior.AllowGet);
                         }
-
-                        // Validar tamaño (máximo 5MB por imagen)
                         if (archivo.ContentLength > 5 * 1024 * 1024)
                         {
                             return Json(new { respuesta = false, error = $"Archivo muy grande: {archivo.FileName}. Máximo 5MB." }, JsonRequestBehavior.AllowGet);
                         }
-
-                        // Convertir archivo a byte[]
                         using (System.IO.BinaryReader reader = new System.IO.BinaryReader(archivo.InputStream))
                         {
                             byte[] fotoBytes = reader.ReadBytes(archivo.ContentLength);
                             fotos.Add(fotoBytes);
                         }
-
                         System.Diagnostics.Debug.WriteLine($"✅ Archivo procesado: {archivo.FileName} ({archivo.ContentLength} bytes)");
                     }
                 }
@@ -535,9 +526,8 @@ namespace Proyect_P3.Controllers
                 }
 
                 // Guardar fotos en la base de datos
-                bool resultado = ArticulosFotosMetodos.Instance.GuardarFotos(idUsuario, idVehiculo, fotos);
-
-                if (resultado)
+                var resultado = ArticulosFotosMetodos.Instance.GuardarFotos(idVehiculo, fotos);
+                if (resultado.Exito)
                 {
                     return Json(new
                     {
@@ -548,7 +538,7 @@ namespace Proyect_P3.Controllers
                 }
                 else
                 {
-                    return Json(new { respuesta = false, error = "Error al guardar las fotos en la base de datos" }, JsonRequestBehavior.AllowGet);
+                    return Json(new { respuesta = false, error = "Error al guardar las fotos: " + resultado.MensajeError }, JsonRequestBehavior.AllowGet);
                 }
             }
             catch (Exception ex)

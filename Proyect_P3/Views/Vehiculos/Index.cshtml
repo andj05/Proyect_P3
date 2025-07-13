@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Anddy Motors - Compra y Vende Vehículos";
 }
 
@@ -7,9 +6,9 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" rel="stylesheet">
 
 <style>
-
     /* Header Principal */
     .main-header {
         background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
@@ -267,6 +266,18 @@
             background: linear-gradient(135deg, #ffc107, #ff8c00);
         }
 
+    .photos-badge {
+        position: absolute;
+        top: 15px;
+        left: 15px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
     .vehicle-info {
         padding: 1.5rem;
     }
@@ -381,25 +392,41 @@
         font-weight: 700;
     }
 
-    .search-section {
-        padding: 1.5rem;
+    /* 🎯 MODAL DE DETALLES MEJORADO */
+    .vehicle-detail-image {
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+        border-radius: 15px;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    /* 📸 CARRUSEL DE FOTOS */
+    .photos-carousel {
         margin-top: 1rem;
     }
 
-    .vehicle-actions {
-        flex-direction: column;
+    .carousel-thumbnail {
+        width: 80px;
+        height: 60px;
+        object-fit: cover;
+        border-radius: 8px;
+        cursor: pointer;
+        margin: 0 5px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
     }
 
-    .section-title {
-        font-size: 1.5rem;
+    .carousel-thumbnail:hover,
+    .carousel-thumbnail.active {
+        border-color: #ffefc2;
+        transform: scale(1.05);
     }
-
-    }
-
 
     .fade-in-up {
         animation: fadeInUp 0.6s ease-out;
     }
+
 
     /* Filters Active State */
     .filter-active {
@@ -432,85 +459,199 @@
         letter-spacing: 0.5px;
     }
 
-    /* Área de Upload */
+    /* 🎨 CSS MEJORADO PARA SISTEMA DE FOTOS - ANDDY MOTORS */
+    /* 📁 Área de Upload Principal */
     .upload-area {
-        border: 2px dashed #dee2e6;
-        border-radius: 15px;
+        border: 3px dashed #dee2e6;
+        border-radius: 20px;
         padding: 2rem;
         text-align: center;
-        transition: all 0.3s ease;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         cursor: pointer;
         min-height: 200px;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .upload-area::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 239, 194, 0.3), transparent);
+        transition: left 0.8s;
     }
 
     .upload-area:hover {
         border-color: #ffefc2;
-        background-color: rgba(255, 239, 194, 0.1);
+        background: linear-gradient(135deg, rgba(255, 239, 194, 0.1) 0%, rgba(255, 245, 214, 0.2) 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 239, 194, 0.3);
+    }
+
+    .upload-area:hover::before {
+        left: 100%;
     }
 
     .upload-area.dragover {
         border-color: #ffefc2;
-        background-color: rgba(255, 239, 194, 0.2);
-        transform: scale(1.02);
+        background: linear-gradient(135deg, rgba(255, 239, 194, 0.2) 0%, rgba(255, 245, 214, 0.3) 100%);
+        transform: scale(1.02) translateY(-3px);
+        box-shadow: 0 12px 35px rgba(255, 239, 194, 0.4);
+        border-style: solid;
     }
 
-    /* Preview de Fotos */
+    .upload-content {
+        z-index: 2;
+        position: relative;
+    }
+
+    .upload-content i {
+        color: #ffefc2;
+        margin-bottom: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .upload-area:hover .upload-content i {
+        transform: scale(1.1);
+        color: #e6d49a;
+    }
+
+    /* 📸 Preview de Fotos Mejorado */
     .fotos-preview {
-        border: 1px solid #dee2e6;
-        border-radius: 15px;
-        padding: 1rem;
-        min-height: 200px;
-        max-height: 300px;
+        border: 2px solid #e9ecef;
+        border-radius: 20px;
+        padding: 1.5rem;
+        min-height: 250px;
+        max-height: 400px;
         overflow-y: auto;
+        background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
+    .fotos-preview::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .fotos-preview::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
+
+    .fotos-preview::-webkit-scrollbar-thumb {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        border-radius: 10px;
+    }
+
+    .fotos-preview::-webkit-scrollbar-thumb:hover {
+        background: linear-gradient(135deg, #e6d49a, #f0e6c1);
+    }
+
+    /* 🖼️ Sin Fotos Placeholder */
     .no-photos {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 180px;
+        height: 200px;
+        color: #6c757d;
+        background: repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 10px,
+            rgba(255, 239, 194, 0.1) 10px,
+            rgba(255, 239, 194, 0.1) 20px
+        );
+        border-radius: 15px;
+        border: 2px dashed #dee2e6;
     }
 
-    /* Miniatura de Foto */
+    .no-photos i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        opacity: 0.5;
+        color: #ffefc2;
+    }
+
+    /* 📷 Miniatura de Foto Mejorada */
     .photo-thumbnail {
         position: relative;
         display: inline-block;
-        margin: 5px;
-        border-radius: 8px;
+        margin: 8px;
+        border-radius: 15px;
         overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 3px solid transparent;
+        background: linear-gradient(white, white) padding-box,
+                    linear-gradient(135deg, #ffefc2, #fff5d6) border-box;
     }
 
+    .photo-thumbnail:hover {
+        transform: translateY(-3px) scale(1.02);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .photo-thumbnail img {
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .photo-thumbnail:hover img {
+        transform: scale(1.05);
+    }
+
+    /* 🗑️ Botón Eliminar Foto Mejorado */
     .photo-remove {
         position: absolute;
-        top: -8px;
-        right: -8px;
-        background: #dc3545;
+        top: -10px;
+        right: -10px;
+        background: linear-gradient(135deg, #dc3545, #c82333);
         color: white;
         border: none;
         border-radius: 50%;
-        width: 24px;
-        height: 24px;
-        font-size: 12px;
+        width: 28px;
+        height: 28px;
+        font-size: 14px;
         cursor: pointer;
         display: flex;
         align-items: center;
         justify-content: center;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 10;
+        border: 2px solid white;
     }
 
     .photo-remove:hover {
-        background: #c82333;
-        transform: scale(1.1);
+        background: linear-gradient(135deg, #c82333, #bd2130);
+        transform: scale(1.15);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
     }
 
-    /* Estado de carga */
+    .photo-remove:active {
+        transform: scale(0.95);
+    }
+
+    .photo-remove:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    /* 📊 Estados de Foto */
     .photo-thumbnail.uploading {
-        opacity: 0.6;
+        opacity: 0.7;
+        position: relative;
     }
 
     .photo-thumbnail.uploading::after {
@@ -519,18 +660,198 @@
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%);
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.8);
+        border-top: 3px solid #ffefc2;
+        border-radius: 50%;
+        animation: uploadSpin 1s linear infinite;
+        z-index: 5;
+    }
+
+    /* 🎯 Iconos de Estado */
+    .estado-icon {
+        position: absolute;
+        bottom: 5px;
+        right: 5px;
         width: 20px;
         height: 20px;
-        border: 2px solid #fff;
-        border-top: 2px solid transparent;
         border-radius: 50%;
-        animation: spin 1s linear infinite;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 10px;
+        z-index: 5;
     }
+
+    .success-icon {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    .error-icon {
+        background: linear-gradient(135deg, #dc3545, #c82333);
+        color: white;
+        box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
+    }
+
+    .uploading-icon {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        box-shadow: 0 2px 8px rgba(255, 239, 194, 0.3);
+    }
+
+    /* 📈 Barra de Progreso Mejorada */
+    #uploadProgress {
+        border-radius: 15px;
+        overflow: hidden;
+        background: #e9ecef;
+        height: 12px;
+        box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #uploadProgress .progress-bar {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        border-radius: 15px;
+        transition: width 0.3s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #uploadProgress .progress-bar::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        animation: progressShine 2s infinite;
+    }
+
+
+    /* 📝 Estado de Upload */
+    #uploadStatus .alert {
+        border-radius: 15px;
+        border: none;
+        font-weight: 600;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    #uploadStatus .alert-success {
+        background: linear-gradient(135deg, rgba(40, 167, 69, 0.1), rgba(32, 201, 151, 0.1));
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    #uploadStatus .alert-danger {
+        background: linear-gradient(135deg, rgba(220, 53, 69, 0.1), rgba(200, 35, 51, 0.1));
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    /* 🎨 Mejoras para Botones */
+    .btn-modern {
+        border-radius: 25px;
+        font-weight: 600;
+        padding: 12px 24px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: none;
+        font-size: 0.95rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-modern::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-modern:hover::before {
+        left: 100%;
+    }
+
+    /* 📤 Botón Seleccionar Fotos Específico */
+    .btn-select-photos {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6) !important;
+        color: #2c2c2c !important;
+        border: 2px solid transparent !important;
+        box-shadow: 0 4px 15px rgba(255, 239, 194, 0.3) !important;
+    }
+
+    .btn-select-photos:hover {
+        background: linear-gradient(135deg, #e6d49a, #f0e6c1) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(255, 239, 194, 0.5) !important;
+        color: #2c2c2c !important;
+    }
+
+    /* 🎯 Input File Oculto Mejorado */
+    #fileInput {
+        position: absolute !important;
+        left: -9999px !important;
+        opacity: 0 !important;
+        width: 1px !important;
+        height: 1px !important;
+        overflow: hidden !important;
+    }
+
+    /* 🔧 Contador de Fotos */
+    #contadorFotos {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 0.9rem;
+        display: inline-block;
+        margin-top: 10px;
+        box-shadow: 0 2px 8px rgba(255, 239, 194, 0.3);
+    }
+
+
+        .upload-content i {
+            font-size: 2rem;
+        }
+
+        .fotos-preview {
+            min-height: 200px;
+            max-height: 300px;
+            padding: 1rem;
+        }
 
         .photo-thumbnail img {
             width: 60px;
             height: 60px;
         }
+
+        .photo-remove {
+            width: 24px;
+            height: 24px;
+            font-size: 12px;
+            top: -8px;
+            right: -8px;
+        }
+
+        .vehicle-actions {
+            flex-direction: column;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+        }
+    }
+    .photo-thumbnail {
+        animation: photoAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 </style>
 
@@ -740,12 +1061,14 @@
                 <div class="modal-body">
                     <form id="formPublicar">
                         <input type="hidden" id="txtIDVehiculo" value="0">
-                        <input type="hidden" id="txtIDUsuario" value="1"> <!-- Se debe obtener del usuario logueado -->
+                        <input type="hidden" id="txtIDUsuario" value="1">
 
                         <div class="row g-3">
                             <!-- Información Básica -->
                             <div class="col-12">
-                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-info-circle me-2"></i>Información Básica</h6>
+                                <h6 class="text-primary border-bottom pb-2">
+                                    <i class="fas fa-info-circle me-2"></i>Información Básica
+                                </h6>
                             </div>
 
                             <div class="col-md-6">
@@ -778,7 +1101,8 @@
 
                             <div class="col-md-6">
                                 <label class="form-label">Modelo *</label>
-                                <input type="text" class="form-control" id="txtModelo" placeholder="Ej: Civic, Corolla, Mustang" required>
+                                <input type="text" class="form-control" id="txtModelo"
+                                       placeholder="Ej: Civic, Corolla, Mustang" required>
                             </div>
 
                             <div class="col-md-6">
@@ -790,12 +1114,15 @@
 
                             <!-- Detalles del Vehículo -->
                             <div class="col-12 mt-4">
-                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-cogs me-2"></i>Detalles del Vehículo</h6>
+                                <h6 class="text-primary border-bottom pb-2">
+                                    <i class="fas fa-cogs me-2"></i>Detalles del Vehículo
+                                </h6>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Color</label>
-                                <input type="text" class="form-control" id="txtColor" placeholder="Ej: Blanco, Negro, Rojo">
+                                <input type="text" class="form-control" id="txtColor"
+                                       placeholder="Ej: Blanco, Negro, Rojo">
                             </div>
 
                             <div class="col-md-6">
@@ -810,32 +1137,38 @@
 
                             <div class="col-md-6">
                                 <label class="form-label">Placa</label>
-                                <input type="text" class="form-control" id="txtPlaca" placeholder="Ej: A123456">
+                                <input type="text" class="form-control" id="txtPlaca"
+                                       placeholder="Ej: A123456">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Kilometraje</label>
-                                <input type="number" class="form-control" id="txtKilometraje" placeholder="Ej: 45000">
+                                <input type="number" class="form-control" id="txtKilometraje"
+                                       placeholder="Ej: 45000">
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Precio *</label>
-                                <input type="number" class="form-control" id="txtPrecio" placeholder="Ej: 850000" required>
+                                <input type="number" class="form-control" id="txtPrecio"
+                                       placeholder="Ej: 850000" required>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Número de Chasis</label>
-                                <input type="text" class="form-control" id="txtChasis" placeholder="Número de chasis">
+                                <input type="text" class="form-control" id="txtChasis"
+                                       placeholder="Número de chasis">
                             </div>
 
                             <!-- Ubicación -->
                             <div class="col-12 mt-4">
-                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-map-marker-alt me-2"></i>Ubicación</h6>
+                                <h6 class="text-primary border-bottom pb-2">
+                                    <i class="fas fa-map-marker-alt me-2"></i>Ubicación
+                                </h6>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Provincia *</label>
-                                <select class="form-select" id="selectProvinciaModal" required onchange="cargarMunicipios()">
+                                <select class="form-select" id="selectProvinciaModal" required>
                                     <option value="">Seleccionar provincia</option>
                                 </select>
                             </div>
@@ -847,13 +1180,17 @@
                                 </select>
                             </div>
 
+                            <!-- Información Adicional -->
                             <div class="col-12 mt-4">
-                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-plus-circle me-2"></i>Información Adicional</h6>
+                                <h6 class="text-primary border-bottom pb-2">
+                                    <i class="fas fa-plus-circle me-2"></i>Información Adicional
+                                </h6>
                             </div>
 
                             <div class="col-md-6">
                                 <label class="form-label">Teléfono de Contacto</label>
-                                <input type="tel" class="form-control" id="txtContacto" placeholder="Ej: 809-555-0123">
+                                <input type="tel" class="form-control" id="txtContacto"
+                                       placeholder="Ej: 809-555-0123">
                             </div>
 
                             <div class="col-md-6">
@@ -877,7 +1214,7 @@
                                           placeholder="Información adicional que consideres importante"></textarea>
                             </div>
 
-                            <!-- 📸 SECCIÓN DE FOTOS DEL VEHÍCULO -->
+                            <!-- 📸 SECCIÓN DE FOTOS -->
                             <div class="col-12 mt-4">
                                 <h6 class="text-primary border-bottom pb-2">
                                     <i class="fas fa-camera me-2"></i>Fotos del Vehículo
@@ -888,14 +1225,31 @@
                                 <div class="row g-3">
                                     <!-- Área de Subir Fotos -->
                                     <div class="col-md-6">
-                                        <label class="form-label">Subir Fotos (Máximo 10 fotos)</label>
+                                        <label class="form-label">
+                                            <i class="fas fa-upload me-2"></i>Subir Fotos (Máximo 10 fotos)
+                                        </label>
+
+                                        <!-- INPUT FILE -->
+                                        <input type="file"
+                                               id="fileInput"
+                                               name="fotosVehiculo"
+                                               multiple
+                                               accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                               style="display: none;">
+
+                                        <!-- ÁREA DE UPLOAD -->
                                         <div class="upload-area" id="uploadArea">
                                             <div class="upload-content">
                                                 <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
-                                                <p class="mb-2">Arrastra las fotos aquí o haz clic para seleccionar</p>
-                                                <p class="text-muted small">Formatos: JPG, PNG, GIF. Máximo 5MB por foto</p>
-                                                <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
-                                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('fileInput').click()">
+                                                <h6 class="mb-2">Arrastra las fotos aquí</h6>
+                                                <p class="text-muted small mb-3">o haz clic para seleccionar</p>
+                                                <p class="text-muted small mb-3">Formatos: JPG, PNG, GIF, WEBP</p>
+                                                <p class="text-muted small mb-3">Máximo 5MB por foto</p>
+
+                                                <!-- BOTÓN -->
+                                                <button type="button"
+                                                        class="btn btn-outline-primary btn-sm btn-select-photos"
+                                                        id="btnSeleccionarFotos">
                                                     <i class="fas fa-plus me-1"></i>Seleccionar Fotos
                                                 </button>
                                             </div>
@@ -904,11 +1258,16 @@
 
                                     <!-- Preview de Fotos -->
                                     <div class="col-md-6">
-                                        <label class="form-label">Vista Previa</label>
+                                        <label class="form-label">
+                                            <i class="fas fa-images me-2"></i>Vista Previa
+                                            <span id="contadorFotos" class="badge bg-secondary ms-2">0/10 fotos</span>
+                                        </label>
+
                                         <div id="fotosPreview" class="fotos-preview">
                                             <div class="no-photos">
                                                 <i class="fas fa-images fa-2x text-muted"></i>
                                                 <p class="text-muted mb-0">No hay fotos seleccionadas</p>
+                                                <small class="text-muted">Las fotos aparecerán aquí</small>
                                             </div>
                                         </div>
                                     </div>
@@ -916,13 +1275,23 @@
 
                                 <!-- Barra de Progreso -->
                                 <div class="col-12 mt-3">
-                                    <div id="uploadProgress" class="progress" style="display: none;">
+                                    <div id="uploadProgress" class="progress" style="display: none; height: 12px;">
                                         <div class="progress-bar progress-bar-striped progress-bar-animated"
-                                             role="progressbar" style="width: 0%"></div>
+                                             role="progressbar"
+                                             style="width: 0%"></div>
                                     </div>
                                     <div id="uploadStatus" class="mt-2"></div>
+
+                                    <!-- Información Adicional -->
+                                    <div class="mt-2">
+                                        <small class="text-muted">
+                                            <i class="fas fa-info-circle me-1"></i>
+                                            <strong>Consejos:</strong> Usa fotos de buena calidad, incluye exterior, interior y motor del vehículo
+                                        </small>
+                                    </div>
                                 </div>
                             </div>
+
                         </div> <!-- Cerrar row g-3 -->
                     </form>
                 </div>
@@ -933,12 +1302,15 @@
                     <button type="button" class="btn btn-publish" id="btnGuardarVehiculo">
                         <i class="fas fa-save me-2"></i>Publicar Vehículo
                     </button>
+                    <button type="button" class="btn btn-outline-info" onclick="testFotosButton()">
+                        <i class="fas fa-bug me-2"></i>Test Fotos
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Modal Detalles del Vehículo -->
+    <!-- 🎯 MODAL DETALLES DEL VEHÍCULO CORREGIDO -->
     <div class="modal fade" id="modalDetalles" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
@@ -951,6 +1323,12 @@
                 <div class="modal-body">
                     <div id="detallesContent">
                         <!-- Se cargará dinámicamente -->
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-2">Cargando detalles del vehículo...</p>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -969,9 +1347,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
 
     <script>
-        // 🔧 JAVASCRIPT COMPLETO CON SISTEMA DE FOTOS INTEGRADO
+        // 🚀 JAVASCRIPT COMPLETO CORREGIDO - SISTEMA DE FOTOS FUNCIONANDO
 
         // Variables globales
         let vehiculosData = [];
@@ -998,12 +1377,375 @@
                     cargarVehiculos();
                     // 3. Configurar eventos
                     configurarEventos();
+                    // 4. 📸 Configurar eventos de fotos INMEDIATAMENTE
+                    configurarEventosFotosInmediato();
                 })
                 .catch(error => {
                     console.error('❌ Error en inicialización:', error);
                     mostrarError('Error al inicializar la aplicación');
                 });
         });
+
+        // 📸 CONFIGURACIÓN INMEDIATA DE EVENTOS DE FOTOS (SIN ESPERAR MODAL)
+        function configurarEventosFotosInmediato() {
+            console.log('📸 Configurando eventos de fotos INMEDIATAMENTE...');
+
+            // ✅ EVENTO PRINCIPAL: Input file change
+            $(document).off('change.fotos', '#fileInput').on('change.fotos', '#fileInput', function (e) {
+                console.log('📁 ¡CAMBIO EN FILE INPUT DETECTADO!', e.target.files.length, 'archivos');
+                if (e.target.files && e.target.files.length > 0) {
+                    manejarArchivosSeleccionados(e.target.files);
+                }
+            });
+
+            // ✅ EVENTO: Click en botón "Seleccionar Fotos"
+            $(document).off('click.fotosBtn').on('click.fotosBtn', 'button[onclick*="fileInput"]', function (e) {
+                console.log('🖱️ Click en botón Seleccionar Fotos detectado');
+                e.preventDefault();
+                e.stopPropagation();
+                $('#fileInput')[0].click();
+            });
+
+            // ✅ EVENTO: Click directo en área de upload
+            $(document).off('click.uploadArea', '#uploadArea').on('click.uploadArea', '#uploadArea', function (e) {
+                console.log('🖱️ Click en área de upload');
+                e.preventDefault();
+                e.stopPropagation();
+                $('#fileInput').trigger('click');
+            });
+
+            // ✅ DRAG & DROP
+            $(document)
+                .off('dragover.fotos dragleave.fotos drop.fotos', '#uploadArea')
+                .on('dragover.fotos', '#uploadArea', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).addClass('dragover');
+                    console.log('📂 Dragover detectado');
+                })
+                .on('dragleave.fotos', '#uploadArea', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('dragover');
+                })
+                .on('drop.fotos', '#uploadArea', function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    $(this).removeClass('dragover');
+
+                    console.log('📂 Drop detectado');
+
+                    if (e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.files) {
+                        console.log('📁 Archivos dropeados:', e.originalEvent.dataTransfer.files.length);
+                        manejarArchivosSeleccionados(e.originalEvent.dataTransfer.files);
+                    }
+                });
+
+            // ✅ EVENTO: Modal mostrado - reconfigurar eventos específicos
+            $('#modalPublicar').off('shown.bs.modal.fotos').on('shown.bs.modal.fotos', function () {
+                console.log('📸 Modal mostrado - verificando elementos...');
+
+                setTimeout(() => {
+                    // Verificar que los elementos existen
+                    if ($('#fileInput').length === 0) {
+                        console.error('❌ #fileInput no encontrado en el DOM');
+                    } else {
+                        console.log('✅ #fileInput encontrado');
+                    }
+
+                    if ($('#uploadArea').length === 0) {
+                        console.error('❌ #uploadArea no encontrado en el DOM');
+                    } else {
+                        console.log('✅ #uploadArea encontrado');
+                    }
+
+                    // ✅ EVENTO ESPECÍFICO DENTRO DEL MODAL
+                    $('#modalPublicar').find('button[onclick*="fileInput"]').off('click.modalFotos').on('click.modalFotos', function (e) {
+                        console.log('🖱️ Click en botón desde DENTRO del modal');
+                        e.preventDefault();
+                        e.stopPropagation();
+                        document.getElementById('fileInput').click();
+                    });
+
+                }, 200);
+            });
+
+            console.log('✅ Eventos de fotos configurados globalmente');
+        }
+
+        // 📸 FUNCIÓN MEJORADA PARA MANEJAR ARCHIVOS
+        function manejarArchivosSeleccionados(archivos) {
+            console.log('📁 === PROCESANDO ARCHIVOS SELECCIONADOS ===');
+            console.log('📁 Cantidad de archivos:', archivos.length);
+            console.log('📁 Fotos ya seleccionadas:', fotosSeleccionadas.length);
+
+            // Validar cantidad total
+            if (fotosSeleccionadas.length + archivos.length > MAX_FOTOS) {
+                mostrarError(`Solo puedes subir máximo ${MAX_FOTOS} fotos. Ya tienes ${fotosSeleccionadas.length} seleccionadas.`);
+                return;
+            }
+
+            let archivosValidos = 0;
+
+            Array.from(archivos).forEach((archivo, index) => {
+                console.log(`📄 Procesando archivo ${index + 1}: ${archivo.name}`);
+
+                if (validarArchivo(archivo)) {
+                    procesarArchivo(archivo);
+                    archivosValidos++;
+                }
+            });
+
+            if (archivosValidos > 0) {
+                console.log(`✅ ${archivosValidos} archivos válidos procesados`);
+            } else {
+                console.log('❌ No se procesó ningún archivo válido');
+            }
+        }
+
+        function validarArchivo(archivo) {
+            console.log(`🔍 Validando archivo: ${archivo.name}`);
+
+            // Validar tipo
+            if (!archivo.type.match(/^image\/(jpeg|jpg|png|gif|bmp|webp)$/i)) {
+                mostrarError(`❌ Tipo de archivo no válido: ${archivo.name}. Solo se permiten imágenes.`);
+                return false;
+            }
+
+            // Validar tamaño
+            if (archivo.size > MAX_SIZE_MB * 1024 * 1024) {
+                mostrarError(`❌ Archivo muy grande: ${archivo.name}. Máximo ${MAX_SIZE_MB}MB.`);
+                return false;
+            }
+
+            console.log(`✅ Archivo válido: ${archivo.name}`);
+            return true;
+        }
+
+        function procesarArchivo(archivo) {
+            console.log(`📸 Procesando archivo: ${archivo.name}`);
+
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const fotoData = {
+                    id: Date.now() + Math.random(), // ID único temporal
+                    archivo: archivo,
+                    dataUrl: e.target.result,
+                    nombre: archivo.name,
+                    tamaño: archivo.size,
+                    estado: 'seleccionada' // Estados: seleccionada, subiendo, subida, error
+                };
+
+                fotosSeleccionadas.push(fotoData);
+
+                console.log(`📸 Foto agregada: ${fotoData.nombre}`);
+                console.log(`📊 Total fotos seleccionadas: ${fotosSeleccionadas.length}`);
+
+                actualizarPreviewFotos();
+            };
+
+            reader.onerror = function () {
+                console.error(`❌ Error al leer archivo: ${archivo.name}`);
+                mostrarError(`Error al procesar la imagen: ${archivo.name}`);
+            };
+
+            reader.readAsDataURL(archivo);
+        }
+
+        function actualizarPreviewFotos() {
+            console.log('🖼️ Actualizando preview de fotos...');
+
+            const container = $('#fotosPreview');
+
+            if (!container.length) {
+                console.error('❌ Container #fotosPreview no encontrado');
+                return;
+            }
+
+            if (fotosSeleccionadas.length === 0) {
+                container.html(`
+                    <div class="no-photos">
+                        <i class="fas fa-images fa-2x text-muted"></i>
+                        <p class="text-muted mb-0">No hay fotos seleccionadas</p>
+                    </div>
+                `);
+                console.log('📷 Preview limpiado - sin fotos');
+                return;
+            }
+
+            let html = '';
+            fotosSeleccionadas.forEach((foto, index) => {
+                const estadoClass = foto.estado === 'subiendo' ? 'uploading' : '';
+                const estadoIcon = getEstadoIcon(foto.estado);
+
+                html += `
+                    <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
+                        <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
+                        <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
+                                ${foto.estado === 'subiendo' ? 'disabled' : ''}>
+                            <i class="fas fa-times"></i>
+                        </button>
+                        ${estadoIcon}
+                    </div>
+                `;
+            });
+
+            container.html(html);
+
+            console.log(`🖼️ Preview actualizado con ${fotosSeleccionadas.length} fotos`);
+
+            // Actualizar contador si existe
+            const contador = $('#contadorFotos');
+            if (contador.length) {
+                contador.text(`${fotosSeleccionadas.length}/${MAX_FOTOS} fotos`);
+            }
+        }
+
+        function getEstadoIcon(estado) {
+            switch (estado) {
+                case 'subiendo':
+                    return '<div class="estado-icon uploading-icon"><i class="fas fa-spinner fa-spin"></i></div>';
+                case 'subida':
+                    return '<div class="estado-icon success-icon"><i class="fas fa-check"></i></div>';
+                case 'error':
+                    return '<div class="estado-icon error-icon"><i class="fas fa-exclamation-triangle"></i></div>';
+                default:
+                    return '';
+            }
+        }
+
+        function eliminarFotoSeleccionada(fotoId) {
+            console.log(`🗑️ Eliminando foto con ID: ${fotoId}`);
+
+            const cantidadAntes = fotosSeleccionadas.length;
+            fotosSeleccionadas = fotosSeleccionadas.filter(foto => foto.id !== fotoId);
+
+            console.log(`🗑️ Fotos antes: ${cantidadAntes}, después: ${fotosSeleccionadas.length}`);
+
+            actualizarPreviewFotos();
+        }
+
+        function limpiarFotos() {
+            console.log('🧹 Limpiando fotos...');
+
+            fotosSeleccionadas = [];
+            actualizarPreviewFotos();
+
+            // Limpiar input file
+            const fileInput = $('#fileInput');
+            if (fileInput.length) {
+                fileInput.val('');
+            }
+
+            // Limpiar progreso
+            $('#uploadProgress').hide();
+            $('#uploadStatus').empty();
+
+            console.log('🧹 Fotos limpiadas completamente');
+        }
+
+        // 📸 FUNCIÓN PARA SUBIR FOTOS AL SERVIDOR
+        function subirFotosVehiculo(idVehiculo) {
+            if (fotosSeleccionadas.length === 0) {
+                console.log('ℹ️ No hay fotos para subir');
+                return Promise.resolve(true);
+            }
+
+            return new Promise((resolve, reject) => {
+                console.log(`📤 Subiendo ${fotosSeleccionadas.length} fotos para vehículo ${idVehiculo}...`);
+
+                fotosSeleccionadas.forEach(foto => {
+                    foto.estado = 'subiendo';
+                });
+                actualizarPreviewFotos();
+
+                mostrarProgreso(0);
+
+                const formData = new FormData();
+                fotosSeleccionadas.forEach((foto, index) => {
+                    formData.append(`foto_${index}`, foto.archivo);
+                });
+
+                $.ajax({
+                    url: `/Vehiculos/SubirFotos?idVehiculo=${idVehiculo}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function () {
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (e) {
+                            if (e.lengthComputable) {
+                                const percentComplete = (e.loaded / e.total) * 100;
+                                mostrarProgreso(percentComplete);
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function (response) {
+                        console.log('📤 Respuesta subida fotos:', response);
+
+                        if (response && response.respuesta === true) {
+                            fotosSeleccionadas.forEach(foto => {
+                                foto.estado = 'subida';
+                            });
+                            actualizarPreviewFotos();
+
+                            mostrarProgreso(100);
+                            $('#uploadStatus').html(`
+                        <div class="alert alert-success">
+                            <i class="fas fa-check me-2"></i>
+                            ${response.cantidad || fotosSeleccionadas.length} foto(s) subida(s) exitosamente
+                        </div>
+                    `);
+
+                            resolve(true);
+                        } else {
+                            // Mostrar el error completo del backend
+                            let errorMsg = response && response.error ? response.error : 'Error al subir fotos';
+                            $('#uploadStatus').html(`
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error al subir fotos: ${errorMsg}
+                        </div>
+                    `);
+                            reject(errorMsg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Mostrar el error completo del backend si está disponible
+                        let errorMsg = xhr.responseText || error;
+                        $('#uploadStatus').html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Error al subir fotos: ${errorMsg}
+                    </div>
+                `);
+
+                        fotosSeleccionadas.forEach(foto => {
+                            foto.estado = 'error';
+                        });
+                        actualizarPreviewFotos();
+
+                        reject(errorMsg);
+                    }
+                });
+            });
+        }
+
+        function mostrarProgreso(porcentaje) {
+            const progressBar = $('#uploadProgress .progress-bar');
+            const progressContainer = $('#uploadProgress');
+
+            if (porcentaje > 0) {
+                progressContainer.show();
+                progressBar.css('width', porcentaje + '%');
+                progressBar.text(Math.round(porcentaje) + '%');
+            } else {
+                progressContainer.hide();
+            }
+        }
 
         // 🔧 MÉTODO CORREGIDO PARA CARGAR DATOS INICIALES
         function cargarDatosIniciales() {
@@ -1283,16 +2025,16 @@
                 const icon = obtenerIconoTipo(tipo.Descripcion);
 
                 const card = `
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="type-card" onclick="filtrarPorTipo('${tipo.Descripcion}')">
-                    <div class="type-icon">
-                        <i class="${icon}"></i>
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="type-card" onclick="filtrarPorTipo('${tipo.Descripcion}')">
+                        <div class="type-icon">
+                            <i class="${icon}"></i>
+                        </div>
+                        <div class="type-name">${tipo.Descripcion}</div>
+                        <div class="type-count">${count} vehículos</div>
                     </div>
-                    <div class="type-name">${tipo.Descripcion}</div>
-                    <div class="type-count">${count} vehículos</div>
                 </div>
-            </div>
-        `;
+            `;
                 container.append(card);
             });
 
@@ -1319,305 +2061,16 @@
                 }
 
                 const card = `
-            <div class="col-6 col-md-4 col-lg-3">
-                <div class="brand-logo" onclick="filtrarPorMarca('${marca.Descripcion}')">
-                    ${imagenHtml}
+                <div class="col-6 col-md-4 col-lg-3">
+                    <div class="brand-logo" onclick="filtrarPorMarca('${marca.Descripcion}')">
+                        ${imagenHtml}
+                    </div>
                 </div>
-            </div>
-        `;
+            `;
                 container.append(card);
             });
 
             console.log('✅ Marcas cargadas:', Math.min(marcasData.length, 8), 'elementos');
-        }
-
-        // 📸 FUNCIONES PARA MANEJO DE FOTOS
-
-        function configurarEventosFotos() {
-            console.log('📸 Configurando eventos de fotos...');
-
-            // 🔧 SOLUCIÓN: Configurar eventos cada vez que se abre el modal
-            $('#modalPublicar').off('shown.bs.modal.fotos').on('shown.bs.modal.fotos', function () {
-                console.log('🔧 Modal mostrado, configurando eventos de fotos...');
-
-                setTimeout(() => {
-                    const fileInput = $('#fileInput');
-                    const uploadArea = $('#uploadArea');
-                    const fotosPreview = $('#fotosPreview');
-
-                    console.log('🔍 Verificando elementos:');
-                    console.log('- fileInput:', fileInput.length > 0);
-                    console.log('- uploadArea:', uploadArea.length > 0);
-                    console.log('- fotosPreview:', fotosPreview.length > 0);
-
-                    if (fileInput.length === 0 || uploadArea.length === 0) {
-                        console.error('❌ Elementos de fotos no encontrados');
-                        return;
-                    }
-
-                    // ✅ EVENTO DEL INPUT FILE (FUNCIONA SIEMPRE)
-                    fileInput.off('change.fotos').on('change.fotos', function (e) {
-                        console.log('📁 ¡EVENTO DISPARADO! Archivos seleccionados:', e.target.files.length);
-                        if (e.target.files.length > 0) {
-                            manejarArchivosSeleccionados(e.target.files);
-                        }
-                    });
-
-                    // ✅ CLICK EN ÁREA DE UPLOAD
-                    uploadArea.off('click.fotos').on('click.fotos', function (e) {
-                        console.log('🖱️ Click en área de upload detectado');
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        // Método más directo
-                        document.getElementById('fileInput').click();
-                    });
-
-                    // ✅ DRAG & DROP
-                    uploadArea.off('dragover.fotos dragleave.fotos drop.fotos')
-                        .on('dragover.fotos', function (e) {
-                            e.preventDefault();
-                            $(this).addClass('dragover');
-                        })
-                        .on('dragleave.fotos', function (e) {
-                            e.preventDefault();
-                            $(this).removeClass('dragover');
-                        })
-                        .on('drop.fotos', function (e) {
-                            e.preventDefault();
-                            $(this).removeClass('dragover');
-                            if (e.originalEvent.dataTransfer?.files) {
-                                manejarArchivosSeleccionados(e.originalEvent.dataTransfer.files);
-                            }
-                        });
-
-                    console.log('✅ Eventos de fotos configurados correctamente');
-                }, 100); // Pequeño delay para asegurar que el DOM esté listo
-            });
-
-            // 🔧 EVENTO ADICIONAL: También configurar cuando se hace click en "Seleccionar Fotos"
-            $(document).off('click.btnSelectFotos').on('click.btnSelectFotos', '[onclick*="fileInput"]', function (e) {
-                console.log('🖱️ Click en botón Seleccionar Fotos');
-                e.preventDefault();
-                $('#fileInput')[0].click();
-            });
-        }
-
-        function manejarArchivosSeleccionados(archivos) {
-            console.log('📁 Archivos seleccionados:', archivos.length);
-
-            // Validar cantidad total
-            if (fotosSeleccionadas.length + archivos.length > MAX_FOTOS) {
-                mostrarError(`Solo puedes subir máximo ${MAX_FOTOS} fotos. Ya tienes ${fotosSeleccionadas.length} seleccionadas.`);
-                return;
-            }
-
-            Array.from(archivos).forEach(archivo => {
-                if (validarArchivo(archivo)) {
-                    procesarArchivo(archivo);
-                }
-            });
-        }
-
-        function validarArchivo(archivo) {
-            // Validar tipo
-            if (!archivo.type.match(/^image\/(jpeg|jpg|png|gif|bmp|webp)$/i)) {
-                mostrarError(`Tipo de archivo no válido: ${archivo.name}. Solo se permiten imágenes.`);
-                return false;
-            }
-
-            // Validar tamaño
-            if (archivo.size > MAX_SIZE_MB * 1024 * 1024) {
-                mostrarError(`Archivo muy grande: ${archivo.name}. Máximo ${MAX_SIZE_MB}MB.`);
-                return false;
-            }
-
-            return true;
-        }
-
-        function procesarArchivo(archivo) {
-            const reader = new FileReader();
-
-            reader.onload = function(e) {
-                const fotoData = {
-                    id: Date.now() + Math.random(), // ID único temporal
-                    archivo: archivo,
-                    dataUrl: e.target.result,
-                    nombre: archivo.name,
-                    tamaño: archivo.size,
-                    estado: 'seleccionada' // Estados: seleccionada, subiendo, subida, error
-                };
-
-                fotosSeleccionadas.push(fotoData);
-                actualizarPreviewFotos();
-
-                console.log('📸 Foto agregada:', fotoData.nombre);
-            };
-
-            reader.readAsDataURL(archivo);
-        }
-
-        function actualizarPreviewFotos() {
-            const container = $('#fotosPreview');
-
-            if (fotosSeleccionadas.length === 0) {
-                container.html(`
-                    <div class="no-photos">
-                        <i class="fas fa-images fa-2x text-muted"></i>
-                        <p class="text-muted mb-0">No hay fotos seleccionadas</p>
-                    </div>
-                `);
-                return;
-            }
-
-            let html = '';
-            fotosSeleccionadas.forEach((foto, index) => {
-                const estadoClass = foto.estado === 'subiendo' ? 'uploading' : '';
-                const estadoIcon = getEstadoIcon(foto.estado);
-
-                html += `
-                    <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
-                        <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
-                        <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
-                                ${foto.estado === 'subiendo' ? 'disabled' : ''}>
-                            <i class="fas fa-times"></i>
-                        </button>
-                        ${estadoIcon}
-                    </div>
-                `;
-            });
-
-            container.html(html);
-
-            // Actualizar contador
-            $('#contadorFotos').text(`${fotosSeleccionadas.length}/${MAX_FOTOS} fotos`);
-        }
-
-        function getEstadoIcon(estado) {
-            switch (estado) {
-                case 'subiendo':
-                    return '<div class="estado-icon uploading-icon"><i class="fas fa-spinner fa-spin"></i></div>';
-                case 'subida':
-                    return '<div class="estado-icon success-icon"><i class="fas fa-check"></i></div>';
-                case 'error':
-                    return '<div class="estado-icon error-icon"><i class="fas fa-exclamation-triangle"></i></div>';
-                default:
-                    return '';
-            }
-        }
-
-        function eliminarFotoSeleccionada(fotoId) {
-            fotosSeleccionadas = fotosSeleccionadas.filter(foto => foto.id !== fotoId);
-            actualizarPreviewFotos();
-            console.log('🗑️ Foto eliminada del preview');
-        }
-
-        function subirFotosVehiculo(idVehiculo) {
-            if (fotosSeleccionadas.length === 0) {
-                console.log('ℹ️ No hay fotos para subir');
-                return Promise.resolve(true);
-            }
-
-            return new Promise((resolve, reject) => {
-                console.log(`📤 Subiendo ${fotosSeleccionadas.length} fotos para vehículo ${idVehiculo}...`);
-
-                // Marcar fotos como "subiendo"
-                fotosSeleccionadas.forEach(foto => {
-                    foto.estado = 'subiendo';
-                });
-                actualizarPreviewFotos();
-
-                // Mostrar progreso
-                mostrarProgreso(0);
-
-                // Crear FormData
-                const formData = new FormData();
-                fotosSeleccionadas.forEach((foto, index) => {
-                    formData.append(`foto_${index}`, foto.archivo);
-                });
-
-                // Subir fotos
-                $.ajax({
-                    url: `/Vehiculos/SubirFotos?idVehiculo=${idVehiculo}`,
-                    type: 'POST',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    xhr: function() {
-                        const xhr = new window.XMLHttpRequest();
-                        xhr.upload.addEventListener("progress", function(e) {
-                            if (e.lengthComputable) {
-                                const percentComplete = (e.loaded / e.total) * 100;
-                                mostrarProgreso(percentComplete);
-                            }
-                        }, false);
-                        return xhr;
-                    },
-                    success: function(response) {
-                        console.log('📤 Respuesta subida fotos:', response);
-
-                        if (response && response.respuesta === true) {
-                            // Marcar fotos como subidas
-                            fotosSeleccionadas.forEach(foto => {
-                                foto.estado = 'subida';
-                            });
-                            actualizarPreviewFotos();
-
-                            mostrarProgreso(100);
-                            $('#uploadStatus').html(`
-                                <div class="alert alert-success">
-                                    <i class="fas fa-check me-2"></i>
-                                    ${response.cantidad} foto(s) subida(s) exitosamente
-                                </div>
-                            `);
-
-                            resolve(true);
-                        } else {
-                            throw new Error(response.error || 'Error al subir fotos');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        console.error('❌ Error subiendo fotos:', error);
-
-                        // Marcar fotos con error
-                        fotosSeleccionadas.forEach(foto => {
-                            foto.estado = 'error';
-                        });
-                        actualizarPreviewFotos();
-
-                        $('#uploadStatus').html(`
-                            <div class="alert alert-danger">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                Error al subir fotos: ${error}
-                            </div>
-                        `);
-
-                        reject(error);
-                    }
-                });
-            });
-        }
-
-        function mostrarProgreso(porcentaje) {
-            const progressBar = $('#uploadProgress .progress-bar');
-            const progressContainer = $('#uploadProgress');
-
-            if (porcentaje > 0) {
-                progressContainer.show();
-                progressBar.css('width', porcentaje + '%');
-                progressBar.text(Math.round(porcentaje) + '%');
-            } else {
-                progressContainer.hide();
-            }
-        }
-
-        function limpiarFotos() {
-            fotosSeleccionadas = [];
-            actualizarPreviewFotos();
-            $('#fileInput').val('');
-            $('#uploadProgress').hide();
-            $('#uploadStatus').empty();
-            console.log('🧹 Fotos limpiadas');
         }
 
         function cargarVehiculos() {
@@ -1695,38 +2148,38 @@
                 `<div class="photos-badge"><i class="fas fa-camera me-1"></i>${vehiculo.CantidadFotos}</div>` : '';
 
             return `
-        <div class="col-md-6 col-lg-4 col-xl-3">
-            <div class="vehicle-card">
-                <div class="vehicle-image">
-                    <img src="${imagenSrc}" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
-                         onerror="this.src='https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen'">
-                    ${badge}
-                    ${fotosBadge}
-                </div>
-                <div class="vehicle-info">
-                    <h5 class="vehicle-title">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h5>
-                    <div class="vehicle-details">
-                        <span><i class="fas fa-calendar me-1"></i>${vehiculo.Año}</span>
-                        <span><i class="fas fa-cog me-1"></i>${vehiculo.TipoNombre}</span>
-                        <span><i class="fas fa-gas-pump me-1"></i>${vehiculo.Combustible || 'N/A'}</span>
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="vehicle-card">
+                    <div class="vehicle-image">
+                        <img src="${imagenSrc}" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
+                             onerror="this.src='https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen'">
+                        ${badge}
+                        ${fotosBadge}
                     </div>
-                    <div class="vehicle-price">${precio}</div>
-                    <div class="vehicle-location">
-                        <i class="fas fa-map-marker-alt me-1"></i>
-                        ${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}
-                    </div>
-                    <div class="vehicle-actions">
-                        <button class="btn btn-view" onclick="verDetalles(${vehiculo.IDVehiculo})">
-                            <i class="fas fa-eye me-2"></i>Ver Detalles
-                        </button>
-                        <button class="btn btn-contact" onclick="contactarVendedor('${vehiculo.Contacto || 'No disponible'}')">
-                            <i class="fas fa-phone me-2"></i>Contactar
-                        </button>
+                    <div class="vehicle-info">
+                        <h5 class="vehicle-title">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h5>
+                        <div class="vehicle-details">
+                            <span><i class="fas fa-calendar me-1"></i>${vehiculo.Año}</span>
+                            <span><i class="fas fa-cog me-1"></i>${vehiculo.TipoNombre}</span>
+                            <span><i class="fas fa-gas-pump me-1"></i>${vehiculo.Combustible || 'N/A'}</span>
+                        </div>
+                        <div class="vehicle-price">${precio}</div>
+                        <div class="vehicle-location">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            ${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}
+                        </div>
+                        <div class="vehicle-actions">
+                            <button class="btn btn-view" onclick="verDetalles(${vehiculo.IDVehiculo})">
+                                <i class="fas fa-eye me-2"></i>Ver Detalles
+                            </button>
+                            <button class="btn btn-contact" onclick="contactarVendedor('${vehiculo.Contacto || 'No disponible'}')">
+                                <i class="fas fa-phone me-2"></i>Contactar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `;
+`;
         }
 
         function configurarEventos() {
@@ -1753,13 +2206,10 @@
                 aplicarFiltros();
             });
 
-            // 📸 Configurar eventos de fotos
-            configurarEventosFotos();
-
             console.log('✅ Eventos configurados');
         }
 
-        // 🔧 FUNCIONES FALTANTES QUE NECESITAS
+        // 🔧 FUNCIONES UTILITARIAS
 
         // Función para obtener iconos de tipos
         function obtenerIconoTipo(tipoNombre) {
@@ -1820,7 +2270,177 @@
             }
         }
 
-        // Continúan las demás funciones...
+        // FUNCIÓN PRINCIPAL PARA GUARDAR VEHÍCULO CON FOTOS (Frontend)
+        function guardarVehiculoConFotos() {
+            console.log('💾 Guardando vehículo con fotos...');
+
+            // Validar campos requeridos
+            if (!validarFormulario()) {
+                return;
+            }
+
+            const vehiculo = {
+                IDVehiculo: parseInt($('#txtIDVehiculo').val()) || 0,
+                IDUsuario: parseInt($('#txtIDUsuario').val()) || 1, // Temporal
+                IdCategoria: parseInt($('#selectCategoria').val()),
+                IdMarca: parseInt($('#selectMarca').val()),
+                IDTipo: parseInt($('#selectTipo').val()),
+                IdMotor: parseInt($('#selectMotor').val()),
+                CodigoMunicipio: parseInt($('#selectMunicipio').val()),
+                Modelo: $('#txtModelo').val().trim(),
+                Año: parseInt($('#selectAño').val()),
+                Color: $('#txtColor').val().trim(),
+                Placa: $('#txtPlaca').val().trim(),
+                NumeroChasis: $('#txtChasis').val().trim(),
+                Kilometraje: parseFloat($('#txtKilometraje').val()) || null,
+                Precio: parseFloat($('#txtPrecio').val()),
+                Descripcion: $('#txtDescripcion').val().trim(),
+                Condicion: $('#selectCondicion').val(),
+                Contacto: $('#txtContacto').val().trim(),
+                Observaciones: $('#txtObservaciones').val().trim(),
+                Destacado: $('#checkDestacado').is(':checked'),
+                Estatus: true,
+                Vendido: false
+            };
+
+            console.log('📝 Datos del vehículo:', vehiculo);
+
+            // Mostrar loading
+            const btnGuardar = $('#btnGuardarVehiculo');
+            const textoOriginal = btnGuardar.html();
+            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...').prop('disabled', true);
+
+            // Primer paso: Guardar vehículo
+            $.ajax({
+                url: '/Vehiculos/InsertarVehiculos',
+                type: 'POST',
+                data: vehiculo,
+                success: function (response) {
+                    console.log('✅ Vehículo guardado:', response);
+
+                    if (response && response.respuesta === true) {
+                        // Usa SIEMPRE el ID que retorna el backend
+                        const idVehiculo = response.idVehiculo || vehiculo.IDVehiculo;
+                        console.log('ID para subir fotos:', idVehiculo);
+
+                        // Segundo paso: Subir fotos si hay
+                        if (fotosSeleccionadas.length > 0) {
+                            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Subiendo fotos...').prop('disabled', true);
+
+                            subirFotosVehiculo(idVehiculo)
+                                .then(() => {
+                                    finalizarGuardado(btnGuardar, textoOriginal, true);
+                                })
+                                .catch(error => {
+                                    console.warn('⚠️ Vehículo guardado pero error en fotos:', error);
+                                    finalizarGuardado(btnGuardar, textoOriginal, true,
+                                        'Vehículo guardado exitosamente, pero hubo un problema con las fotos');
+                                });
+                        } else {
+                            finalizarGuardado(btnGuardar, textoOriginal, true);
+                        }
+                    } else {
+                        finalizarGuardado(btnGuardar, textoOriginal, false, response.error || 'Error al guardar el vehículo');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ Error AJAX:', error);
+                    finalizarGuardado(btnGuardar, textoOriginal, false, 'Error de conexión al guardar el vehículo');
+                }
+            });
+        }
+
+        function finalizarGuardado(btnGuardar, textoOriginal, exito, mensajeCustom = null) {
+            btnGuardar.html(textoOriginal).prop('disabled', false);
+
+            if (exito) {
+                const mensaje = mensajeCustom || 'Vehículo publicado exitosamente';
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: mensaje,
+                    icon: 'success',
+                    confirmButtonColor: '#28a745'
+                }).then(() => {
+                    $('#modalPublicar').modal('hide');
+                    cargarVehiculos(); // Recargar lista
+                });
+            } else {
+                mostrarError(mensajeCustom || 'Error al publicar el vehículo');
+            }
+        }
+
+        function obtenerUltimoIdVehiculo() {
+            // Esta función debería implementarse para obtener el ID del último vehículo insertado
+            // Por ahora retornamos un valor temporal
+            return new Date().getTime(); // ID temporal basado en timestamp
+        }
+
+        function validarFormulario() {
+            const campos = [
+                { id: '#selectCategoria', nombre: 'Categoría' },
+                { id: '#selectMarca', nombre: 'Marca' },
+                { id: '#selectTipo', nombre: 'Tipo' },
+                { id: '#selectMotor', nombre: 'Motor' },
+                { id: '#txtModelo', nombre: 'Modelo' },
+                { id: '#selectAño', nombre: 'Año' },
+                { id: '#selectCondicion', nombre: 'Condición' },
+                { id: '#txtPrecio', nombre: 'Precio' },
+                { id: '#selectProvinciaModal', nombre: 'Provincia' },
+                { id: '#selectMunicipio', nombre: 'Municipio' }
+            ];
+
+            for (let campo of campos) {
+                if (!$(campo.id).val()) {
+                    mostrarError(`El campo ${campo.nombre} es requerido`);
+                    $(campo.id).focus();
+                    return false;
+                }
+            }
+
+            // Validar precio
+            const precio = parseFloat($('#txtPrecio').val());
+            if (precio <= 0) {
+                mostrarError('El precio debe ser mayor a 0');
+                $('#txtPrecio').focus();
+                return false;
+            }
+
+            // Validar año
+            const año = parseInt($('#selectAño').val());
+            const currentYear = new Date().getFullYear();
+            if (año < 1980 || año > currentYear + 1) {
+                mostrarError('El año debe estar entre 1980 y ' + (currentYear + 1));
+                $('#selectAño').focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // 📸 FUNCIÓN COMPLETA PARA LIMPIAR FORMULARIO CON FOTOS
+        function limpiarFormularioCompleto() {
+            console.log('🧹 Limpiando formulario completo...');
+
+            try {
+                $('#formPublicar')[0].reset();
+                $('#txtIDVehiculo').val('0');
+
+                // Limpiar municipios
+                const selectMunicipio = $('#selectMunicipio');
+                if (selectMunicipio.length) {
+                    selectMunicipio.empty().append('<option value="">Seleccionar municipio</option>');
+                }
+
+                // 📸 Limpiar fotos
+                limpiarFotos();
+
+                console.log('✅ Formulario completo limpiado');
+            } catch (error) {
+                console.error('❌ Error limpiando formulario:', error);
+            }
+        }
+
+        // FUNCIONES DE FILTROS Y BÚSQUEDA
         function buscarVehiculos() {
             aplicarFiltros();
         }
@@ -1905,266 +2525,6 @@
             aplicarFiltros();
         }
 
-        // 📸 FUNCIÓN PRINCIPAL PARA GUARDAR VEHÍCULO CON FOTOS
-        function guardarVehiculoConFotos() {
-            console.log('💾 Guardando vehículo con fotos...');
-
-            // Validar campos requeridos
-            if (!validarFormulario()) {
-                return;
-            }
-
-            const vehiculo = {
-                IDVehiculo: parseInt($('#txtIDVehiculo').val()) || 0,
-                IDUsuario: parseInt($('#txtIDUsuario').val()) || 1, // Temporal
-                IdCategoria: parseInt($('#selectCategoria').val()),
-                IdMarca: parseInt($('#selectMarca').val()),
-                IDTipo: parseInt($('#selectTipo').val()),
-                IdMotor: parseInt($('#selectMotor').val()),
-                CodigoMunicipio: parseInt($('#selectMunicipio').val()),
-                Modelo: $('#txtModelo').val().trim(),
-                Año: parseInt($('#selectAño').val()),
-                Color: $('#txtColor').val().trim(),
-                Placa: $('#txtPlaca').val().trim(),
-                NumeroChasis: $('#txtChasis').val().trim(),
-                Kilometraje: parseFloat($('#txtKilometraje').val()) || null,
-                Precio: parseFloat($('#txtPrecio').val()),
-                Descripcion: $('#txtDescripcion').val().trim(),
-                Condicion: $('#selectCondicion').val(),
-                Contacto: $('#txtContacto').val().trim(),
-                Observaciones: $('#txtObservaciones').val().trim(),
-                Destacado: $('#checkDestacado').is(':checked'),
-                Estatus: true,
-                Vendido: false
-            };
-
-            console.log('📝 Datos del vehículo:', vehiculo);
-
-            // Mostrar loading
-            const btnGuardar = $('#btnGuardarVehiculo');
-            const textoOriginal = btnGuardar.html();
-            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...').prop('disabled', true);
-
-            // Primer paso: Guardar vehículo
-            $.ajax({
-                url: '/Vehiculos/InsertarVehiculos',
-                type: 'POST',
-                data: vehiculo,
-                success: function(response) {
-                    console.log('✅ Vehículo guardado:', response);
-
-                    if (response && response.respuesta === true) {
-                        // Si es un vehículo nuevo, necesitamos obtener el ID
-                        const idVehiculo = vehiculo.IDVehiculo || response.idVehiculo || obtenerUltimoIdVehiculo();
-
-                        // Segundo paso: Subir fotos si hay
-                        if (fotosSeleccionadas.length > 0) {
-                            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Subiendo fotos...').prop('disabled', true);
-
-                            subirFotosVehiculo(idVehiculo)
-                                .then(() => {
-                                    finalizarGuardado(btnGuardar, textoOriginal, true);
-                                })
-                                .catch(error => {
-                                    console.warn('⚠️ Vehículo guardado pero error en fotos:', error);
-                                    finalizarGuardado(btnGuardar, textoOriginal, true,
-                                        'Vehículo guardado exitosamente, pero hubo un problema con las fotos');
-                                });
-                        } else {
-                            finalizarGuardado(btnGuardar, textoOriginal, true);
-                        }
-                    } else {
-                        finalizarGuardado(btnGuardar, textoOriginal, false, response.error || 'Error al guardar el vehículo');
-                    }
-                },
-                error: function(xhr, status, error) {
-                    console.error('❌ Error AJAX:', error);
-                    finalizarGuardado(btnGuardar, textoOriginal, false, 'Error de conexión al guardar el vehículo');
-                }
-            });
-        }
-
-        function finalizarGuardado(btnGuardar, textoOriginal, exito, mensajeCustom = null) {
-            btnGuardar.html(textoOriginal).prop('disabled', false);
-
-            if (exito) {
-                const mensaje = mensajeCustom || 'Vehículo publicado exitosamente';
-                Swal.fire({
-                    title: '¡Éxito!',
-                    text: mensaje,
-                    icon: 'success',
-                    confirmButtonColor: '#28a745'
-                }).then(() => {
-                    $('#modalPublicar').modal('hide');
-                    cargarVehiculos(); // Recargar lista
-                });
-            } else {
-                mostrarError(mensajeCustom || 'Error al publicar el vehículo');
-            }
-        }
-
-        function obtenerUltimoIdVehiculo() {
-            // Esta función debería implementarse para obtener el ID del último vehículo insertado
-            // Por ahora retornamos un valor temporal
-            return new Date().getTime(); // ID temporal basado en timestamp
-        }
-
-        // 📸 FUNCIÓN ORIGINAL DE GUARDAR (PARA COMPATIBILIDAD)
-        function guardarVehiculo() {
-            console.log('💾 Guardando vehículo...');
-
-            // Validar campos requeridos
-            if (!validarFormulario()) {
-                return;
-            }
-
-            const vehiculo = {
-                IDVehiculo: parseInt($('#txtIDVehiculo').val()) || 0,
-                IDUsuario: parseInt($('#txtIDUsuario').val()) || 1, // Temporal
-                IdCategoria: parseInt($('#selectCategoria').val()),
-                IdMarca: parseInt($('#selectMarca').val()),
-                IDTipo: parseInt($('#selectTipo').val()),
-                IdMotor: parseInt($('#selectMotor').val()),
-                CodigoMunicipio: parseInt($('#selectMunicipio').val()),
-                Modelo: $('#txtModelo').val().trim(),
-                Año: parseInt($('#selectAño').val()),
-                Color: $('#txtColor').val().trim(),
-                Placa: $('#txtPlaca').val().trim(),
-                NumeroChasis: $('#txtChasis').val().trim(),
-                Kilometraje: parseFloat($('#txtKilometraje').val()) || null,
-                Precio: parseFloat($('#txtPrecio').val()),
-                Descripcion: $('#txtDescripcion').val().trim(),
-                Condicion: $('#selectCondicion').val(),
-                Contacto: $('#txtContacto').val().trim(),
-                Observaciones: $('#txtObservaciones').val().trim(),
-                Destacado: $('#checkDestacado').is(':checked'),
-                Estatus: true,
-                Vendido: false
-            };
-
-            console.log('📝 Datos del vehículo:', vehiculo);
-
-            // Mostrar loading
-            const btnGuardar = $('#btnGuardarVehiculo');
-            const textoOriginal = btnGuardar.html();
-            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Publicando...').prop('disabled', true);
-
-            $.ajax({
-                url: '/Vehiculos/InsertarVehiculos',
-                type: 'POST',
-                data: vehiculo,
-                success: function (response) {
-                    console.log('✅ Respuesta:', response);
-
-                    btnGuardar.html(textoOriginal).prop('disabled', false);
-
-                    if (response && response.respuesta === true) {
-                        Swal.fire({
-                            title: '¡Éxito!',
-                            text: 'Tu vehículo ha sido publicado exitosamente',
-                            icon: 'success',
-                            confirmButtonColor: '#28a745'
-                        }).then(() => {
-                            $('#modalPublicar').modal('hide');
-                            cargarVehiculos(); // Recargar lista
-                        });
-                    } else {
-                        mostrarError(response.error || 'Error al publicar el vehículo');
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('❌ Error AJAX:', error);
-                    btnGuardar.html(textoOriginal).prop('disabled', false);
-                    mostrarError('Error de conexión al publicar el vehículo');
-                }
-            });
-        }
-
-        function validarFormulario() {
-            const campos = [
-                { id: '#selectCategoria', nombre: 'Categoría' },
-                { id: '#selectMarca', nombre: 'Marca' },
-                { id: '#selectTipo', nombre: 'Tipo' },
-                { id: '#selectMotor', nombre: 'Motor' },
-                { id: '#txtModelo', nombre: 'Modelo' },
-                { id: '#selectAño', nombre: 'Año' },
-                { id: '#selectCondicion', nombre: 'Condición' },
-                { id: '#txtPrecio', nombre: 'Precio' },
-                { id: '#selectProvinciaModal', nombre: 'Provincia' },
-                { id: '#selectMunicipio', nombre: 'Municipio' }
-            ];
-
-            for (let campo of campos) {
-                if (!$(campo.id).val()) {
-                    mostrarError(`El campo ${campo.nombre} es requerido`);
-                    $(campo.id).focus();
-                    return false;
-                }
-            }
-
-            // Validar precio
-            const precio = parseFloat($('#txtPrecio').val());
-            if (precio <= 0) {
-                mostrarError('El precio debe ser mayor a 0');
-                $('#txtPrecio').focus();
-                return false;
-            }
-
-            // Validar año
-            const año = parseInt($('#selectAño').val());
-            const currentYear = new Date().getFullYear();
-            if (año < 1980 || año > currentYear + 1) {
-                mostrarError('El año debe estar entre 1980 y ' + (currentYear + 1));
-                $('#selectAño').focus();
-                return false;
-            }
-
-            return true;
-        }
-
-        // 📸 FUNCIÓN COMPLETA PARA LIMPIAR FORMULARIO CON FOTOS
-        function limpiarFormularioCompleto() {
-            console.log('🧹 Limpiando formulario completo...');
-
-            try {
-                $('#formPublicar')[0].reset();
-                $('#txtIDVehiculo').val('0');
-
-                // Limpiar municipios
-                const selectMunicipio = $('#selectMunicipio');
-                if (selectMunicipio.length) {
-                    selectMunicipio.empty().append('<option value="">Seleccionar municipio</option>');
-                }
-
-                // 📸 Limpiar fotos
-                limpiarFotos();
-
-                console.log('✅ Formulario completo limpiado');
-            } catch (error) {
-                console.error('❌ Error limpiando formulario:', error);
-            }
-        }
-
-        // 📸 FUNCIÓN ORIGINAL PARA COMPATIBILIDAD
-        function limpiarFormulario() {
-            console.log('🧹 Limpiando formulario...');
-
-            try {
-                $('#formPublicar')[0].reset();
-                $('#txtIDVehiculo').val('0');
-
-                // Limpiar municipios
-                const selectMunicipio = $('#selectMunicipio');
-                if (selectMunicipio.length) {
-                    selectMunicipio.empty().append('<option value="">Seleccionar municipio</option>');
-                }
-
-                console.log('✅ Formulario limpiado');
-            } catch (error) {
-                console.error('❌ Error limpiando formulario:', error);
-            }
-        }
-
         function verDetalles(idVehiculo) {
             console.log('👁️ Viendo detalles del vehículo:', idVehiculo);
 
@@ -2196,74 +2556,74 @@
             $('#modalDetallesTitle').html(`<i class="fas fa-car me-2"></i>${vehiculo.MarcaNombre} ${vehiculo.Modelo} ${vehiculo.Año}`);
 
             const contenido = `
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="vehicle-image">
-                    <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imagen"
-                         class="img-fluid rounded" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}">
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="vehicle-image">
+                        <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imagen"
+                             class="img-fluid rounded" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}">
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <h4 class="text-primary mb-3">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h4>
-                <h3 class="text-success mb-3">${precio}</h3>
+                <div class="col-md-6">
+                    <h4 class="text-primary mb-3">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h4>
+                    <h3 class="text-success mb-3">${precio}</h3>
 
-                <div class="row g-3">
-                    <div class="col-6">
-                        <strong>Año:</strong><br>
-                        <span class="text-muted">${vehiculo.Año}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Condición:</strong><br>
-                        <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Color:</strong><br>
-                        <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Kilometraje:</strong><br>
-                        <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Tipo:</strong><br>
-                        <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Motor:</strong><br>
-                        <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Combustible:</strong><br>
-                        <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
-                    </div>
-                    <div class="col-6">
-                        <strong>Transmisión:</strong><br>
-                        <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
-                    </div>
-                    <div class="col-12">
-                        <strong>Ubicación:</strong><br>
-                        <span class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}</span>
-                    </div>
-                    <div class="col-12">
-                        <strong>Vendedor:</strong><br>
-                        <span class="text-muted">${vehiculo.NombreUsuario || 'N/A'}</span>
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <strong>Año:</strong><br>
+                            <span class="text-muted">${vehiculo.Año}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Condición:</strong><br>
+                            <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Color:</strong><br>
+                            <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Kilometraje:</strong><br>
+                            <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Tipo:</strong><br>
+                            <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Motor:</strong><br>
+                            <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Combustible:</strong><br>
+                            <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Transmisión:</strong><br>
+                            <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Ubicación:</strong><br>
+                            <span class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}</span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Vendedor:</strong><br>
+                            <span class="text-muted">${vehiculo.NombreUsuario || 'N/A'}</span>
+                        </div>
                     </div>
                 </div>
+                ${vehiculo.Descripcion ? `
+                <div class="col-12">
+                    <h5>Descripción</h5>
+                    <p class="text-muted">${vehiculo.Descripcion}</p>
+                </div>
+                ` : ''}
+                ${vehiculo.Observaciones ? `
+                <div class="col-12">
+                    <h5>Observaciones</h5>
+                    <p class="text-muted">${vehiculo.Observaciones}</p>
+                </div>
+                ` : ''}
             </div>
-            ${vehiculo.Descripcion ? `
-            <div class="col-12">
-                <h5>Descripción</h5>
-                <p class="text-muted">${vehiculo.Descripcion}</p>
-            </div>
-            ` : ''}
-            ${vehiculo.Observaciones ? `
-            <div class="col-12">
-                <h5>Observaciones</h5>
-                <p class="text-muted">${vehiculo.Observaciones}</p>
-            </div>
-            ` : ''}
-        </div>
-    `;
+`;
 
             $('#detallesContent').html(contenido);
 
@@ -2289,10 +2649,10 @@
             Swal.fire({
                 title: 'Contactar Vendedor',
                 html: `
-            <p>Puedes contactar al vendedor al número:</p>
-            <h4 class="text-primary">${telefono}</h4>
-            <p class="text-muted">¿Qué deseas hacer?</p>
-        `,
+                <p>Puedes contactar al vendedor al número:</p>
+                <h4 class="text-primary">${telefono}</h4>
+                <p class="text-muted">¿Qué deseas hacer?</p>
+            `,
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: '<i class="fas fa-phone me-2"></i>Llamar',
@@ -2311,11 +2671,12 @@
             });
         }
 
-        // 🔧 FUNCIÓN PARA DEBUGGING - VERIFICAR QUE ELEMENTOS EXISTEN
+        // 🔧 FUNCIÓN MEJORADA PARA VERIFICAR ELEMENTOS DOM
         function verificarElementosDOM() {
-            console.log('🔍 Verificando elementos del DOM...');
+            console.log('🔍 === VERIFICACIÓN COMPLETA DEL DOM ===');
 
             const elementos = [
+                // Formulario principal
                 '#selectCategoria',
                 '#selectMarca',
                 '#selectTipo',
@@ -2323,51 +2684,123 @@
                 '#selectAño',
                 '#selectProvinciaModal',
                 '#selectMunicipio',
+
+                // Filtros
                 '#filtroMarca',
                 '#filtroTipo',
                 '#filtroProvincia',
                 '#filtroAño',
+
+                // Containers
                 '#tiposContainer',
                 '#marcasContainer',
                 '#vehiculosContainer',
-                // 📸 Elementos de fotos
+
+                // 📸 Elementos críticos de fotos
                 '#fileInput',
                 '#uploadArea',
                 '#fotosPreview',
                 '#uploadProgress',
-                '#uploadStatus'
+                '#uploadStatus',
+
+                // Botones importantes
+                '#btnGuardarVehiculo'
             ];
+
+            let elementosEncontrados = 0;
+            let elementosFaltantes = [];
 
             elementos.forEach(selector => {
                 const elemento = $(selector);
-                if (elemento.length) {
+                if (elemento.length > 0) {
                     console.log('✅', selector, 'encontrado');
+                    elementosEncontrados++;
                 } else {
                     console.warn('❌', selector, 'NO encontrado');
+                    elementosFaltantes.push(selector);
                 }
             });
+
+            console.log(`📊 RESUMEN: ${elementosEncontrados}/${elementos.length} elementos encontrados`);
+
+            if (elementosFaltantes.length > 0) {
+                console.error('❌ ELEMENTOS FALTANTES:', elementosFaltantes);
+            }
+
+            // 📸 VERIFICACIÓN ESPECÍFICA DE FOTOS
+            console.log('📸 === VERIFICACIÓN ESPECÍFICA DE FOTOS ===');
+
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                console.log('✅ fileInput existe en DOM nativo');
+                console.log('- Tipo:', fileInput.type);
+                console.log('- Accept:', fileInput.accept);
+                console.log('- Multiple:', fileInput.multiple);
+            } else {
+                console.error('❌ fileInput NO existe en DOM nativo');
+            }
+
+            const uploadArea = document.getElementById('uploadArea');
+            if (uploadArea) {
+                console.log('✅ uploadArea existe en DOM nativo');
+                console.log('- Clases:', uploadArea.className);
+            } else {
+                console.error('❌ uploadArea NO existe en DOM nativo');
+            }
+
+            return {
+                total: elementos.length,
+                encontrados: elementosEncontrados,
+                faltantes: elementosFaltantes
+            };
         }
 
-        // 🔧 LLAMAR VERIFICACIÓN AL CARGAR (para debugging)
-        $(document).ready(function () {
+        // 🔧 FUNCIÓN DE DEBUG PARA PROBAR EVENTOS DE FOTOS
+        function probarEventosFotos() {
+            console.log('🧪 === PROBANDO EVENTOS DE FOTOS ===');
+
+            // Probar click en file input
+            console.log('🧪 Probando click en #fileInput...');
+            $('#fileInput').trigger('click');
+
             setTimeout(() => {
-                verificarElementosDOM();
-            }, 2000);
-        });
-
-        // 📸 CSS ADICIONAL PARA FOTOS (Se agrega automáticamente)
-$(document).ready(function() {
-    const cssAdicional = `
-        <style>
-        /* ...tus estilos aquí... */
-        .photo-thumbnail img {
-            width: 60px;
-            height: 60px;
+                // Probar evento change simulado
+                console.log('🧪 Probando evento change simulado...');
+                $('#fileInput').trigger('change');
+            }, 1000);
         }
-        </style>
-    `;
-    $('head').append(cssAdicional);
-});
+
+        // 🔧 FUNCIÓN GLOBAL PARA FORZAR CLICK EN FILE INPUT
+        window.forzarSeleccionFotos = function () {
+            console.log('🔧 FORZANDO SELECCIÓN DE FOTOS...');
+
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                console.log('✅ Ejecutando click() nativo en fileInput');
+                fileInput.click();
+            } else {
+                console.error('❌ fileInput no encontrado');
+                alert('Error: Input de archivos no encontrado');
+            }
+        };
+
+        // Funciones globales para debugging
+        window.verificarDOM = verificarElementosDOM;
+        window.probarFotos = probarEventosFotos;
+        window.limpiarFotosDebug = limpiarFotos;
+        window.mostrarFotosSeleccionadas = function () {
+            console.log('📸 FOTOS SELECCIONADAS:', fotosSeleccionadas);
+            return fotosSeleccionadas;
+        };
+
+        // 🔧 AUTO-VERIFICACIÓN AL CARGAR
+        $(document).ready(function () {
+            // Verificar DOM después de 3 segundos
+            setTimeout(() => {
+                console.log('🔧 === AUTO-VERIFICACIÓN DEL DOM ===');
+                verificarElementosDOM();
+            }, 3000);
+        });
     </script>
 </body>
 </html>

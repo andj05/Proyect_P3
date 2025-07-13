@@ -25,47 +25,99 @@ namespace Proyect_P3.Metodos
         }
 
         // 📸 GUARDAR FOTOS DE UN VEHÍCULO
-        public bool GuardarFotos(int idCliente, int idArticulo, List<byte[]> fotos)
+        public ResultadoGuardarFotos GuardarFotos(int idArticulo, List<byte[]> fotos)
         {
-            bool respuesta = false;
+            var resultado = new ResultadoGuardarFotos { Exito = false, MensajeError = "" };
             using (SqlConnection oConn = new SqlConnection(Conexion.Bd))
             {
                 try
                 {
-                    System.Diagnostics.Debug.WriteLine($"=== GUARDANDO {fotos.Count} FOTOS PARA VEHÍCULO {idArticulo} ===");
+                    System.Diagnostics.Debug.WriteLine($"=== GUARDARFOTOS: INICIO ===");
+                    System.Diagnostics.Debug.WriteLine($"[INFO] idArticulo={idArticulo}, fotos.Count={fotos?.Count ?? 0}");
+
+                    if (idArticulo <= 0)
+                    {
+                        resultado.MensajeError = "[ERROR] idArticulo inválido.";
+                        System.Diagnostics.Debug.WriteLine(resultado.MensajeError);
+                        return resultado;
+                    }
+
+                    if (fotos == null || fotos.Count == 0)
+                    {
+                        resultado.MensajeError = "[ERROR] La lista de fotos está vacía o es nula.";
+                        System.Diagnostics.Debug.WriteLine(resultado.MensajeError);
+                        return resultado;
+                    }
 
                     oConn.Open();
 
-                    // Primero eliminar fotos existentes (si es una actualización)
-                    EliminarFotosPorArticulo(idCliente, idArticulo, oConn);
+                    // Eliminar fotos existentes
+                    EliminarFotosPorArticulo(idArticulo, oConn);
 
                     // Guardar nuevas fotos
                     for (int i = 0; i < fotos.Count; i++)
                     {
+                        var fotoBytes = fotos[i];
+                        if (fotoBytes == null || fotoBytes.Length == 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"[WARN] Foto {i + 1} está vacía, se omite.");
+                            continue;
+                        }
+
+                        System.Diagnostics.Debug.WriteLine($"[INFO] Insertando foto {i + 1} de tamaño {fotoBytes.Length} bytes");
+
                         string sql = @"
-                            INSERT INTO ARTICULOSFOTOS (IDCliente, IDArticulo, SecPhoto, FOTO)
-                            VALUES (@IDCliente, @IDArticulo, @SecPhoto, @FOTO)";
+                    INSERT INTO ARTICULOSFOTOS (IDArticulo, SecPhoto, FOTO)
+                    VALUES (@IDArticulo, @SecPhoto, @FOTO)";
 
-                        SqlCommand cmd = new SqlCommand(sql, oConn);
-                        cmd.Parameters.AddWithValue("@IDCliente", idCliente);
-                        cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
-                        cmd.Parameters.AddWithValue("@SecPhoto", i + 1); // Secuencia desde 1
-                        cmd.Parameters.AddWithValue("@FOTO", fotos[i]);
+                        using (SqlCommand cmd = new SqlCommand(sql, oConn))
+                        {
+                            cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
+                            cmd.Parameters.AddWithValue("@SecPhoto", i + 1);
+                            cmd.Parameters.AddWithValue("@FOTO", fotoBytes);
 
-                        cmd.ExecuteNonQuery();
-                        System.Diagnostics.Debug.WriteLine($"✅ Foto {i + 1} guardada");
+                            int rows = cmd.ExecuteNonQuery();
+                            if (rows > 0)
+                                System.Diagnostics.Debug.WriteLine($"✅ Foto {i + 1} guardada correctamente");
+                            else
+                                System.Diagnostics.Debug.WriteLine($"[ERROR] No se insertó la foto {i + 1}");
+                        }
                     }
 
-                    respuesta = true;
-                    System.Diagnostics.Debug.WriteLine($"✅ {fotos.Count} fotos guardadas exitosamente");
+                    resultado.Exito = true;
+                    System.Diagnostics.Debug.WriteLine($"✅ {fotos.Count} fotos procesadas para el vehículo {idArticulo}");
                 }
                 catch (Exception ex)
                 {
-                    respuesta = false;
+                    resultado.Exito = false;
+                    resultado.MensajeError = ex.Message;
                     System.Diagnostics.Debug.WriteLine($"❌ ERROR al guardar fotos: {ex.Message}");
+                    if (ex.InnerException != null)
+                    {
+                        resultado.MensajeError += " | " + ex.InnerException.Message;
+                        System.Diagnostics.Debug.WriteLine($"❌ InnerException: {ex.InnerException.Message}");
+                    }
                 }
             }
-            return respuesta;
+            return resultado;
+        }
+
+        // Nuevo método privado para eliminar fotos solo por idArticulo
+        private void EliminarFotosPorArticulo(int idArticulo, SqlConnection connection)
+        {
+            try
+            {
+                string sql = "DELETE FROM ARTICULOSFOTOS WHERE IDArticulo = @IDArticulo";
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
+
+                int deleted = cmd.ExecuteNonQuery();
+                System.Diagnostics.Debug.WriteLine($"🗑️ {deleted} fotos anteriores eliminadas");
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ ERROR al eliminar fotos anteriores: {ex.Message}");
+            }
         }
 
         // 📸 OBTENER FOTOS DE UN VEHÍCULO
@@ -94,7 +146,6 @@ namespace Proyect_P3.Metodos
                     {
                         var foto = new ArticulosFotos()
                         {
-                            IDCliente = Convert.ToInt32(dr["IDCliente"]),
                             IDArticulo = Convert.ToInt32(dr["IDArticulo"]),
                             SecPhoto = Convert.ToInt32(dr["SecPhoto"]),
                             FOTO = dr["FOTO"] as byte[] ?? new byte[0]

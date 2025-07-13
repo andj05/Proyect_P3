@@ -208,6 +208,7 @@
     <Compile Include="Models\ViewModels\Municipios.cs" />
     <Compile Include="Models\ViewModels\Provincias.cs" />
     <Compile Include="Models\ViewModels\QueryViewModels.cs" />
+    <Compile Include="Models\ViewModels\ResultadoGuardarFotos.cs" />
     <Compile Include="Models\ViewModels\TipdocQueryViewModels.cs" />
     <Compile Include="Models\ViewModels\Tipos.cs" />
     <Compile Include="Models\ViewModels\Vehiculos.cs" />

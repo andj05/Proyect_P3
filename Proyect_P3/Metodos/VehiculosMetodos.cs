@@ -125,12 +125,13 @@ namespace Proyect_P3.Metodos
                     oConn.Open();
 
                     string sql = @"
-                        INSERT INTO VEHICULOS (IDUsuario, IdCategoria, IdMarca, IDTipo, IdMotor, CodigoMunicipio,
-                                             Modelo, Año, Color, Placa, NumeroChasis, Kilometraje, Precio,
-                                             Descripcion, Condicion, Contacto, Observaciones, Estatus, Destacado)
-                        VALUES (@IDUsuario, @IdCategoria, @IdMarca, @IDTipo, @IdMotor, @CodigoMunicipio,
-                                @Modelo, @Año, @Color, @Placa, @NumeroChasis, @Kilometraje, @Precio,
-                                @Descripcion, @Condicion, @Contacto, @Observaciones, @Estatus, @Destacado)";
+                INSERT INTO VEHICULOS (IDUsuario, IdCategoria, IdMarca, IDTipo, IdMotor, CodigoMunicipio,
+                                     Modelo, Año, Color, Placa, NumeroChasis, Kilometraje, Precio,
+                                     Descripcion, Condicion, Contacto, Observaciones, Estatus, Destacado)
+                VALUES (@IDUsuario, @IdCategoria, @IdMarca, @IDTipo, @IdMotor, @CodigoMunicipio,
+                        @Modelo, @Año, @Color, @Placa, @NumeroChasis, @Kilometraje, @Precio,
+                        @Descripcion, @Condicion, @Contacto, @Observaciones, @Estatus, @Destacado);
+                SELECT SCOPE_IDENTITY();";
 
                     SqlCommand cmd = new SqlCommand(sql, oConn);
                     cmd.Parameters.AddWithValue("@IDUsuario", oVehiculo.IDUsuario);
@@ -153,10 +154,19 @@ namespace Proyect_P3.Metodos
                     cmd.Parameters.AddWithValue("@Estatus", oVehiculo.Estatus);
                     cmd.Parameters.AddWithValue("@Destacado", oVehiculo.Destacado);
 
-                    int filasAfectadas = cmd.ExecuteNonQuery();
-                    respuesta = filasAfectadas > 0;
+                    // Recuperar el ID generado
+                    object result = cmd.ExecuteScalar();
+                    if (result != null && int.TryParse(result.ToString(), out int idGenerado))
+                    {
+                        oVehiculo.IDVehiculo = idGenerado;
+                        respuesta = true;
+                    }
+                    else
+                    {
+                        respuesta = false;
+                    }
 
-                    System.Diagnostics.Debug.WriteLine($"Vehículo registrado: {respuesta}");
+                    System.Diagnostics.Debug.WriteLine($"Vehículo registrado: {respuesta}, ID: {oVehiculo.IDVehiculo}");
                 }
                 catch (Exception ex)
                 {
