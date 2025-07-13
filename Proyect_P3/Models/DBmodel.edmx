@@ -5,6 +5,17 @@
     <!-- SSDL content -->
     <edmx:StorageModels>
     <Schema Namespace="DBMVCModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ARTICULOSFOTOS">
+          <Key>
+            <PropertyRef Name="IDCliente" />
+            <PropertyRef Name="IDArticulo" />
+            <PropertyRef Name="SecPhoto" />
+          </Key>
+          <Property Name="IDCliente" Type="int" Nullable="false" />
+          <Property Name="IDArticulo" Type="int" Nullable="false" />
+          <Property Name="SecPhoto" Type="int" Nullable="false" />
+          <Property Name="FOTO" Type="image" />
+        </EntityType>
         <EntityType Name="CATEGORIAS">
           <Key>
             <PropertyRef Name="IdCategoria" />
@@ -41,6 +52,21 @@
           <Property Name="idStatus" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Status" Type="nvarchar" MaxLength="50" />
         </EntityType>
+        <EntityType Name="Municipios">
+          <Key>
+            <PropertyRef Name="CodigoMunicipio" />
+          </Key>
+          <Property Name="CodigoMunicipio" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="NombreMunicipio" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="CodigoProvincia" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Provincias">
+          <Key>
+            <PropertyRef Name="CodigoProvincia" />
+          </Key>
+          <Property Name="CodigoProvincia" Type="int" Nullable="false" />
+          <Property Name="NombreProvincia" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="TIPDOC">
           <Key>
             <PropertyRef Name="ID" />
@@ -76,6 +102,72 @@
           <Property Name="Edad" Type="int" />
           <Property Name="idEstatus" Type="int" />
         </EntityType>
+        <EntityType Name="VEHICULOS">
+          <Key>
+            <PropertyRef Name="IDVehiculo" />
+          </Key>
+          <Property Name="IDVehiculo" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IDUsuario" Type="int" Nullable="false" />
+          <Property Name="IdCategoria" Type="int" Nullable="false" />
+          <Property Name="IdMarca" Type="int" Nullable="false" />
+          <Property Name="IDTipo" Type="int" Nullable="false" />
+          <Property Name="IdMotor" Type="int" Nullable="false" />
+          <Property Name="CodigoMunicipio" Type="int" Nullable="false" />
+          <Property Name="Modelo" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Año" Type="int" Nullable="false" />
+          <Property Name="Color" Type="nvarchar" MaxLength="50" />
+          <Property Name="Placa" Type="nvarchar" MaxLength="20" />
+          <Property Name="NumeroChasis" Type="nvarchar" MaxLength="50" />
+          <Property Name="Kilometraje" Type="decimal" Precision="10" Scale="2" />
+          <Property Name="Precio" Type="decimal" Precision="15" Scale="2" Nullable="false" />
+          <Property Name="Descripcion" Type="nvarchar" MaxLength="1000" />
+          <Property Name="Condicion" Type="nvarchar" MaxLength="20" />
+          <Property Name="Estatus" Type="bit" Nullable="false" />
+          <Property Name="FechaRegistro" Type="datetime" Nullable="false" />
+          <Property Name="FechaActualizacion" Type="datetime" />
+          <Property Name="Contacto" Type="nvarchar" MaxLength="20" />
+          <Property Name="Observaciones" Type="nvarchar" MaxLength="500" />
+          <Property Name="Vendido" Type="bit" Nullable="false" />
+          <Property Name="FechaVenta" Type="datetime" />
+          <Property Name="Destacado" Type="bit" Nullable="false" />
+          <Property Name="NumeroVistas" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Municipio__Codig__42ACE4D4">
+          <End Role="Provincias" Type="Self.Provincias" Multiplicity="1" />
+          <End Role="Municipios" Type="Self.Municipios" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Provincias">
+              <PropertyRef Name="CodigoProvincia" />
+            </Principal>
+            <Dependent Role="Municipios">
+              <PropertyRef Name="CodigoProvincia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ARTICULOSFOTOS_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="1" />
+          <End Role="ARTICULOSFOTOS" Type="Self.ARTICULOSFOTOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARTICULOSFOTOS">
+              <PropertyRef Name="IDCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ARTICULOSFOTOS_VEHICULOS">
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="1" />
+          <End Role="ARTICULOSFOTOS" Type="Self.ARTICULOSFOTOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VEHICULOS">
+              <PropertyRef Name="IDVehiculo" />
+            </Principal>
+            <Dependent Role="ARTICULOSFOTOS">
+              <PropertyRef Name="IDArticulo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_USERS_mSTATUS">
           <End Role="mSTATUS" Type="Self.mSTATUS" Multiplicity="0..1" />
           <End Role="USERS" Type="Self.USERS" Multiplicity="*" />
@@ -88,17 +180,129 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_VEHICULOS_CATEGORIAS">
+          <End Role="CATEGORIAS" Type="Self.CATEGORIAS" Multiplicity="1" />
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CATEGORIAS">
+              <PropertyRef Name="IdCategoria" />
+            </Principal>
+            <Dependent Role="VEHICULOS">
+              <PropertyRef Name="IdCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_MARCAS">
+          <End Role="MARCAS" Type="Self.MARCAS" Multiplicity="1" />
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MARCAS">
+              <PropertyRef Name="IdMarca" />
+            </Principal>
+            <Dependent Role="VEHICULOS">
+              <PropertyRef Name="IdMarca" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_MOTORES">
+          <End Role="MOTORES" Type="Self.MOTORES" Multiplicity="1" />
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MOTORES">
+              <PropertyRef Name="IdMotor" />
+            </Principal>
+            <Dependent Role="VEHICULOS">
+              <PropertyRef Name="IdMotor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_MUNICIPIOS">
+          <End Role="Municipios" Type="Self.Municipios" Multiplicity="1" />
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Municipios">
+              <PropertyRef Name="CodigoMunicipio" />
+            </Principal>
+            <Dependent Role="VEHICULOS">
+              <PropertyRef Name="CodigoMunicipio" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_TIPOS">
+          <End Role="TIPOS" Type="Self.TIPOS" Multiplicity="1" />
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIPOS">
+              <PropertyRef Name="IDTipo" />
+            </Principal>
+            <Dependent Role="VEHICULOS">
+              <PropertyRef Name="IDTipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_USERS">
+          <End Role="USERS" Type="Self.USERS" Multiplicity="1" />
+          <End Role="VEHICULOS" Type="Self.VEHICULOS" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USERS">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="VEHICULOS">
+              <PropertyRef Name="IDUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <EntityContainer Name="DBMVCModelStoreContainer">
+          <EntitySet Name="ARTICULOSFOTOS" EntityType="Self.ARTICULOSFOTOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CATEGORIAS" EntityType="Self.CATEGORIAS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MARCAS" EntityType="Self.MARCAS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="MOTORES" EntityType="Self.MOTORES" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="mSTATUS" EntityType="Self.mSTATUS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Municipios" EntityType="Self.Municipios" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Provincias" EntityType="Self.Provincias" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TIPDOC" EntityType="Self.TIPDOC" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TIPOS" EntityType="Self.TIPOS" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="USERS" EntityType="Self.USERS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VEHICULOS" EntityType="Self.VEHICULOS" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK__Municipio__Codig__42ACE4D4" Association="Self.FK__Municipio__Codig__42ACE4D4">
+            <End Role="Provincias" EntitySet="Provincias" />
+            <End Role="Municipios" EntitySet="Municipios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ARTICULOSFOTOS_USERS" Association="Self.FK_ARTICULOSFOTOS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="ARTICULOSFOTOS" EntitySet="ARTICULOSFOTOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ARTICULOSFOTOS_VEHICULOS" Association="Self.FK_ARTICULOSFOTOS_VEHICULOS">
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
+            <End Role="ARTICULOSFOTOS" EntitySet="ARTICULOSFOTOS" />
+          </AssociationSet>
           <AssociationSet Name="FK_USERS_mSTATUS" Association="Self.FK_USERS_mSTATUS">
             <End Role="mSTATUS" EntitySet="mSTATUS" />
             <End Role="USERS" EntitySet="USERS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_CATEGORIAS" Association="Self.FK_VEHICULOS_CATEGORIAS">
+            <End Role="CATEGORIAS" EntitySet="CATEGORIAS" />
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_MARCAS" Association="Self.FK_VEHICULOS_MARCAS">
+            <End Role="MARCAS" EntitySet="MARCAS" />
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_MOTORES" Association="Self.FK_VEHICULOS_MOTORES">
+            <End Role="MOTORES" EntitySet="MOTORES" />
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_MUNICIPIOS" Association="Self.FK_VEHICULOS_MUNICIPIOS">
+            <End Role="Municipios" EntitySet="Municipios" />
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_TIPOS" Association="Self.FK_VEHICULOS_TIPOS">
+            <End Role="TIPOS" EntitySet="TIPOS" />
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_USERS" Association="Self.FK_VEHICULOS_USERS">
+            <End Role="USERS" EntitySet="USERS" />
+            <End Role="VEHICULOS" EntitySet="VEHICULOS" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -125,6 +329,8 @@
           <Property Name="Edad" Type="Int32" />
           <Property Name="idEstatus" Type="Int32" />
           <NavigationProperty Name="mSTATU" Relationship="Self.FK_USERS_mSTATUS" FromRole="USERS" ToRole="mSTATUS" />
+          <NavigationProperty Name="ARTICULOSFOTOS" Relationship="DBMVCModel.FK_ARTICULOSFOTOS_USERS" FromRole="USER" ToRole="ARTICULOSFOTO" />
+          <NavigationProperty Name="VEHICULOS" Relationship="DBMVCModel.FK_VEHICULOS_USERS" FromRole="USER" ToRole="VEHICULO" />
         </EntityType>
         <Association Name="FK_USERS_mSTATUS">
           <End Role="mSTATUS" Type="Self.mSTATU" Multiplicity="0..1" />
@@ -150,6 +356,46 @@
           <EntitySet Name="MARCAS" EntityType="DBMVCModel.MARCA" />
           <EntitySet Name="TIPOS" EntityType="DBMVCModel.TIPOS" />
           <EntitySet Name="MOTORES" EntityType="DBMVCModel.MOTORE" />
+          <EntitySet Name="ARTICULOSFOTOS" EntityType="DBMVCModel.ARTICULOSFOTO" />
+          <EntitySet Name="Municipios" EntityType="DBMVCModel.Municipio" />
+          <EntitySet Name="Provincias" EntityType="DBMVCModel.Provincia" />
+          <EntitySet Name="VEHICULOS" EntityType="DBMVCModel.VEHICULO" />
+          <AssociationSet Name="FK_ARTICULOSFOTOS_USERS" Association="DBMVCModel.FK_ARTICULOSFOTOS_USERS">
+            <End Role="USER" EntitySet="USERS" />
+            <End Role="ARTICULOSFOTO" EntitySet="ARTICULOSFOTOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ARTICULOSFOTOS_VEHICULOS" Association="DBMVCModel.FK_ARTICULOSFOTOS_VEHICULOS">
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+            <End Role="ARTICULOSFOTO" EntitySet="ARTICULOSFOTOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_CATEGORIAS" Association="DBMVCModel.FK_VEHICULOS_CATEGORIAS">
+            <End Role="CATEGORIA" EntitySet="CATEGORIAS" />
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_MARCAS" Association="DBMVCModel.FK_VEHICULOS_MARCAS">
+            <End Role="MARCA" EntitySet="MARCAS" />
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_MOTORES" Association="DBMVCModel.FK_VEHICULOS_MOTORES">
+            <End Role="MOTORE" EntitySet="MOTORES" />
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK__Municipio__Codig__42ACE4D4" Association="DBMVCModel.FK__Municipio__Codig__42ACE4D4">
+            <End Role="Provincia" EntitySet="Provincias" />
+            <End Role="Municipio" EntitySet="Municipios" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_MUNICIPIOS" Association="DBMVCModel.FK_VEHICULOS_MUNICIPIOS">
+            <End Role="Municipio" EntitySet="Municipios" />
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_TIPOS" Association="DBMVCModel.FK_VEHICULOS_TIPOS">
+            <End Role="TIPOS" EntitySet="TIPOS" />
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+          </AssociationSet>
+          <AssociationSet Name="FK_VEHICULOS_USERS" Association="DBMVCModel.FK_VEHICULOS_USERS">
+            <End Role="USER" EntitySet="USERS" />
+            <End Role="VEHICULO" EntitySet="VEHICULOS" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="TIPDOC">
           <Key>
@@ -173,6 +419,7 @@
           <Property Name="Estatus" Type="Boolean" />
           <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="VEHICULOS" Relationship="DBMVCModel.FK_VEHICULOS_CATEGORIAS" FromRole="CATEGORIA" ToRole="VEHICULO" />
         </EntityType>
         <EntityType Name="MARCA">
           <Key>
@@ -183,6 +430,7 @@
           <Property Name="Estatus" Type="Boolean" />
           <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
           <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="VEHICULOS" Relationship="DBMVCModel.FK_VEHICULOS_MARCAS" FromRole="MARCA" ToRole="VEHICULO" />
         </EntityType>
         <EntityType Name="TIPOS">
           <Key>
@@ -193,6 +441,7 @@
           <Property Name="Imagen" Type="Binary" MaxLength="Max" FixedLength="false" />
           <Property Name="Estatus" Type="Boolean" />
           <Property Name="FechaRegistro" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="VEHICULOS" Relationship="DBMVCModel.FK_VEHICULOS_TIPOS" FromRole="TIPOS" ToRole="VEHICULO" />
         </EntityType>
         <EntityType Name="MOTORE">
           <Key>
@@ -202,7 +451,184 @@
           <Property Name="Descripcion" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
           <Property Name="Combustible" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
           <Property Name="Transmisión" Type="String" MaxLength="50" FixedLength="true" Unicode="true" />
+          <NavigationProperty Name="VEHICULOS" Relationship="DBMVCModel.FK_VEHICULOS_MOTORES" FromRole="MOTORE" ToRole="VEHICULO" />
         </EntityType>
+        <EntityType Name="ARTICULOSFOTO">
+          <Key>
+            <PropertyRef Name="IDCliente" />
+            <PropertyRef Name="IDArticulo" />
+            <PropertyRef Name="SecPhoto" />
+          </Key>
+          <Property Name="IDCliente" Type="Int32" Nullable="false" />
+          <Property Name="IDArticulo" Type="Int32" Nullable="false" />
+          <Property Name="SecPhoto" Type="Int32" Nullable="false" />
+          <Property Name="FOTO" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="USER" Relationship="DBMVCModel.FK_ARTICULOSFOTOS_USERS" FromRole="ARTICULOSFOTO" ToRole="USER" />
+          <NavigationProperty Name="VEHICULO" Relationship="DBMVCModel.FK_ARTICULOSFOTOS_VEHICULOS" FromRole="ARTICULOSFOTO" ToRole="VEHICULO" />
+        </EntityType>
+        <EntityType Name="Municipio">
+          <Key>
+            <PropertyRef Name="CodigoMunicipio" />
+          </Key>
+          <Property Name="CodigoMunicipio" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="NombreMunicipio" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CodigoProvincia" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Provincia" Relationship="DBMVCModel.FK__Municipio__Codig__42ACE4D4" FromRole="Municipio" ToRole="Provincia" />
+          <NavigationProperty Name="VEHICULOS" Relationship="DBMVCModel.FK_VEHICULOS_MUNICIPIOS" FromRole="Municipio" ToRole="VEHICULO" />
+        </EntityType>
+        <EntityType Name="Provincia">
+          <Key>
+            <PropertyRef Name="CodigoProvincia" />
+          </Key>
+          <Property Name="CodigoProvincia" Type="Int32" Nullable="false" />
+          <Property Name="NombreProvincia" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Municipios" Relationship="DBMVCModel.FK__Municipio__Codig__42ACE4D4" FromRole="Provincia" ToRole="Municipio" />
+        </EntityType>
+        <EntityType Name="VEHICULO">
+          <Key>
+            <PropertyRef Name="IDVehiculo" />
+          </Key>
+          <Property Name="IDVehiculo" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IDUsuario" Type="Int32" Nullable="false" />
+          <Property Name="IdCategoria" Type="Int32" Nullable="false" />
+          <Property Name="IdMarca" Type="Int32" Nullable="false" />
+          <Property Name="IDTipo" Type="Int32" Nullable="false" />
+          <Property Name="IdMotor" Type="Int32" Nullable="false" />
+          <Property Name="CodigoMunicipio" Type="Int32" Nullable="false" />
+          <Property Name="Modelo" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Año" Type="Int32" Nullable="false" />
+          <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Placa" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="NumeroChasis" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Kilometraje" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="Precio" Type="Decimal" Nullable="false" Precision="15" Scale="2" />
+          <Property Name="Descripcion" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="Condicion" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Estatus" Type="Boolean" Nullable="false" />
+          <Property Name="FechaRegistro" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="FechaActualizacion" Type="DateTime" Precision="3" />
+          <Property Name="Contacto" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Observaciones" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Vendido" Type="Boolean" Nullable="false" />
+          <Property Name="FechaVenta" Type="DateTime" Precision="3" />
+          <Property Name="Destacado" Type="Boolean" Nullable="false" />
+          <Property Name="NumeroVistas" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="ARTICULOSFOTOS" Relationship="DBMVCModel.FK_ARTICULOSFOTOS_VEHICULOS" FromRole="VEHICULO" ToRole="ARTICULOSFOTO" />
+          <NavigationProperty Name="CATEGORIA" Relationship="DBMVCModel.FK_VEHICULOS_CATEGORIAS" FromRole="VEHICULO" ToRole="CATEGORIA" />
+          <NavigationProperty Name="MARCA" Relationship="DBMVCModel.FK_VEHICULOS_MARCAS" FromRole="VEHICULO" ToRole="MARCA" />
+          <NavigationProperty Name="MOTORE" Relationship="DBMVCModel.FK_VEHICULOS_MOTORES" FromRole="VEHICULO" ToRole="MOTORE" />
+          <NavigationProperty Name="Municipio" Relationship="DBMVCModel.FK_VEHICULOS_MUNICIPIOS" FromRole="VEHICULO" ToRole="Municipio" />
+          <NavigationProperty Name="TIPOS" Relationship="DBMVCModel.FK_VEHICULOS_TIPOS" FromRole="VEHICULO" ToRole="TIPOS" />
+          <NavigationProperty Name="USER" Relationship="DBMVCModel.FK_VEHICULOS_USERS" FromRole="VEHICULO" ToRole="USER" />
+        </EntityType>
+        <Association Name="FK_ARTICULOSFOTOS_USERS">
+          <End Type="DBMVCModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="DBMVCModel.ARTICULOSFOTO" Role="ARTICULOSFOTO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="ARTICULOSFOTO">
+              <PropertyRef Name="IDCliente" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ARTICULOSFOTOS_VEHICULOS">
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="1" />
+          <End Type="DBMVCModel.ARTICULOSFOTO" Role="ARTICULOSFOTO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="VEHICULO">
+              <PropertyRef Name="IDVehiculo" />
+            </Principal>
+            <Dependent Role="ARTICULOSFOTO">
+              <PropertyRef Name="IDArticulo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_CATEGORIAS">
+          <End Type="DBMVCModel.CATEGORIA" Role="CATEGORIA" Multiplicity="1" />
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CATEGORIA">
+              <PropertyRef Name="IdCategoria" />
+            </Principal>
+            <Dependent Role="VEHICULO">
+              <PropertyRef Name="IdCategoria" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_MARCAS">
+          <End Type="DBMVCModel.MARCA" Role="MARCA" Multiplicity="1" />
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MARCA">
+              <PropertyRef Name="IdMarca" />
+            </Principal>
+            <Dependent Role="VEHICULO">
+              <PropertyRef Name="IdMarca" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_MOTORES">
+          <End Type="DBMVCModel.MOTORE" Role="MOTORE" Multiplicity="1" />
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="MOTORE">
+              <PropertyRef Name="IdMotor" />
+            </Principal>
+            <Dependent Role="VEHICULO">
+              <PropertyRef Name="IdMotor" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__Municipio__Codig__42ACE4D4">
+          <End Type="DBMVCModel.Provincia" Role="Provincia" Multiplicity="1" />
+          <End Type="DBMVCModel.Municipio" Role="Municipio" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Provincia">
+              <PropertyRef Name="CodigoProvincia" />
+            </Principal>
+            <Dependent Role="Municipio">
+              <PropertyRef Name="CodigoProvincia" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_MUNICIPIOS">
+          <End Type="DBMVCModel.Municipio" Role="Municipio" Multiplicity="1" />
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Municipio">
+              <PropertyRef Name="CodigoMunicipio" />
+            </Principal>
+            <Dependent Role="VEHICULO">
+              <PropertyRef Name="CodigoMunicipio" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_TIPOS">
+          <End Type="DBMVCModel.TIPOS" Role="TIPOS" Multiplicity="1" />
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TIPOS">
+              <PropertyRef Name="IDTipo" />
+            </Principal>
+            <Dependent Role="VEHICULO">
+              <PropertyRef Name="IDTipo" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_VEHICULOS_USERS">
+          <End Type="DBMVCModel.USER" Role="USER" Multiplicity="1" />
+          <End Type="DBMVCModel.VEHICULO" Role="VEHICULO" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="USER">
+              <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="VEHICULO">
+              <PropertyRef Name="IDUsuario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -284,6 +710,64 @@
                 <ScalarProperty Name="Combustible" ColumnName="Combustible" />
                 <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
                 <ScalarProperty Name="IdMotor" ColumnName="IdMotor" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ARTICULOSFOTOS">
+            <EntityTypeMapping TypeName="DBMVCModel.ARTICULOSFOTO">
+              <MappingFragment StoreEntitySet="ARTICULOSFOTOS">
+                <ScalarProperty Name="FOTO" ColumnName="FOTO" />
+                <ScalarProperty Name="SecPhoto" ColumnName="SecPhoto" />
+                <ScalarProperty Name="IDArticulo" ColumnName="IDArticulo" />
+                <ScalarProperty Name="IDCliente" ColumnName="IDCliente" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Municipios">
+            <EntityTypeMapping TypeName="DBMVCModel.Municipio">
+              <MappingFragment StoreEntitySet="Municipios">
+                <ScalarProperty Name="CodigoProvincia" ColumnName="CodigoProvincia" />
+                <ScalarProperty Name="NombreMunicipio" ColumnName="NombreMunicipio" />
+                <ScalarProperty Name="CodigoMunicipio" ColumnName="CodigoMunicipio" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Provincias">
+            <EntityTypeMapping TypeName="DBMVCModel.Provincia">
+              <MappingFragment StoreEntitySet="Provincias">
+                <ScalarProperty Name="NombreProvincia" ColumnName="NombreProvincia" />
+                <ScalarProperty Name="CodigoProvincia" ColumnName="CodigoProvincia" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VEHICULOS">
+            <EntityTypeMapping TypeName="DBMVCModel.VEHICULO">
+              <MappingFragment StoreEntitySet="VEHICULOS">
+                <ScalarProperty Name="NumeroVistas" ColumnName="NumeroVistas" />
+                <ScalarProperty Name="Destacado" ColumnName="Destacado" />
+                <ScalarProperty Name="FechaVenta" ColumnName="FechaVenta" />
+                <ScalarProperty Name="Vendido" ColumnName="Vendido" />
+                <ScalarProperty Name="Observaciones" ColumnName="Observaciones" />
+                <ScalarProperty Name="Contacto" ColumnName="Contacto" />
+                <ScalarProperty Name="FechaActualizacion" ColumnName="FechaActualizacion" />
+                <ScalarProperty Name="FechaRegistro" ColumnName="FechaRegistro" />
+                <ScalarProperty Name="Estatus" ColumnName="Estatus" />
+                <ScalarProperty Name="Condicion" ColumnName="Condicion" />
+                <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
+                <ScalarProperty Name="Precio" ColumnName="Precio" />
+                <ScalarProperty Name="Kilometraje" ColumnName="Kilometraje" />
+                <ScalarProperty Name="NumeroChasis" ColumnName="NumeroChasis" />
+                <ScalarProperty Name="Placa" ColumnName="Placa" />
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="Año" ColumnName="Año" />
+                <ScalarProperty Name="Modelo" ColumnName="Modelo" />
+                <ScalarProperty Name="CodigoMunicipio" ColumnName="CodigoMunicipio" />
+                <ScalarProperty Name="IdMotor" ColumnName="IdMotor" />
+                <ScalarProperty Name="IDTipo" ColumnName="IDTipo" />
+                <ScalarProperty Name="IdMarca" ColumnName="IdMarca" />
+                <ScalarProperty Name="IdCategoria" ColumnName="IdCategoria" />
+                <ScalarProperty Name="IDUsuario" ColumnName="IDUsuario" />
+                <ScalarProperty Name="IDVehiculo" ColumnName="IDVehiculo" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

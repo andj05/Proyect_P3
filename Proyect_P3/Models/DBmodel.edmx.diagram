@@ -13,6 +13,19 @@
         <EntityTypeShape EntityType="DBMVCModel.MARCA" Width="1.5" PointX="2.75" PointY="4.75" />
         <EntityTypeShape EntityType="DBMVCModel.TIPOS" Width="1.5" PointX="4.75" PointY="4.75" />
         <EntityTypeShape EntityType="DBMVCModel.MOTORE" Width="1.5" PointX="7.125" PointY="4.875" />
+        <EntityTypeShape EntityType="DBMVCModel.ARTICULOSFOTO" Width="1.5" PointX="11.625" PointY="3.25" />
+        <EntityTypeShape EntityType="DBMVCModel.Municipio" Width="1.5" PointX="7.125" PointY="8.375" />
+        <EntityTypeShape EntityType="DBMVCModel.Provincia" Width="1.5" PointX="4.875" PointY="8.5" />
+        <EntityTypeShape EntityType="DBMVCModel.VEHICULO" Width="1.5" PointX="9.375" PointY="0.75" />
+        <AssociationConnector Association="DBMVCModel.FK_ARTICULOSFOTOS_USERS" />
+        <AssociationConnector Association="DBMVCModel.FK_ARTICULOSFOTOS_VEHICULOS" />
+        <AssociationConnector Association="DBMVCModel.FK_VEHICULOS_CATEGORIAS" />
+        <AssociationConnector Association="DBMVCModel.FK_VEHICULOS_MARCAS" />
+        <AssociationConnector Association="DBMVCModel.FK_VEHICULOS_MOTORES" />
+        <AssociationConnector Association="DBMVCModel.FK__Municipio__Codig__42ACE4D4" />
+        <AssociationConnector Association="DBMVCModel.FK_VEHICULOS_MUNICIPIOS" />
+        <AssociationConnector Association="DBMVCModel.FK_VEHICULOS_TIPOS" />
+        <AssociationConnector Association="DBMVCModel.FK_VEHICULOS_USERS" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

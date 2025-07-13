@@ -12,19 +12,14 @@ namespace Proyect_P3.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class MARCA
+    public partial class ARTICULOSFOTO
     {
-        public MARCA()
-        {
-            this.VEHICULOS = new HashSet<VEHICULO>();
-        }
+        public int IDCliente { get; set; }
+        public int IDArticulo { get; set; }
+        public int SecPhoto { get; set; }
+        public byte[] FOTO { get; set; }
     
-        public int IdMarca { get; set; }
-        public string Descripcion { get; set; }
-        public Nullable<bool> Estatus { get; set; }
-        public Nullable<System.DateTime> FechaRegistro { get; set; }
-        public byte[] Imagen { get; set; }
-    
-        public virtual ICollection<VEHICULO> VEHICULOS { get; set; }
+        public virtual USER USER { get; set; }
+        public virtual VEHICULO VEHICULO { get; set; }
     }
 }

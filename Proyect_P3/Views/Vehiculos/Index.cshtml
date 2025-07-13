@@ -1,0 +1,2373 @@
+﻿
+@{
+    ViewBag.Title = "Anddy Motors - Compra y Vende Vehículos";
+}
+
+<!-- CSS -->
+<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.css" rel="stylesheet">
+
+<style>
+
+    /* Header Principal */
+    .main-header {
+        background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
+        color: white;
+        padding: 2rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+        .main-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 20"><defs><pattern id="car-pattern" x="0" y="0" width="40" height="20" patternUnits="userSpaceOnUse"><path d="M5 10 L15 5 L25 5 L35 10 L25 15 L15 15 Z" stroke="rgba(255,255,255,0.05)" stroke-width="1" fill="none"/></pattern></defs><rect width="100" height="20" fill="url(%23car-pattern)"/></svg>') repeat;
+            opacity: 0.1;
+        }
+
+    .header-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .logo-section {
+        text-align: center;
+        margin-bottom: 2rem;
+    }
+
+    .main-logo {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(45deg, #ffefc2, #fff5d6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .main-subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        margin-top: 0.5rem;
+    }
+
+    /* Filtros de Búsqueda */
+    .search-section {
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 2rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        border: 1px solid rgba(255, 239, 194, 0.3);
+    }
+
+    .search-title {
+        color: #2c2c2c;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+        text-align: center;
+    }
+
+        .search-title i {
+            color: #ffefc2;
+            margin-right: 10px;
+        }
+
+    .form-control, .form-select {
+        border-radius: 15px;
+        border: 2px solid #e9ecef;
+        padding: 12px 18px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .form-control:focus, .form-select:focus {
+            border-color: #ffefc2;
+            box-shadow: 0 0 0 0.2rem rgba(255, 239, 194, 0.25);
+        }
+
+    .btn-search {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        border: none;
+        border-radius: 15px;
+        padding: 12px 30px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 239, 194, 0.4);
+            color: #2c2c2c;
+        }
+
+    .btn-publish {
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        border: none;
+        border-radius: 15px;
+        padding: 12px 30px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+        .btn-publish:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+            color: white;
+        }
+
+    /* Tipos de Vehículos */
+    .types-section {
+        background: white;
+        padding: 3rem 0;
+    }
+
+    .section-title {
+        text-align: center;
+        color: #2c2c2c;
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+    }
+
+    .type-card {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid #f8f9fa;
+        cursor: pointer;
+        height: 100%;
+    }
+
+        .type-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border-color: #ffefc2;
+        }
+
+    .type-icon {
+        font-size: 3rem;
+        color: #ffefc2;
+        margin-bottom: 1rem;
+    }
+
+    .type-name {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #2c2c2c;
+        margin-bottom: 0.5rem;
+    }
+
+    .type-count {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    /* Marcas */
+    .brands-section {
+        background: #f8f9fa;
+        padding: 3rem 0;
+    }
+
+    .brand-logo {
+        background: white;
+        border-radius: 15px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        border: 2px solid #e9ecef;
+        cursor: pointer;
+        height: 100px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .brand-logo:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+            border-color: #ffefc2;
+        }
+
+        .brand-logo img {
+            max-width: 80px;
+            max-height: 50px;
+            object-fit: contain;
+        }
+
+    /* Vehículos Grid */
+    .vehicles-section {
+        background: white;
+        padding: 3rem 0;
+    }
+
+    .vehicle-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e9ecef;
+        height: 100%;
+        position: relative;
+    }
+
+        .vehicle-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+    .vehicle-image {
+        position: relative;
+        height: 220px;
+        overflow: hidden;
+    }
+
+        .vehicle-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: all 0.3s ease;
+        }
+
+    .vehicle-card:hover .vehicle-image img {
+        transform: scale(1.05);
+    }
+
+    .vehicle-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(135deg, #28a745, #20c997);
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+    }
+
+        .vehicle-badge.destacado {
+            background: linear-gradient(135deg, #ffc107, #ff8c00);
+        }
+
+    .vehicle-info {
+        padding: 1.5rem;
+    }
+
+    .vehicle-title {
+        font-size: 1.3rem;
+        font-weight: 700;
+        color: #2c2c2c;
+        margin-bottom: 0.5rem;
+        line-height: 1.3;
+    }
+
+    .vehicle-details {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+        .vehicle-details span {
+            margin-right: 15px;
+            display: inline-block;
+        }
+
+    .vehicle-price {
+        font-size: 1.8rem;
+        font-weight: 800;
+        color: #28a745;
+        margin-bottom: 1rem;
+    }
+
+    .vehicle-location {
+        color: #6c757d;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .vehicle-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-view {
+        flex: 1;
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        border: none;
+        border-radius: 12px;
+        padding: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 239, 194, 0.4);
+            color: #2c2c2c;
+        }
+
+    .btn-contact {
+        flex: 1;
+        background: linear-gradient(135deg, #17a2b8, #138496);
+        color: white;
+        border: none;
+        border-radius: 12px;
+        padding: 10px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+        .btn-contact:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+            color: white;
+        }
+
+    /* Loading y Estados */
+    .loading-spinner {
+        text-align: center;
+        padding: 3rem;
+    }
+
+    .spinner-border {
+        color: #ffefc2;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 3rem;
+        color: #6c757d;
+    }
+
+        .no-results i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+    /* Modal Styles */
+    .modal-content {
+        border-radius: 20px;
+        border: none;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        background: linear-gradient(135deg, #ffefc2, #fff5d6);
+        color: #2c2c2c;
+        border-bottom: none;
+    }
+
+    .modal-title {
+        font-weight: 700;
+    }
+
+    .search-section {
+        padding: 1.5rem;
+        margin-top: 1rem;
+    }
+
+    .vehicle-actions {
+        flex-direction: column;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    }
+
+
+    .fade-in-up {
+        animation: fadeInUp 0.6s ease-out;
+    }
+
+    /* Filters Active State */
+    .filter-active {
+        border-color: #ffefc2 !important;
+        background-color: rgba(255, 239, 194, 0.1) !important;
+    }
+
+    /* Stats Section */
+    .stats-section {
+        background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
+        color: white;
+        padding: 2rem 0;
+    }
+
+    .stat-item {
+        text-align: center;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: #ffefc2;
+        display: block;
+    }
+
+    .stat-label {
+        font-size: 0.9rem;
+        opacity: 0.8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Área de Upload */
+    .upload-area {
+        border: 2px dashed #dee2e6;
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        min-height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .upload-area:hover {
+        border-color: #ffefc2;
+        background-color: rgba(255, 239, 194, 0.1);
+    }
+
+    .upload-area.dragover {
+        border-color: #ffefc2;
+        background-color: rgba(255, 239, 194, 0.2);
+        transform: scale(1.02);
+    }
+
+    /* Preview de Fotos */
+    .fotos-preview {
+        border: 1px solid #dee2e6;
+        border-radius: 15px;
+        padding: 1rem;
+        min-height: 200px;
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .no-photos {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 180px;
+    }
+
+    /* Miniatura de Foto */
+    .photo-thumbnail {
+        position: relative;
+        display: inline-block;
+        margin: 5px;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .photo-remove {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+
+    .photo-remove:hover {
+        background: #c82333;
+        transform: scale(1.1);
+    }
+
+    /* Estado de carga */
+    .photo-thumbnail.uploading {
+        opacity: 0.6;
+    }
+
+    .photo-thumbnail.uploading::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 20px;
+        height: 20px;
+        border: 2px solid #fff;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+
+        .photo-thumbnail img {
+            width: 60px;
+            height: 60px;
+        }
+    }
+</style>
+
+<body>
+    <!-- Header Principal -->
+    <section class="main-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo-section">
+                    <h1 class="main-logo">
+                        <i class="fas fa-car me-3"></i>Anddy Motors
+                    </h1>
+                    <p class="main-subtitle">Tu plataforma confiable para comprar y vender vehículos</p>
+                </div>
+
+                <!-- Búsqueda Principal -->
+                <div class="search-section">
+                    <h3 class="search-title">
+                        <i class="fas fa-search"></i>¡Busca tu Carro!
+                    </h3>
+
+                    <form id="searchForm">
+                        <div class="row g-3">
+                            <div class="col-md-6 col-lg-2">
+                                <label class="form-label">Estado:</label>
+                                <select class="form-select" id="filtroCondicion">
+                                    <option value="">Nuevo/Usado</option>
+                                    <option value="Nuevo">Nuevo</option>
+                                    <option value="Usado">Usado</option>
+                                    <option value="Seminuevo">Seminuevo</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                                <label class="form-label">Marca:</label>
+                                <select class="form-select" id="filtroMarca">
+                                    <option value="">Todas las Marcas</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                                <label class="form-label">Tipo:</label>
+                                <select class="form-select" id="filtroTipo">
+                                    <option value="">Todos los Tipos</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                                <label class="form-label">Año:</label>
+                                <select class="form-select" id="filtroAño">
+                                    <option value="">Cualquier Año</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                                <label class="form-label">Provincia:</label>
+                                <select class="form-select" id="filtroProvincia">
+                                    <option value="">Todas las Provincias</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 col-lg-2">
+                                <div class="d-grid h-100">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-search" onclick="buscarVehiculos()">
+                                        <i class="fas fa-search me-2"></i>Buscar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Precio Mínimo:</label>
+                                <select class="form-select" id="filtroPrecioMin">
+                                    <option value="">Sin mínimo</option>
+                                    <option value="100000">$100,000</option>
+                                    <option value="300000">$300,000</option>
+                                    <option value="500000">$500,000</option>
+                                    <option value="1000000">$1,000,000</option>
+                                    <option value="2000000">$2,000,000</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Precio Máximo:</label>
+                                <select class="form-select" id="filtroPrecioMax">
+                                    <option value="">Sin máximo</option>
+                                    <option value="500000">$500,000</option>
+                                    <option value="1000000">$1,000,000</option>
+                                    <option value="2000000">$2,000,000</option>
+                                    <option value="5000000">$5,000,000</option>
+                                    <option value="10000000">$10,000,000</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="d-grid h-100">
+                                    <label class="form-label">&nbsp;</label>
+                                    <button type="button" class="btn btn-publish" data-bs-toggle="modal" data-bs-target="#modalPublicar">
+                                        <i class="fas fa-plus me-2"></i>Publicar mi Vehículo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Estadísticas -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalVehiculos">0</span>
+                        <span class="stat-label">Vehículos Disponibles</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalMarcas">0</span>
+                        <span class="stat-label">Marcas Disponibles</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalUsuarios">0</span>
+                        <span class="stat-label">Usuarios Activos</span>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-item">
+                        <span class="stat-number" id="vehiculosVendidos">0</span>
+                        <span class="stat-label">Vehículos Vendidos</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tipos de Vehículos -->
+    <section class="types-section">
+        <div class="container">
+            <h2 class="section-title">Tipos de Vehículos</h2>
+            <div class="row g-4" id="tiposContainer">
+                <!-- Se cargará dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Marcas -->
+    <section class="brands-section">
+        <div class="container">
+            <h2 class="section-title">Marcas Destacadas</h2>
+            <div class="row g-4" id="marcasContainer">
+                <!-- Se cargará dinámicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Vehículos -->
+    <section class="vehicles-section">
+        <div class="container">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2 class="section-title mb-0">Vehículos Disponibles</h2>
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-secondary" onclick="mostrarTodos()">
+                        <i class="fas fa-th me-2"></i>Todos
+                    </button>
+                    <button class="btn btn-outline-warning" onclick="mostrarDestacados()">
+                        <i class="fas fa-star me-2"></i>Destacados
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div id="loadingVehiculos" class="loading-spinner">
+                <div class="spinner-border" role="status">
+                    <span class="visually-hidden">Cargando...</span>
+                </div>
+                <p class="mt-2">Cargando vehículos...</p>
+            </div>
+
+            <!-- Grid de Vehículos -->
+            <div class="row g-4" id="vehiculosContainer" style="display: none;">
+                <!-- Se cargará dinámicamente -->
+            </div>
+
+            <!-- Sin Resultados -->
+            <div id="noResults" class="no-results" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h4>No se encontraron vehículos</h4>
+                <p>Intenta ajustar tus filtros de búsqueda</p>
+                <button class="btn btn-search" onclick="limpiarFiltros()">
+                    <i class="fas fa-refresh me-2"></i>Limpiar Filtros
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal Publicar Vehículo -->
+    <div class="modal fade" id="modalPublicar" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-car me-2"></i>Publicar mi Vehículo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="formPublicar">
+                        <input type="hidden" id="txtIDVehiculo" value="0">
+                        <input type="hidden" id="txtIDUsuario" value="1"> <!-- Se debe obtener del usuario logueado -->
+
+                        <div class="row g-3">
+                            <!-- Información Básica -->
+                            <div class="col-12">
+                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-info-circle me-2"></i>Información Básica</h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Categoría *</label>
+                                <select class="form-select" id="selectCategoria" required>
+                                    <option value="">Seleccionar categoría</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Marca *</label>
+                                <select class="form-select" id="selectMarca" required>
+                                    <option value="">Seleccionar marca</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo de Vehículo *</label>
+                                <select class="form-select" id="selectTipo" required>
+                                    <option value="">Seleccionar tipo</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Motor *</label>
+                                <select class="form-select" id="selectMotor" required>
+                                    <option value="">Seleccionar motor</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Modelo *</label>
+                                <input type="text" class="form-control" id="txtModelo" placeholder="Ej: Civic, Corolla, Mustang" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Año *</label>
+                                <select class="form-select" id="selectAño" required>
+                                    <option value="">Seleccionar año</option>
+                                </select>
+                            </div>
+
+                            <!-- Detalles del Vehículo -->
+                            <div class="col-12 mt-4">
+                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-cogs me-2"></i>Detalles del Vehículo</h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Color</label>
+                                <input type="text" class="form-control" id="txtColor" placeholder="Ej: Blanco, Negro, Rojo">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Condición *</label>
+                                <select class="form-select" id="selectCondicion" required>
+                                    <option value="">Seleccionar condición</option>
+                                    <option value="Nuevo">Nuevo</option>
+                                    <option value="Usado">Usado</option>
+                                    <option value="Seminuevo">Seminuevo</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Placa</label>
+                                <input type="text" class="form-control" id="txtPlaca" placeholder="Ej: A123456">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Kilometraje</label>
+                                <input type="number" class="form-control" id="txtKilometraje" placeholder="Ej: 45000">
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Precio *</label>
+                                <input type="number" class="form-control" id="txtPrecio" placeholder="Ej: 850000" required>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Número de Chasis</label>
+                                <input type="text" class="form-control" id="txtChasis" placeholder="Número de chasis">
+                            </div>
+
+                            <!-- Ubicación -->
+                            <div class="col-12 mt-4">
+                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-map-marker-alt me-2"></i>Ubicación</h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Provincia *</label>
+                                <select class="form-select" id="selectProvinciaModal" required onchange="cargarMunicipios()">
+                                    <option value="">Seleccionar provincia</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Municipio *</label>
+                                <select class="form-select" id="selectMunicipio" required>
+                                    <option value="">Seleccionar municipio</option>
+                                </select>
+                            </div>
+
+                            <div class="col-12 mt-4">
+                                <h6 class="text-primary border-bottom pb-2"><i class="fas fa-plus-circle me-2"></i>Información Adicional</h6>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label class="form-label">Teléfono de Contacto</label>
+                                <input type="tel" class="form-control" id="txtContacto" placeholder="Ej: 809-555-0123">
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-check mt-4">
+                                    <input class="form-check-input" type="checkbox" id="checkDestacado">
+                                    <label class="form-check-label" for="checkDestacado">
+                                        <i class="fas fa-star text-warning me-2"></i>Marcar como destacado
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Descripción</label>
+                                <textarea class="form-control" id="txtDescripcion" rows="4"
+                                          placeholder="Describe tu vehículo: características especiales, mantenimiento, accesorios, etc."></textarea>
+                            </div>
+
+                            <div class="col-12">
+                                <label class="form-label">Observaciones</label>
+                                <textarea class="form-control" id="txtObservaciones" rows="3"
+                                          placeholder="Información adicional que consideres importante"></textarea>
+                            </div>
+
+                            <!-- 📸 SECCIÓN DE FOTOS DEL VEHÍCULO -->
+                            <div class="col-12 mt-4">
+                                <h6 class="text-primary border-bottom pb-2">
+                                    <i class="fas fa-camera me-2"></i>Fotos del Vehículo
+                                </h6>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="row g-3">
+                                    <!-- Área de Subir Fotos -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Subir Fotos (Máximo 10 fotos)</label>
+                                        <div class="upload-area" id="uploadArea">
+                                            <div class="upload-content">
+                                                <i class="fas fa-cloud-upload-alt fa-3x text-muted mb-3"></i>
+                                                <p class="mb-2">Arrastra las fotos aquí o haz clic para seleccionar</p>
+                                                <p class="text-muted small">Formatos: JPG, PNG, GIF. Máximo 5MB por foto</p>
+                                                <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                                                <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('fileInput').click()">
+                                                    <i class="fas fa-plus me-1"></i>Seleccionar Fotos
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Preview de Fotos -->
+                                    <div class="col-md-6">
+                                        <label class="form-label">Vista Previa</label>
+                                        <div id="fotosPreview" class="fotos-preview">
+                                            <div class="no-photos">
+                                                <i class="fas fa-images fa-2x text-muted"></i>
+                                                <p class="text-muted mb-0">No hay fotos seleccionadas</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Barra de Progreso -->
+                                <div class="col-12 mt-3">
+                                    <div id="uploadProgress" class="progress" style="display: none;">
+                                        <div class="progress-bar progress-bar-striped progress-bar-animated"
+                                             role="progressbar" style="width: 0%"></div>
+                                    </div>
+                                    <div id="uploadStatus" class="mt-2"></div>
+                                </div>
+                            </div>
+                        </div> <!-- Cerrar row g-3 -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cancelar
+                    </button>
+                    <button type="button" class="btn btn-publish" id="btnGuardarVehiculo">
+                        <i class="fas fa-save me-2"></i>Publicar Vehículo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Detalles del Vehículo -->
+    <div class="modal fade" id="modalDetalles" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalDetallesTitle">
+                        <i class="fas fa-car me-2"></i>Detalles del Vehículo
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="detallesContent">
+                        <!-- Se cargará dinámicamente -->
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-2"></i>Cerrar
+                    </button>
+                    <button type="button" class="btn btn-contact" id="btnContactarVendedor">
+                        <i class="fas fa-phone me-2"></i>Contactar Vendedor
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/11.7.32/sweetalert2.min.js"></script>
+
+    <script>
+        // 🔧 JAVASCRIPT COMPLETO CON SISTEMA DE FOTOS INTEGRADO
+
+        // Variables globales
+        let vehiculosData = [];
+        let marcasData = [];
+        let tiposData = [];
+        let categoriasData = [];
+        let motoresData = [];
+        let provinciasData = [];
+        let municipiosData = [];
+
+        // 📸 VARIABLES PARA FOTOS
+        let fotosSeleccionadas = [];
+        const MAX_FOTOS = 10;
+        const MAX_SIZE_MB = 5;
+
+        $(document).ready(function () {
+            console.log('🚀 Iniciando aplicación de vehículos...');
+
+            // 1. PRIMERO cargar datos del formulario
+            cargarDatosIniciales()
+                .then(() => {
+                    console.log('✅ Datos iniciales cargados, procediendo...');
+                    // 2. DESPUÉS cargar vehículos
+                    cargarVehiculos();
+                    // 3. Configurar eventos
+                    configurarEventos();
+                })
+                .catch(error => {
+                    console.error('❌ Error en inicialización:', error);
+                    mostrarError('Error al inicializar la aplicación');
+                });
+        });
+
+        // 🔧 MÉTODO CORREGIDO PARA CARGAR DATOS INICIALES
+        function cargarDatosIniciales() {
+            return new Promise((resolve, reject) => {
+                console.log('📡 Cargando datos de formulario...');
+
+                $.ajax({
+                    url: '/Vehiculos/ObtenerDatosFormulario',
+                    type: 'GET',
+                    timeout: 15000, // 15 segundos de timeout
+                    success: function (response) {
+                        console.log('✅ Respuesta del servidor:', response);
+
+                        try {
+                            if (response && typeof response === 'object') {
+                                // Guardar datos en variables globales
+                                marcasData = response.marcas || [];
+                                tiposData = response.tipos || [];
+                                categoriasData = response.categorias || [];
+                                motoresData = response.motores || [];
+                                provinciasData = response.provincias || [];
+                                municipiosData = response.municipios || [];
+
+                                console.log('📊 Datos cargados:');
+                                console.log('- Categorías:', categoriasData.length);
+                                console.log('- Marcas:', marcasData.length);
+                                console.log('- Tipos:', tiposData.length);
+                                console.log('- Motores:', motoresData.length);
+                                console.log('- Provincias:', provinciasData.length);
+                                console.log('- Municipios:', municipiosData.length);
+
+                                // Llenar todos los selects
+                                llenarFiltros();
+                                llenarFormulario();
+                                cargarAños();
+                                cargarTipos();
+                                cargarMarcas();
+
+                                resolve(response);
+                            } else {
+                                console.error('❌ Respuesta inválida del servidor');
+                                reject('Respuesta inválida del servidor');
+                            }
+                        } catch (error) {
+                            console.error('❌ Error procesando respuesta:', error);
+                            reject(error);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('❌ Error AJAX:', {
+                            status: xhr.status,
+                            statusText: xhr.statusText,
+                            responseText: xhr.responseText,
+                            error: error
+                        });
+                        reject(`Error del servidor: ${xhr.status} - ${error}`);
+                        mostrarError('Error al cargar los datos iniciales. Verifique la conexión.');
+                    }
+                });
+            });
+        }
+
+        function llenarFiltros() {
+            console.log('🎛️ Llenando filtros...');
+
+            try {
+                // Filtro de marcas
+                const selectMarca = $('#filtroMarca');
+                if (selectMarca.length) {
+                    selectMarca.empty().append('<option value="">Todas las Marcas</option>');
+                    marcasData.forEach(marca => {
+                        if (marca && marca.Descripcion) {
+                            selectMarca.append(`<option value="${marca.Descripcion}">${marca.Descripcion}</option>`);
+                        }
+                    });
+                    console.log('✅ Filtro marcas llenado:', marcasData.length, 'elementos');
+                }
+
+                // Filtro de tipos
+                const selectTipo = $('#filtroTipo');
+                if (selectTipo.length) {
+                    selectTipo.empty().append('<option value="">Todos los Tipos</option>');
+                    tiposData.forEach(tipo => {
+                        if (tipo && tipo.Descripcion) {
+                            selectTipo.append(`<option value="${tipo.Descripcion}">${tipo.Descripcion}</option>`);
+                        }
+                    });
+                    console.log('✅ Filtro tipos llenado:', tiposData.length, 'elementos');
+                }
+
+                // Filtro de provincias
+                const selectProvincia = $('#filtroProvincia');
+                if (selectProvincia.length) {
+                    selectProvincia.empty().append('<option value="">Todas las Provincias</option>');
+                    provinciasData.forEach(provincia => {
+                        if (provincia && provincia.NombreProvincia) {
+                            selectProvincia.append(`<option value="${provincia.NombreProvincia}">${provincia.NombreProvincia}</option>`);
+                        }
+                    });
+                    console.log('✅ Filtro provincias llenado:', provinciasData.length, 'elementos');
+                }
+            } catch (error) {
+                console.error('❌ Error llenando filtros:', error);
+            }
+        }
+
+        function llenarFormulario() {
+            console.log('📝 Llenando formulario del modal...');
+
+            try {
+                // Categorías
+                const selectCategoria = $('#selectCategoria');
+                if (selectCategoria.length) {
+                    selectCategoria.empty().append('<option value="">Seleccionar categoría</option>');
+                    categoriasData.forEach(categoria => {
+                        if (categoria && categoria.IdCategoria && categoria.Descripcion) {
+                            selectCategoria.append(`<option value="${categoria.IdCategoria}">${categoria.Descripcion}</option>`);
+                        }
+                    });
+                    console.log('✅ Categorías llenadas:', categoriasData.length, 'elementos');
+                } else {
+                    console.warn('⚠️ Select de categorías no encontrado');
+                }
+
+                // Marcas
+                const selectMarcaModal = $('#selectMarca');
+                if (selectMarcaModal.length) {
+                    selectMarcaModal.empty().append('<option value="">Seleccionar marca</option>');
+                    marcasData.forEach(marca => {
+                        if (marca && marca.IdMarca && marca.Descripcion) {
+                            selectMarcaModal.append(`<option value="${marca.IdMarca}">${marca.Descripcion}</option>`);
+                        }
+                    });
+                    console.log('✅ Marcas modal llenadas:', marcasData.length, 'elementos');
+                } else {
+                    console.warn('⚠️ Select de marcas modal no encontrado');
+                }
+
+                // Tipos
+                const selectTipoModal = $('#selectTipo');
+                if (selectTipoModal.length) {
+                    selectTipoModal.empty().append('<option value="">Seleccionar tipo</option>');
+                    tiposData.forEach(tipo => {
+                        if (tipo && tipo.IDTipo && tipo.Descripcion) {
+                            selectTipoModal.append(`<option value="${tipo.IDTipo}">${tipo.Descripcion}</option>`);
+                        }
+                    });
+                    console.log('✅ Tipos modal llenados:', tiposData.length, 'elementos');
+                } else {
+                    console.warn('⚠️ Select de tipos modal no encontrado');
+                }
+
+                // Motores
+                const selectMotor = $('#selectMotor');
+                if (selectMotor.length) {
+                    selectMotor.empty().append('<option value="">Seleccionar motor</option>');
+                    motoresData.forEach(motor => {
+                        if (motor && motor.IdMotor) {
+                            const descripcion = motor.DescripcionCompleta || motor.Descripcion || 'Motor sin descripción';
+                            selectMotor.append(`<option value="${motor.IdMotor}">${descripcion}</option>`);
+                        }
+                    });
+                    console.log('✅ Motores llenados:', motoresData.length, 'elementos');
+                } else {
+                    console.warn('⚠️ Select de motores no encontrado');
+                }
+
+                // Provincias en modal
+                const selectProvinciaModal = $('#selectProvinciaModal');
+                if (selectProvinciaModal.length) {
+                    selectProvinciaModal.empty().append('<option value="">Seleccionar provincia</option>');
+                    provinciasData.forEach(provincia => {
+                        if (provincia && provincia.CodigoProvincia && provincia.NombreProvincia) {
+                            selectProvinciaModal.append(`<option value="${provincia.CodigoProvincia}">${provincia.NombreProvincia}</option>`);
+                        }
+                    });
+                    console.log('✅ Provincias modal llenadas:', provinciasData.length, 'elementos');
+                } else {
+                    console.warn('⚠️ Select de provincias modal no encontrado');
+                }
+            } catch (error) {
+                console.error('❌ Error llenando formulario modal:', error);
+            }
+        }
+
+        function cargarAños() {
+            console.log('📅 Cargando años...');
+
+            try {
+                const currentYear = new Date().getFullYear();
+
+                // Año en modal (para publicar)
+                const selectAño = $('#selectAño');
+                if (selectAño.length) {
+                    selectAño.empty().append('<option value="">Seleccionar año</option>');
+                    // Desde el año siguiente hasta 1980
+                    for (let year = currentYear + 1; year >= 1980; year--) {
+                        selectAño.append(`<option value="${year}">${year}</option>`);
+                    }
+                    console.log('✅ Años modal cargados: desde', currentYear + 1, 'hasta 1980');
+                }
+
+                // Año en filtros (para buscar)
+                const filtroAño = $('#filtroAño');
+                if (filtroAño.length) {
+                    filtroAño.empty().append('<option value="">Cualquier Año</option>');
+                    // Solo años recientes para filtros (desde 2000)
+                    for (let year = currentYear; year >= 2000; year--) {
+                        filtroAño.append(`<option value="${year}">${year}</option>`);
+                    }
+                    console.log('✅ Filtro años cargado: desde', currentYear, 'hasta 2000');
+                }
+            } catch (error) {
+                console.error('❌ Error cargando años:', error);
+            }
+        }
+
+        function cargarMunicipios() {
+            console.log('🏘️ Cargando municipios...');
+
+            try {
+                const provinciaId = $('#selectProvinciaModal').val();
+                const selectMunicipio = $('#selectMunicipio');
+
+                if (!selectMunicipio.length) {
+                    console.warn('⚠️ Select de municipios no encontrado');
+                    return;
+                }
+
+                // Limpiar municipios
+                selectMunicipio.empty().append('<option value="">Seleccionar municipio</option>');
+
+                if (provinciaId && municipiosData.length > 0) {
+                    console.log('🔍 Filtrando municipios para provincia:', provinciaId);
+
+                    const municipiosFiltrados = municipiosData.filter(m =>
+                        m && m.CodigoProvincia && m.CodigoProvincia.toString() === provinciaId.toString()
+                    );
+
+                    console.log('📋 Municipios encontrados:', municipiosFiltrados.length);
+
+                    municipiosFiltrados.forEach(municipio => {
+                        if (municipio && municipio.CodigoMunicipio && municipio.NombreMunicipio) {
+                            selectMunicipio.append(`<option value="${municipio.CodigoMunicipio}">${municipio.NombreMunicipio}</option>`);
+                        }
+                    });
+
+                    console.log('✅ Municipios cargados para provincia', provinciaId);
+                } else {
+                    console.log('ℹ️ No hay provincia seleccionada o no hay datos de municipios');
+                }
+            } catch (error) {
+                console.error('❌ Error cargando municipios:', error);
+            }
+        }
+
+        function cargarTipos() {
+            console.log('🚗 Cargando tipos...');
+
+            const container = $('#tiposContainer');
+            if (!container.length) {
+                console.warn('⚠️ Container de tipos no encontrado');
+                return;
+            }
+
+            container.empty();
+
+            // Contar vehículos por tipo
+            const tiposCounts = {};
+            vehiculosData.forEach(vehiculo => {
+                const tipo = vehiculo.TipoNombre || 'Otros';
+                tiposCounts[tipo] = (tiposCounts[tipo] || 0) + 1;
+            });
+
+            tiposData.forEach(tipo => {
+                const count = tiposCounts[tipo.Descripcion] || 0;
+                const icon = obtenerIconoTipo(tipo.Descripcion);
+
+                const card = `
+            <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="type-card" onclick="filtrarPorTipo('${tipo.Descripcion}')">
+                    <div class="type-icon">
+                        <i class="${icon}"></i>
+                    </div>
+                    <div class="type-name">${tipo.Descripcion}</div>
+                    <div class="type-count">${count} vehículos</div>
+                </div>
+            </div>
+        `;
+                container.append(card);
+            });
+
+            console.log('✅ Tipos cargados:', tiposData.length, 'elementos');
+        }
+
+        function cargarMarcas() {
+            console.log('🏷️ Cargando marcas...');
+
+            const container = $('#marcasContainer');
+            if (!container.length) {
+                console.warn('⚠️ Container de marcas no encontrado');
+                return;
+            }
+
+            container.empty();
+
+            marcasData.slice(0, 8).forEach(marca => {
+                let imagenHtml = '';
+                if (marca.ImagenBase64) {
+                    imagenHtml = `<img src="data:image/jpeg;base64,${marca.ImagenBase64}" alt="${marca.Descripcion}">`;
+                } else {
+                    imagenHtml = `<strong>${marca.Descripcion}</strong>`;
+                }
+
+                const card = `
+            <div class="col-6 col-md-4 col-lg-3">
+                <div class="brand-logo" onclick="filtrarPorMarca('${marca.Descripcion}')">
+                    ${imagenHtml}
+                </div>
+            </div>
+        `;
+                container.append(card);
+            });
+
+            console.log('✅ Marcas cargadas:', Math.min(marcasData.length, 8), 'elementos');
+        }
+
+        // 📸 FUNCIONES PARA MANEJO DE FOTOS
+
+        function configurarEventosFotos() {
+            console.log('📸 Configurando eventos de fotos...');
+
+            // 🔧 SOLUCIÓN: Configurar eventos cada vez que se abre el modal
+            $('#modalPublicar').off('shown.bs.modal.fotos').on('shown.bs.modal.fotos', function () {
+                console.log('🔧 Modal mostrado, configurando eventos de fotos...');
+
+                setTimeout(() => {
+                    const fileInput = $('#fileInput');
+                    const uploadArea = $('#uploadArea');
+                    const fotosPreview = $('#fotosPreview');
+
+                    console.log('🔍 Verificando elementos:');
+                    console.log('- fileInput:', fileInput.length > 0);
+                    console.log('- uploadArea:', uploadArea.length > 0);
+                    console.log('- fotosPreview:', fotosPreview.length > 0);
+
+                    if (fileInput.length === 0 || uploadArea.length === 0) {
+                        console.error('❌ Elementos de fotos no encontrados');
+                        return;
+                    }
+
+                    // ✅ EVENTO DEL INPUT FILE (FUNCIONA SIEMPRE)
+                    fileInput.off('change.fotos').on('change.fotos', function (e) {
+                        console.log('📁 ¡EVENTO DISPARADO! Archivos seleccionados:', e.target.files.length);
+                        if (e.target.files.length > 0) {
+                            manejarArchivosSeleccionados(e.target.files);
+                        }
+                    });
+
+                    // ✅ CLICK EN ÁREA DE UPLOAD
+                    uploadArea.off('click.fotos').on('click.fotos', function (e) {
+                        console.log('🖱️ Click en área de upload detectado');
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        // Método más directo
+                        document.getElementById('fileInput').click();
+                    });
+
+                    // ✅ DRAG & DROP
+                    uploadArea.off('dragover.fotos dragleave.fotos drop.fotos')
+                        .on('dragover.fotos', function (e) {
+                            e.preventDefault();
+                            $(this).addClass('dragover');
+                        })
+                        .on('dragleave.fotos', function (e) {
+                            e.preventDefault();
+                            $(this).removeClass('dragover');
+                        })
+                        .on('drop.fotos', function (e) {
+                            e.preventDefault();
+                            $(this).removeClass('dragover');
+                            if (e.originalEvent.dataTransfer?.files) {
+                                manejarArchivosSeleccionados(e.originalEvent.dataTransfer.files);
+                            }
+                        });
+
+                    console.log('✅ Eventos de fotos configurados correctamente');
+                }, 100); // Pequeño delay para asegurar que el DOM esté listo
+            });
+
+            // 🔧 EVENTO ADICIONAL: También configurar cuando se hace click en "Seleccionar Fotos"
+            $(document).off('click.btnSelectFotos').on('click.btnSelectFotos', '[onclick*="fileInput"]', function (e) {
+                console.log('🖱️ Click en botón Seleccionar Fotos');
+                e.preventDefault();
+                $('#fileInput')[0].click();
+            });
+        }
+
+        function manejarArchivosSeleccionados(archivos) {
+            console.log('📁 Archivos seleccionados:', archivos.length);
+
+            // Validar cantidad total
+            if (fotosSeleccionadas.length + archivos.length > MAX_FOTOS) {
+                mostrarError(`Solo puedes subir máximo ${MAX_FOTOS} fotos. Ya tienes ${fotosSeleccionadas.length} seleccionadas.`);
+                return;
+            }
+
+            Array.from(archivos).forEach(archivo => {
+                if (validarArchivo(archivo)) {
+                    procesarArchivo(archivo);
+                }
+            });
+        }
+
+        function validarArchivo(archivo) {
+            // Validar tipo
+            if (!archivo.type.match(/^image\/(jpeg|jpg|png|gif|bmp|webp)$/i)) {
+                mostrarError(`Tipo de archivo no válido: ${archivo.name}. Solo se permiten imágenes.`);
+                return false;
+            }
+
+            // Validar tamaño
+            if (archivo.size > MAX_SIZE_MB * 1024 * 1024) {
+                mostrarError(`Archivo muy grande: ${archivo.name}. Máximo ${MAX_SIZE_MB}MB.`);
+                return false;
+            }
+
+            return true;
+        }
+
+        function procesarArchivo(archivo) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                const fotoData = {
+                    id: Date.now() + Math.random(), // ID único temporal
+                    archivo: archivo,
+                    dataUrl: e.target.result,
+                    nombre: archivo.name,
+                    tamaño: archivo.size,
+                    estado: 'seleccionada' // Estados: seleccionada, subiendo, subida, error
+                };
+
+                fotosSeleccionadas.push(fotoData);
+                actualizarPreviewFotos();
+
+                console.log('📸 Foto agregada:', fotoData.nombre);
+            };
+
+            reader.readAsDataURL(archivo);
+        }
+
+        function actualizarPreviewFotos() {
+            const container = $('#fotosPreview');
+
+            if (fotosSeleccionadas.length === 0) {
+                container.html(`
+                    <div class="no-photos">
+                        <i class="fas fa-images fa-2x text-muted"></i>
+                        <p class="text-muted mb-0">No hay fotos seleccionadas</p>
+                    </div>
+                `);
+                return;
+            }
+
+            let html = '';
+            fotosSeleccionadas.forEach((foto, index) => {
+                const estadoClass = foto.estado === 'subiendo' ? 'uploading' : '';
+                const estadoIcon = getEstadoIcon(foto.estado);
+
+                html += `
+                    <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
+                        <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
+                        <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
+                                ${foto.estado === 'subiendo' ? 'disabled' : ''}>
+                            <i class="fas fa-times"></i>
+                        </button>
+                        ${estadoIcon}
+                    </div>
+                `;
+            });
+
+            container.html(html);
+
+            // Actualizar contador
+            $('#contadorFotos').text(`${fotosSeleccionadas.length}/${MAX_FOTOS} fotos`);
+        }
+
+        function getEstadoIcon(estado) {
+            switch (estado) {
+                case 'subiendo':
+                    return '<div class="estado-icon uploading-icon"><i class="fas fa-spinner fa-spin"></i></div>';
+                case 'subida':
+                    return '<div class="estado-icon success-icon"><i class="fas fa-check"></i></div>';
+                case 'error':
+                    return '<div class="estado-icon error-icon"><i class="fas fa-exclamation-triangle"></i></div>';
+                default:
+                    return '';
+            }
+        }
+
+        function eliminarFotoSeleccionada(fotoId) {
+            fotosSeleccionadas = fotosSeleccionadas.filter(foto => foto.id !== fotoId);
+            actualizarPreviewFotos();
+            console.log('🗑️ Foto eliminada del preview');
+        }
+
+        function subirFotosVehiculo(idVehiculo) {
+            if (fotosSeleccionadas.length === 0) {
+                console.log('ℹ️ No hay fotos para subir');
+                return Promise.resolve(true);
+            }
+
+            return new Promise((resolve, reject) => {
+                console.log(`📤 Subiendo ${fotosSeleccionadas.length} fotos para vehículo ${idVehiculo}...`);
+
+                // Marcar fotos como "subiendo"
+                fotosSeleccionadas.forEach(foto => {
+                    foto.estado = 'subiendo';
+                });
+                actualizarPreviewFotos();
+
+                // Mostrar progreso
+                mostrarProgreso(0);
+
+                // Crear FormData
+                const formData = new FormData();
+                fotosSeleccionadas.forEach((foto, index) => {
+                    formData.append(`foto_${index}`, foto.archivo);
+                });
+
+                // Subir fotos
+                $.ajax({
+                    url: `/Vehiculos/SubirFotos?idVehiculo=${idVehiculo}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    xhr: function() {
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function(e) {
+                            if (e.lengthComputable) {
+                                const percentComplete = (e.loaded / e.total) * 100;
+                                mostrarProgreso(percentComplete);
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function(response) {
+                        console.log('📤 Respuesta subida fotos:', response);
+
+                        if (response && response.respuesta === true) {
+                            // Marcar fotos como subidas
+                            fotosSeleccionadas.forEach(foto => {
+                                foto.estado = 'subida';
+                            });
+                            actualizarPreviewFotos();
+
+                            mostrarProgreso(100);
+                            $('#uploadStatus').html(`
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check me-2"></i>
+                                    ${response.cantidad} foto(s) subida(s) exitosamente
+                                </div>
+                            `);
+
+                            resolve(true);
+                        } else {
+                            throw new Error(response.error || 'Error al subir fotos');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('❌ Error subiendo fotos:', error);
+
+                        // Marcar fotos con error
+                        fotosSeleccionadas.forEach(foto => {
+                            foto.estado = 'error';
+                        });
+                        actualizarPreviewFotos();
+
+                        $('#uploadStatus').html(`
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Error al subir fotos: ${error}
+                            </div>
+                        `);
+
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        function mostrarProgreso(porcentaje) {
+            const progressBar = $('#uploadProgress .progress-bar');
+            const progressContainer = $('#uploadProgress');
+
+            if (porcentaje > 0) {
+                progressContainer.show();
+                progressBar.css('width', porcentaje + '%');
+                progressBar.text(Math.round(porcentaje) + '%');
+            } else {
+                progressContainer.hide();
+            }
+        }
+
+        function limpiarFotos() {
+            fotosSeleccionadas = [];
+            actualizarPreviewFotos();
+            $('#fileInput').val('');
+            $('#uploadProgress').hide();
+            $('#uploadStatus').empty();
+            console.log('🧹 Fotos limpiadas');
+        }
+
+        function cargarVehiculos() {
+            console.log('🚚 Cargando vehículos...');
+
+            $('#loadingVehiculos').show();
+            $('#vehiculosContainer').hide();
+            $('#noResults').hide();
+
+            $.ajax({
+                url: '/Vehiculos/ConsultaVehiculosActivos',
+                type: 'GET',
+                success: function (response) {
+                    console.log('✅ Vehículos cargados:', response);
+
+                    if (response && response.data) {
+                        vehiculosData = response.data;
+                        mostrarVehiculos(vehiculosData);
+                        actualizarEstadisticas();
+                    } else {
+                        mostrarVehiculos([]);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ Error al cargar vehículos:', error);
+                    mostrarError('Error al cargar los vehículos');
+                    $('#loadingVehiculos').hide();
+                }
+            });
+        }
+
+        function mostrarVehiculos(vehiculos) {
+            $('#loadingVehiculos').hide();
+
+            const container = $('#vehiculosContainer');
+            container.empty();
+
+            if (vehiculos.length === 0) {
+                $('#noResults').show();
+                $('#vehiculosContainer').hide();
+                return;
+            }
+
+            $('#noResults').hide();
+            $('#vehiculosContainer').show();
+
+            vehiculos.forEach(vehiculo => {
+                const card = crearTarjetaVehiculo(vehiculo);
+                container.append(card);
+            });
+
+            // Animar las tarjetas
+            container.children().each(function (index) {
+                $(this).addClass('fade-in-up').css('animation-delay', (index * 0.1) + 's');
+            });
+
+            console.log('✅ Vehículos mostrados:', vehiculos.length);
+        }
+
+        function crearTarjetaVehiculo(vehiculo) {
+            const precio = new Intl.NumberFormat('es-DO', {
+                style: 'currency',
+                currency: 'DOP'
+            }).format(vehiculo.Precio);
+
+            const badge = vehiculo.Destacado ?
+                '<div class="vehicle-badge destacado"><i class="fas fa-star me-1"></i>Destacado</div>' :
+                '<div class="vehicle-badge"><i class="fas fa-check me-1"></i>Disponible</div>';
+
+            // 📸 Usar la primera foto si existe, sino placeholder
+            const imagenSrc = vehiculo.PrimeraFoto || 'https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen';
+
+            // 📊 Badge de cantidad de fotos
+            const fotosBadge = vehiculo.CantidadFotos > 0 ?
+                `<div class="photos-badge"><i class="fas fa-camera me-1"></i>${vehiculo.CantidadFotos}</div>` : '';
+
+            return `
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="vehicle-card">
+                <div class="vehicle-image">
+                    <img src="${imagenSrc}" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
+                         onerror="this.src='https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen'">
+                    ${badge}
+                    ${fotosBadge}
+                </div>
+                <div class="vehicle-info">
+                    <h5 class="vehicle-title">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h5>
+                    <div class="vehicle-details">
+                        <span><i class="fas fa-calendar me-1"></i>${vehiculo.Año}</span>
+                        <span><i class="fas fa-cog me-1"></i>${vehiculo.TipoNombre}</span>
+                        <span><i class="fas fa-gas-pump me-1"></i>${vehiculo.Combustible || 'N/A'}</span>
+                    </div>
+                    <div class="vehicle-price">${precio}</div>
+                    <div class="vehicle-location">
+                        <i class="fas fa-map-marker-alt me-1"></i>
+                        ${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}
+                    </div>
+                    <div class="vehicle-actions">
+                        <button class="btn btn-view" onclick="verDetalles(${vehiculo.IDVehiculo})">
+                            <i class="fas fa-eye me-2"></i>Ver Detalles
+                        </button>
+                        <button class="btn btn-contact" onclick="contactarVendedor('${vehiculo.Contacto || 'No disponible'}')">
+                            <i class="fas fa-phone me-2"></i>Contactar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+        }
+
+        function configurarEventos() {
+            console.log('🎛️ Configurando eventos...');
+
+            // Evento para cargar municipios cuando cambia la provincia
+            $('#selectProvinciaModal').off('change').on('change', function () {
+                console.log('🔄 Provincia cambiada:', $(this).val());
+                cargarMunicipios();
+            });
+
+            // Guardar vehículo CON FOTOS
+            $('#btnGuardarVehiculo').off('click').on('click', function () {
+                guardarVehiculoConFotos(); // 📸 Usar la nueva función que incluye fotos
+            });
+
+            // Limpiar modal al cerrar
+            $('#modalPublicar').on('hidden.bs.modal', function () {
+                limpiarFormularioCompleto(); // 📸 Usar la función que incluye fotos
+            });
+
+            // Filtros en tiempo real
+            $('#searchForm select').off('change').on('change', function () {
+                aplicarFiltros();
+            });
+
+            // 📸 Configurar eventos de fotos
+            configurarEventosFotos();
+
+            console.log('✅ Eventos configurados');
+        }
+
+        // 🔧 FUNCIONES FALTANTES QUE NECESITAS
+
+        // Función para obtener iconos de tipos
+        function obtenerIconoTipo(tipoNombre) {
+            const iconos = {
+                'Sedan': 'fas fa-car',
+                'SUV': 'fas fa-truck',
+                'Pickup': 'fas fa-truck-pickup',
+                'Hatchback': 'fas fa-car-side',
+                'Coupe': 'fas fa-car-sport',
+                'Convertible': 'fas fa-car-side',
+                'Van': 'fas fa-van-shuttle',
+                'Motocicleta': 'fas fa-motorcycle',
+                'Default': 'fas fa-car'
+            };
+
+            return iconos[tipoNombre] || iconos['Default'];
+        }
+
+        // Función para actualizar estadísticas
+        function actualizarEstadisticas() {
+            console.log('📊 Actualizando estadísticas...');
+
+            try {
+                // Total vehículos
+                $('#totalVehiculos').text(vehiculosData.length);
+
+                // Total marcas únicas
+                const marcasUnicas = new Set(vehiculosData.map(v => v.MarcaNombre));
+                $('#totalMarcas').text(marcasUnicas.size);
+
+                // Total usuarios únicos
+                const usuariosUnicos = new Set(vehiculosData.map(v => v.IDUsuario));
+                $('#totalUsuarios').text(usuariosUnicos.size);
+
+                // Vehículos vendidos (simulado)
+                const vendidos = vehiculosData.filter(v => v.Vendido).length;
+                $('#vehiculosVendidos').text(vendidos);
+
+                console.log('✅ Estadísticas actualizadas');
+            } catch (error) {
+                console.error('❌ Error actualizando estadísticas:', error);
+            }
+        }
+
+        // Función para mostrar errores
+        function mostrarError(mensaje) {
+            console.error('❌ Error:', mensaje);
+
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    title: 'Error',
+                    text: mensaje,
+                    icon: 'error',
+                    confirmButtonColor: '#dc3545'
+                });
+            } else {
+                alert('Error: ' + mensaje);
+            }
+        }
+
+        // Continúan las demás funciones...
+        function buscarVehiculos() {
+            aplicarFiltros();
+        }
+
+        function aplicarFiltros() {
+            const filtros = {
+                condicion: $('#filtroCondicion').val(),
+                marca: $('#filtroMarca').val(),
+                tipo: $('#filtroTipo').val(),
+                año: $('#filtroAño').val(),
+                provincia: $('#filtroProvincia').val(),
+                precioMin: $('#filtroPrecioMin').val(),
+                precioMax: $('#filtroPrecioMax').val()
+            };
+
+            let vehiculosFiltrados = vehiculosData.filter(vehiculo => {
+                let cumple = true;
+
+                if (filtros.condicion && vehiculo.Condicion !== filtros.condicion) {
+                    cumple = false;
+                }
+
+                if (filtros.marca && vehiculo.MarcaNombre !== filtros.marca) {
+                    cumple = false;
+                }
+
+                if (filtros.tipo && vehiculo.TipoNombre !== filtros.tipo) {
+                    cumple = false;
+                }
+
+                if (filtros.año && vehiculo.Año != filtros.año) {
+                    cumple = false;
+                }
+
+                if (filtros.provincia && vehiculo.ProvinciaNombre !== filtros.provincia) {
+                    cumple = false;
+                }
+
+                if (filtros.precioMin && vehiculo.Precio < parseFloat(filtros.precioMin)) {
+                    cumple = false;
+                }
+
+                if (filtros.precioMax && vehiculo.Precio > parseFloat(filtros.precioMax)) {
+                    cumple = false;
+                }
+
+                return cumple;
+            });
+
+            mostrarVehiculos(vehiculosFiltrados);
+        }
+
+        function filtrarPorTipo(tipo) {
+            $('#filtroTipo').val(tipo).addClass('filter-active');
+            aplicarFiltros();
+            $('html, body').animate({
+                scrollTop: $("#vehiculosContainer").offset().top - 100
+            }, 1000);
+        }
+
+        function filtrarPorMarca(marca) {
+            $('#filtroMarca').val(marca).addClass('filter-active');
+            aplicarFiltros();
+            $('html, body').animate({
+                scrollTop: $("#vehiculosContainer").offset().top - 100
+            }, 1000);
+        }
+
+        function mostrarTodos() {
+            limpiarFiltros();
+            mostrarVehiculos(vehiculosData);
+        }
+
+        function mostrarDestacados() {
+            const destacados = vehiculosData.filter(v => v.Destacado);
+            mostrarVehiculos(destacados);
+        }
+
+        function limpiarFiltros() {
+            $('#searchForm')[0].reset();
+            $('#searchForm select').removeClass('filter-active');
+            aplicarFiltros();
+        }
+
+        // 📸 FUNCIÓN PRINCIPAL PARA GUARDAR VEHÍCULO CON FOTOS
+        function guardarVehiculoConFotos() {
+            console.log('💾 Guardando vehículo con fotos...');
+
+            // Validar campos requeridos
+            if (!validarFormulario()) {
+                return;
+            }
+
+            const vehiculo = {
+                IDVehiculo: parseInt($('#txtIDVehiculo').val()) || 0,
+                IDUsuario: parseInt($('#txtIDUsuario').val()) || 1, // Temporal
+                IdCategoria: parseInt($('#selectCategoria').val()),
+                IdMarca: parseInt($('#selectMarca').val()),
+                IDTipo: parseInt($('#selectTipo').val()),
+                IdMotor: parseInt($('#selectMotor').val()),
+                CodigoMunicipio: parseInt($('#selectMunicipio').val()),
+                Modelo: $('#txtModelo').val().trim(),
+                Año: parseInt($('#selectAño').val()),
+                Color: $('#txtColor').val().trim(),
+                Placa: $('#txtPlaca').val().trim(),
+                NumeroChasis: $('#txtChasis').val().trim(),
+                Kilometraje: parseFloat($('#txtKilometraje').val()) || null,
+                Precio: parseFloat($('#txtPrecio').val()),
+                Descripcion: $('#txtDescripcion').val().trim(),
+                Condicion: $('#selectCondicion').val(),
+                Contacto: $('#txtContacto').val().trim(),
+                Observaciones: $('#txtObservaciones').val().trim(),
+                Destacado: $('#checkDestacado').is(':checked'),
+                Estatus: true,
+                Vendido: false
+            };
+
+            console.log('📝 Datos del vehículo:', vehiculo);
+
+            // Mostrar loading
+            const btnGuardar = $('#btnGuardarVehiculo');
+            const textoOriginal = btnGuardar.html();
+            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Guardando...').prop('disabled', true);
+
+            // Primer paso: Guardar vehículo
+            $.ajax({
+                url: '/Vehiculos/InsertarVehiculos',
+                type: 'POST',
+                data: vehiculo,
+                success: function(response) {
+                    console.log('✅ Vehículo guardado:', response);
+
+                    if (response && response.respuesta === true) {
+                        // Si es un vehículo nuevo, necesitamos obtener el ID
+                        const idVehiculo = vehiculo.IDVehiculo || response.idVehiculo || obtenerUltimoIdVehiculo();
+
+                        // Segundo paso: Subir fotos si hay
+                        if (fotosSeleccionadas.length > 0) {
+                            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Subiendo fotos...').prop('disabled', true);
+
+                            subirFotosVehiculo(idVehiculo)
+                                .then(() => {
+                                    finalizarGuardado(btnGuardar, textoOriginal, true);
+                                })
+                                .catch(error => {
+                                    console.warn('⚠️ Vehículo guardado pero error en fotos:', error);
+                                    finalizarGuardado(btnGuardar, textoOriginal, true,
+                                        'Vehículo guardado exitosamente, pero hubo un problema con las fotos');
+                                });
+                        } else {
+                            finalizarGuardado(btnGuardar, textoOriginal, true);
+                        }
+                    } else {
+                        finalizarGuardado(btnGuardar, textoOriginal, false, response.error || 'Error al guardar el vehículo');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('❌ Error AJAX:', error);
+                    finalizarGuardado(btnGuardar, textoOriginal, false, 'Error de conexión al guardar el vehículo');
+                }
+            });
+        }
+
+        function finalizarGuardado(btnGuardar, textoOriginal, exito, mensajeCustom = null) {
+            btnGuardar.html(textoOriginal).prop('disabled', false);
+
+            if (exito) {
+                const mensaje = mensajeCustom || 'Vehículo publicado exitosamente';
+                Swal.fire({
+                    title: '¡Éxito!',
+                    text: mensaje,
+                    icon: 'success',
+                    confirmButtonColor: '#28a745'
+                }).then(() => {
+                    $('#modalPublicar').modal('hide');
+                    cargarVehiculos(); // Recargar lista
+                });
+            } else {
+                mostrarError(mensajeCustom || 'Error al publicar el vehículo');
+            }
+        }
+
+        function obtenerUltimoIdVehiculo() {
+            // Esta función debería implementarse para obtener el ID del último vehículo insertado
+            // Por ahora retornamos un valor temporal
+            return new Date().getTime(); // ID temporal basado en timestamp
+        }
+
+        // 📸 FUNCIÓN ORIGINAL DE GUARDAR (PARA COMPATIBILIDAD)
+        function guardarVehiculo() {
+            console.log('💾 Guardando vehículo...');
+
+            // Validar campos requeridos
+            if (!validarFormulario()) {
+                return;
+            }
+
+            const vehiculo = {
+                IDVehiculo: parseInt($('#txtIDVehiculo').val()) || 0,
+                IDUsuario: parseInt($('#txtIDUsuario').val()) || 1, // Temporal
+                IdCategoria: parseInt($('#selectCategoria').val()),
+                IdMarca: parseInt($('#selectMarca').val()),
+                IDTipo: parseInt($('#selectTipo').val()),
+                IdMotor: parseInt($('#selectMotor').val()),
+                CodigoMunicipio: parseInt($('#selectMunicipio').val()),
+                Modelo: $('#txtModelo').val().trim(),
+                Año: parseInt($('#selectAño').val()),
+                Color: $('#txtColor').val().trim(),
+                Placa: $('#txtPlaca').val().trim(),
+                NumeroChasis: $('#txtChasis').val().trim(),
+                Kilometraje: parseFloat($('#txtKilometraje').val()) || null,
+                Precio: parseFloat($('#txtPrecio').val()),
+                Descripcion: $('#txtDescripcion').val().trim(),
+                Condicion: $('#selectCondicion').val(),
+                Contacto: $('#txtContacto').val().trim(),
+                Observaciones: $('#txtObservaciones').val().trim(),
+                Destacado: $('#checkDestacado').is(':checked'),
+                Estatus: true,
+                Vendido: false
+            };
+
+            console.log('📝 Datos del vehículo:', vehiculo);
+
+            // Mostrar loading
+            const btnGuardar = $('#btnGuardarVehiculo');
+            const textoOriginal = btnGuardar.html();
+            btnGuardar.html('<i class="fas fa-spinner fa-spin me-2"></i>Publicando...').prop('disabled', true);
+
+            $.ajax({
+                url: '/Vehiculos/InsertarVehiculos',
+                type: 'POST',
+                data: vehiculo,
+                success: function (response) {
+                    console.log('✅ Respuesta:', response);
+
+                    btnGuardar.html(textoOriginal).prop('disabled', false);
+
+                    if (response && response.respuesta === true) {
+                        Swal.fire({
+                            title: '¡Éxito!',
+                            text: 'Tu vehículo ha sido publicado exitosamente',
+                            icon: 'success',
+                            confirmButtonColor: '#28a745'
+                        }).then(() => {
+                            $('#modalPublicar').modal('hide');
+                            cargarVehiculos(); // Recargar lista
+                        });
+                    } else {
+                        mostrarError(response.error || 'Error al publicar el vehículo');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ Error AJAX:', error);
+                    btnGuardar.html(textoOriginal).prop('disabled', false);
+                    mostrarError('Error de conexión al publicar el vehículo');
+                }
+            });
+        }
+
+        function validarFormulario() {
+            const campos = [
+                { id: '#selectCategoria', nombre: 'Categoría' },
+                { id: '#selectMarca', nombre: 'Marca' },
+                { id: '#selectTipo', nombre: 'Tipo' },
+                { id: '#selectMotor', nombre: 'Motor' },
+                { id: '#txtModelo', nombre: 'Modelo' },
+                { id: '#selectAño', nombre: 'Año' },
+                { id: '#selectCondicion', nombre: 'Condición' },
+                { id: '#txtPrecio', nombre: 'Precio' },
+                { id: '#selectProvinciaModal', nombre: 'Provincia' },
+                { id: '#selectMunicipio', nombre: 'Municipio' }
+            ];
+
+            for (let campo of campos) {
+                if (!$(campo.id).val()) {
+                    mostrarError(`El campo ${campo.nombre} es requerido`);
+                    $(campo.id).focus();
+                    return false;
+                }
+            }
+
+            // Validar precio
+            const precio = parseFloat($('#txtPrecio').val());
+            if (precio <= 0) {
+                mostrarError('El precio debe ser mayor a 0');
+                $('#txtPrecio').focus();
+                return false;
+            }
+
+            // Validar año
+            const año = parseInt($('#selectAño').val());
+            const currentYear = new Date().getFullYear();
+            if (año < 1980 || año > currentYear + 1) {
+                mostrarError('El año debe estar entre 1980 y ' + (currentYear + 1));
+                $('#selectAño').focus();
+                return false;
+            }
+
+            return true;
+        }
+
+        // 📸 FUNCIÓN COMPLETA PARA LIMPIAR FORMULARIO CON FOTOS
+        function limpiarFormularioCompleto() {
+            console.log('🧹 Limpiando formulario completo...');
+
+            try {
+                $('#formPublicar')[0].reset();
+                $('#txtIDVehiculo').val('0');
+
+                // Limpiar municipios
+                const selectMunicipio = $('#selectMunicipio');
+                if (selectMunicipio.length) {
+                    selectMunicipio.empty().append('<option value="">Seleccionar municipio</option>');
+                }
+
+                // 📸 Limpiar fotos
+                limpiarFotos();
+
+                console.log('✅ Formulario completo limpiado');
+            } catch (error) {
+                console.error('❌ Error limpiando formulario:', error);
+            }
+        }
+
+        // 📸 FUNCIÓN ORIGINAL PARA COMPATIBILIDAD
+        function limpiarFormulario() {
+            console.log('🧹 Limpiando formulario...');
+
+            try {
+                $('#formPublicar')[0].reset();
+                $('#txtIDVehiculo').val('0');
+
+                // Limpiar municipios
+                const selectMunicipio = $('#selectMunicipio');
+                if (selectMunicipio.length) {
+                    selectMunicipio.empty().append('<option value="">Seleccionar municipio</option>');
+                }
+
+                console.log('✅ Formulario limpiado');
+            } catch (error) {
+                console.error('❌ Error limpiando formulario:', error);
+            }
+        }
+
+        function verDetalles(idVehiculo) {
+            console.log('👁️ Viendo detalles del vehículo:', idVehiculo);
+
+            // Incrementar vistas y obtener detalles
+            $.ajax({
+                url: '/Vehiculos/ObtenerVehiculoPorId',
+                type: 'GET',
+                data: { idVehiculo: idVehiculo },
+                success: function (response) {
+                    if (response && response.data) {
+                        mostrarModalDetalles(response.data);
+                    } else {
+                        mostrarError('No se pudieron cargar los detalles del vehículo');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('❌ Error al obtener detalles:', error);
+                    mostrarError('Error al cargar los detalles del vehículo');
+                }
+            });
+        }
+
+        function mostrarModalDetalles(vehiculo) {
+            const precio = new Intl.NumberFormat('es-DO', {
+                style: 'currency',
+                currency: 'DOP'
+            }).format(vehiculo.Precio);
+
+            $('#modalDetallesTitle').html(`<i class="fas fa-car me-2"></i>${vehiculo.MarcaNombre} ${vehiculo.Modelo} ${vehiculo.Año}`);
+
+            const contenido = `
+        <div class="row g-4">
+            <div class="col-md-6">
+                <div class="vehicle-image">
+                    <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imagen"
+                         class="img-fluid rounded" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <h4 class="text-primary mb-3">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h4>
+                <h3 class="text-success mb-3">${precio}</h3>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <strong>Año:</strong><br>
+                        <span class="text-muted">${vehiculo.Año}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Condición:</strong><br>
+                        <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Color:</strong><br>
+                        <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Kilometraje:</strong><br>
+                        <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Tipo:</strong><br>
+                        <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Motor:</strong><br>
+                        <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Combustible:</strong><br>
+                        <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
+                    </div>
+                    <div class="col-6">
+                        <strong>Transmisión:</strong><br>
+                        <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
+                    </div>
+                    <div class="col-12">
+                        <strong>Ubicación:</strong><br>
+                        <span class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}</span>
+                    </div>
+                    <div class="col-12">
+                        <strong>Vendedor:</strong><br>
+                        <span class="text-muted">${vehiculo.NombreUsuario || 'N/A'}</span>
+                    </div>
+                </div>
+            </div>
+            ${vehiculo.Descripcion ? `
+            <div class="col-12">
+                <h5>Descripción</h5>
+                <p class="text-muted">${vehiculo.Descripcion}</p>
+            </div>
+            ` : ''}
+            ${vehiculo.Observaciones ? `
+            <div class="col-12">
+                <h5>Observaciones</h5>
+                <p class="text-muted">${vehiculo.Observaciones}</p>
+            </div>
+            ` : ''}
+        </div>
+    `;
+
+            $('#detallesContent').html(contenido);
+
+            // Configurar botón de contacto
+            $('#btnContactarVendedor').off('click').on('click', function () {
+                contactarVendedor(vehiculo.Contacto || 'No disponible');
+            });
+
+            $('#modalDetalles').modal('show');
+        }
+
+        function contactarVendedor(telefono) {
+            if (telefono === 'No disponible' || !telefono) {
+                Swal.fire({
+                    title: 'Contacto no disponible',
+                    text: 'El vendedor no ha proporcionado información de contacto',
+                    icon: 'info',
+                    confirmButtonColor: '#6c757d'
+                });
+                return;
+            }
+
+            Swal.fire({
+                title: 'Contactar Vendedor',
+                html: `
+            <p>Puedes contactar al vendedor al número:</p>
+            <h4 class="text-primary">${telefono}</h4>
+            <p class="text-muted">¿Qué deseas hacer?</p>
+        `,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: '<i class="fas fa-phone me-2"></i>Llamar',
+                cancelButtonText: '<i class="fas fa-comment me-2"></i>WhatsApp',
+                confirmButtonColor: '#28a745',
+                cancelButtonColor: '#25d366'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Llamar
+                    window.open(`tel:${telefono}`, '_self');
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // WhatsApp
+                    const mensaje = encodeURIComponent('Hola, estoy interesado en tu vehículo publicado en Anddy Motors. ¿Podríamos conversar?');
+                    window.open(`https://wa.me/1${telefono.replace(/\D/g, '')}?text=${mensaje}`, '_blank');
+                }
+            });
+        }
+
+        // 🔧 FUNCIÓN PARA DEBUGGING - VERIFICAR QUE ELEMENTOS EXISTEN
+        function verificarElementosDOM() {
+            console.log('🔍 Verificando elementos del DOM...');
+
+            const elementos = [
+                '#selectCategoria',
+                '#selectMarca',
+                '#selectTipo',
+                '#selectMotor',
+                '#selectAño',
+                '#selectProvinciaModal',
+                '#selectMunicipio',
+                '#filtroMarca',
+                '#filtroTipo',
+                '#filtroProvincia',
+                '#filtroAño',
+                '#tiposContainer',
+                '#marcasContainer',
+                '#vehiculosContainer',
+                // 📸 Elementos de fotos
+                '#fileInput',
+                '#uploadArea',
+                '#fotosPreview',
+                '#uploadProgress',
+                '#uploadStatus'
+            ];
+
+            elementos.forEach(selector => {
+                const elemento = $(selector);
+                if (elemento.length) {
+                    console.log('✅', selector, 'encontrado');
+                } else {
+                    console.warn('❌', selector, 'NO encontrado');
+                }
+            });
+        }
+
+        // 🔧 LLAMAR VERIFICACIÓN AL CARGAR (para debugging)
+        $(document).ready(function () {
+            setTimeout(() => {
+                verificarElementosDOM();
+            }, 2000);
+        });
+
+        // 📸 CSS ADICIONAL PARA FOTOS (Se agrega automáticamente)
+$(document).ready(function() {
+    const cssAdicional = `
+        <style>
+        /* ...tus estilos aquí... */
+        .photo-thumbnail img {
+            width: 60px;
+            height: 60px;
+        }
+        </style>
+    `;
+    $('head').append(cssAdicional);
+});
+    </script>
+</body>
+</html>

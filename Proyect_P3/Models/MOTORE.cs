@@ -14,9 +14,16 @@ namespace Proyect_P3.Models
     
     public partial class MOTORE
     {
+        public MOTORE()
+        {
+            this.VEHICULOS = new HashSet<VEHICULO>();
+        }
+    
         public int IdMotor { get; set; }
         public string Descripcion { get; set; }
         public string Combustible { get; set; }
         public string Transmisión { get; set; }
+    
+        public virtual ICollection<VEHICULO> VEHICULOS { get; set; }
     }
 }

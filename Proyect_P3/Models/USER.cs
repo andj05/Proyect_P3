@@ -14,6 +14,12 @@ namespace Proyect_P3.Models
     
     public partial class USER
     {
+        public USER()
+        {
+            this.ARTICULOSFOTOS = new HashSet<ARTICULOSFOTO>();
+            this.VEHICULOS = new HashSet<VEHICULO>();
+        }
+    
         public int ID { get; set; }
         public string Nombre { get; set; }
         public string Usuario { get; set; }
@@ -23,5 +29,7 @@ namespace Proyect_P3.Models
         public Nullable<int> idEstatus { get; set; }
     
         public virtual mSTATU mSTATU { get; set; }
+        public virtual ICollection<ARTICULOSFOTO> ARTICULOSFOTOS { get; set; }
+        public virtual ICollection<VEHICULO> VEHICULOS { get; set; }
     }
 }

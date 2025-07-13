@@ -14,10 +14,17 @@ namespace Proyect_P3.Models
     
     public partial class TIPOS
     {
+        public TIPOS()
+        {
+            this.VEHICULOS = new HashSet<VEHICULO>();
+        }
+    
         public int IDTipo { get; set; }
         public string Descripcion { get; set; }
         public byte[] Imagen { get; set; }
         public Nullable<bool> Estatus { get; set; }
         public Nullable<System.DateTime> FechaRegistro { get; set; }
+    
+        public virtual ICollection<VEHICULO> VEHICULOS { get; set; }
     }
 }

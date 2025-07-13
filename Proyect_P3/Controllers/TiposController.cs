@@ -224,20 +224,5 @@ namespace Proyect_P3.Controllers
 
             return Json(new { data = tiposActivos }, JsonRequestBehavior.AllowGet);
         }
-
-        // 🔥 MÉTODO PARA TESTING
-        [HttpGet]
-        public JsonResult TestConexion()
-        {
-            try
-            {
-                List<Tipos> test = TiposMetodos.Instance.Listar();
-                return Json(new { success = true, count = test.Count, message = "Conexión exitosa" }, JsonRequestBehavior.AllowGet);
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, error = ex.Message }, JsonRequestBehavior.AllowGet);
-            }
-        }
     }
 }

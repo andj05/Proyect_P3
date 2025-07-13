@@ -32,5 +32,9 @@ namespace Proyect_P3.Models
         public DbSet<MARCA> MARCAS { get; set; }
         public DbSet<TIPOS> TIPOS { get; set; }
         public DbSet<MOTORE> MOTORES { get; set; }
+        public DbSet<ARTICULOSFOTO> ARTICULOSFOTOS { get; set; }
+        public DbSet<Municipio> Municipios { get; set; }
+        public DbSet<Provincia> Provincias { get; set; }
+        public DbSet<VEHICULO> VEHICULOS { get; set; }
     }
 }
