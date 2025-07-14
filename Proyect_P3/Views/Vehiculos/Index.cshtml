@@ -2034,37 +2034,52 @@
                 return false;
             }
 
-            // Validar tamaño
-            if (archivo.size > MAX_SIZE_MB * 1024 * 1024) {
-                mostrarError(`❌ Archivo muy grande: ${archivo.name}. Máximo ${MAX_SIZE_MB}MB.`);
+            // 📏 LÍMITES AJUSTADOS PARA PERMITIR IMÁGENES GRANDES QUE SERÁN COMPRIMIDAS
+            const MAX_SIZE_ORIGINAL = 20; // 20MB límite para imagen original
+
+            if (archivo.size > MAX_SIZE_ORIGINAL * 1024 * 1024) {
+                mostrarError(`❌ Archivo muy grande: ${archivo.name}. Máximo ${MAX_SIZE_ORIGINAL}MB.\nLa imagen será comprimida automáticamente.`);
                 return false;
             }
 
-            console.log(`✅ Archivo válido: ${archivo.name}`);
+            console.log(`✅ Archivo válido: ${archivo.name} (${(archivo.size / 1024 / 1024).toFixed(2)}MB)`);
             return true;
         }
 
         function procesarArchivo(archivo) {
-            console.log(`📸 Procesando archivo: ${archivo.name}`);
+            console.log(`📸 Procesando archivo: ${archivo.name} (${(archivo.size / 1024 / 1024).toFixed(2)}MB)`);
 
             const reader = new FileReader();
 
             reader.onload = function (e) {
-                const fotoData = {
-                    id: Date.now() + Math.random(), // ID único temporal
-                    archivo: archivo,
-                    dataUrl: e.target.result,
-                    nombre: archivo.name,
-                    tamaño: archivo.size,
-                    estado: 'seleccionada' // Estados: seleccionada, subiendo, subida, error
-                };
+                // 🔧 COMPRIMIR IMAGEN ANTES DE GUARDARLA
+                comprimirImagen(e.target.result, archivo.name)
+                    .then(imagenComprimida => {
+                        const fotoData = {
+                            id: Date.now() + Math.random(),
+                            archivo: archivo, // Archivo original para referencia
+                            dataUrl: imagenComprimida.dataUrl, // Imagen comprimida
+                            nombre: archivo.name,
+                            tamaño: imagenComprimida.size,
+                            tamañoOriginal: archivo.size,
+                            estado: 'seleccionada',
+                            comprimida: true,
+                            factorCompresion: ((archivo.size - imagenComprimida.size) / archivo.size * 100).toFixed(1)
+                        };
 
-                fotosSeleccionadas.push(fotoData);
+                        fotosSeleccionadas.push(fotoData);
 
-                console.log(`📸 Foto agregada: ${fotoData.nombre}`);
-                console.log(`📊 Total fotos seleccionadas: ${fotosSeleccionadas.length}`);
+                        console.log(`📸 Foto comprimida: ${fotoData.nombre}`);
+                        console.log(`📊 Tamaño original: ${(fotoData.tamañoOriginal / 1024 / 1024).toFixed(2)}MB`);
+                        console.log(`📊 Tamaño comprimido: ${(fotoData.tamaño / 1024 / 1024).toFixed(2)}MB`);
+                        console.log(`📊 Factor de compresión: ${fotoData.factorCompresion}%`);
 
-                actualizarPreviewFotos();
+                        actualizarPreviewFotos();
+                    })
+                    .catch(error => {
+                        console.error(`❌ Error comprimiendo imagen: ${archivo.name}`, error);
+                        mostrarError(`Error al procesar la imagen: ${archivo.name}`);
+                    });
             };
 
             reader.onerror = function () {
@@ -2075,6 +2090,152 @@
             reader.readAsDataURL(archivo);
         }
 
+        function comprimirImagen(dataUrl, nombreArchivo) {
+            return new Promise((resolve, reject) => {
+                try {
+                    const img = new Image();
+
+                    img.onload = function () {
+                        console.log(`🖼️ Imagen cargada para compresión: ${this.naturalWidth}x${this.naturalHeight}`);
+
+                        // 📐 CONFIGURACIÓN DE COMPRESIÓN
+                        const config = obtenerConfigCompresion(this.naturalWidth, this.naturalHeight, dataUrl.length);
+
+                        console.log(`🔧 Configuración de compresión:`, config);
+
+                        // Crear canvas
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+
+                        // Establecer dimensiones del canvas
+                        canvas.width = config.ancho;
+                        canvas.height = config.alto;
+
+                        // 🎨 MEJORAR CALIDAD DE RENDERIZADO
+                        ctx.imageSmoothingEnabled = true;
+                        ctx.imageSmoothingQuality = 'high';
+
+                        // Dibujar imagen redimensionada
+                        ctx.drawImage(this, 0, 0, config.ancho, config.alto);
+
+                        // Convertir a base64 con compresión
+                        const imagenComprimida = canvas.toDataURL('image/jpeg', config.calidad);
+
+                        // 📊 VALIDAR RESULTADO
+                        if (imagenComprimida.length > dataUrl.length) {
+                            console.warn('⚠️ La compresión aumentó el tamaño, usando original');
+                            resolve({
+                                dataUrl: dataUrl,
+                                size: dataUrl.length,
+                                compresion: false
+                            });
+                        } else {
+                            resolve({
+                                dataUrl: imagenComprimida,
+                                size: imagenComprimida.length,
+                                compresion: true,
+                                dimensionesOriginales: { ancho: this.naturalWidth, alto: this.naturalHeight },
+                                dimensionesFinales: { ancho: config.ancho, alto: config.alto }
+                            });
+                        }
+                    };
+
+                    img.onerror = function () {
+                        console.error('❌ Error cargando imagen para compresión');
+                        reject(new Error('Error cargando imagen para compresión'));
+                    };
+
+                    img.src = dataUrl;
+
+                } catch (error) {
+                    console.error('❌ Error en compresión:', error);
+                    reject(error);
+                }
+            });
+        }
+
+        function obtenerConfigCompresion(anchoOriginal, altoOriginal, tamañoBytes) {
+            // 📏 DIMENSIONES MÁXIMAS SEGÚN USO
+            const DIMENSIONES_MAXIMAS = {
+                thumbnail: { ancho: 400, alto: 300 },
+                normal: { ancho: 800, alto: 600 },
+                alta: { ancho: 1200, alto: 900 },
+                original: { ancho: anchoOriginal, alto: altoOriginal }
+            };
+
+            // 📦 LÍMITES DE TAMAÑO (en caracteres base64)
+            const LIMITE_PEQUENO = 500000;  // ~375KB
+            const LIMITE_MEDIO = 1000000;   // ~750KB
+            const LIMITE_GRANDE = 2000000;  // ~1.5MB
+
+            let configuracion = {
+                ancho: anchoOriginal,
+                alto: altoOriginal,
+                calidad: 0.9
+            };
+
+            // 🔍 DETERMINAR CONFIGURACIÓN SEGÚN TAMAÑO ACTUAL
+            if (tamañoBytes > LIMITE_GRANDE) {
+                // Imagen muy grande - compresión agresiva
+                configuracion = {
+                    ...redimensionar(anchoOriginal, altoOriginal, DIMENSIONES_MAXIMAS.normal),
+                    calidad: 0.7
+                };
+                console.log('🔥 Compresión agresiva aplicada');
+
+            } else if (tamañoBytes > LIMITE_MEDIO) {
+                // Imagen grande - compresión moderada
+                configuracion = {
+                    ...redimensionar(anchoOriginal, altoOriginal, DIMENSIONES_MAXIMAS.alta),
+                    calidad: 0.8
+                };
+                console.log('🔶 Compresión moderada aplicada');
+
+            } else if (tamañoBytes > LIMITE_PEQUENO) {
+                // Imagen mediana - compresión ligera
+                configuracion = {
+                    ...redimensionar(anchoOriginal, altoOriginal, DIMENSIONES_MAXIMAS.original),
+                    calidad: 0.85
+                };
+                console.log('🔸 Compresión ligera aplicada');
+
+            } else {
+                // Imagen pequeña - sin compresión
+                configuracion = {
+                    ancho: anchoOriginal,
+                    alto: altoOriginal,
+                    calidad: 0.95
+                };
+                console.log('✅ Sin compresión necesaria');
+            }
+
+            return configuracion;
+        }
+
+        // 📐 FUNCIÓN PARA REDIMENSIONAR MANTENIENDO ASPECT RATIO
+        function redimensionar(anchoOriginal, altoOriginal, dimensionesMaximas) {
+            const ratioOriginal = anchoOriginal / altoOriginal;
+            const ratioMaximo = dimensionesMaximas.ancho / dimensionesMaximas.alto;
+
+            let nuevoAncho, nuevoAlto;
+
+            if (ratioOriginal > ratioMaximo) {
+                // La imagen es más ancha
+                nuevoAncho = Math.min(anchoOriginal, dimensionesMaximas.ancho);
+                nuevoAlto = nuevoAncho / ratioOriginal;
+            } else {
+                // La imagen es más alta
+                nuevoAlto = Math.min(altoOriginal, dimensionesMaximas.alto);
+                nuevoAncho = nuevoAlto * ratioOriginal;
+            }
+
+            return {
+                ancho: Math.round(nuevoAncho),
+                alto: Math.round(nuevoAlto)
+            };
+        }
+
+        // 📊 FUNCIÓN MEJORADA PARA ACTUALIZAR PREVIEW CON INFO DE COMPRESIÓN
         function actualizarPreviewFotos() {
             console.log('🖼️ Actualizando preview de fotos...');
 
@@ -2087,11 +2248,12 @@
 
             if (fotosSeleccionadas.length === 0) {
                 container.html(`
-                            <div class="no-photos">
-                                <i class="fas fa-images fa-2x text-muted"></i>
-                                <p class="text-muted mb-0">No hay fotos seleccionadas</p>
-                            </div>
-                        `);
+            <div class="no-photos">
+                <i class="fas fa-images fa-2x text-muted"></i>
+                <p class="text-muted mb-0">No hay fotos seleccionadas</p>
+                <small class="text-muted">Las fotos se comprimirán automáticamente</small>
+            </div>
+        `);
                 console.log('📷 Preview limpiado - sin fotos');
                 return;
             }
@@ -2101,29 +2263,253 @@
                 const estadoClass = foto.estado === 'subiendo' ? 'uploading' : '';
                 const estadoIcon = getEstadoIcon(foto.estado);
 
+                // 📊 INDICADOR DE COMPRESIÓN
+                const compressionBadge = foto.comprimida ?
+                    `<div class="compression-badge" title="Comprimida ${foto.factorCompresion}%">
+                <i class="fas fa-compress-alt"></i>
+            </div>` : '';
+
                 html += `
-                            <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
-                                <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
-                                <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
-                                        ${foto.estado === 'subiendo' ? 'disabled' : ''}>
-                                    <i class="fas fa-times"></i>
-                                </button>
-                                ${estadoIcon}
-                            </div>
-                        `;
+            <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
+                <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
+                <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
+                        ${foto.estado === 'subiendo' ? 'disabled' : ''}>
+                    <i class="fas fa-times"></i>
+                </button>
+                ${estadoIcon}
+                ${compressionBadge}
+            </div>
+        `;
             });
 
             container.html(html);
 
             console.log(`🖼️ Preview actualizado con ${fotosSeleccionadas.length} fotos`);
 
-            // Actualizar contador si existe
+            // Actualizar contador con información de compresión
             const contador = $('#contadorFotos');
             if (contador.length) {
-                contador.text(`${fotosSeleccionadas.length}/${MAX_FOTOS} fotos`);
+                const fotosComprimidas = fotosSeleccionadas.filter(f => f.comprimida).length;
+                contador.html(`
+            ${fotosSeleccionadas.length}/${MAX_FOTOS} fotos
+            ${fotosComprimidas > 0 ? `<br><small>${fotosComprimidas} comprimida(s)</small>` : ''}
+        `);
             }
         }
 
+        // 🎨 CSS ADICIONAL PARA INDICADOR DE COMPRESIÓN
+        const cssCompresion = `
+<style>
+.compression-badge {
+    position: absolute;
+    bottom: 5px;
+    left: 5px;
+    background: linear-gradient(135deg, #17a2b8, #138496);
+    color: white;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    z-index: 5;
+    box-shadow: 0 2px 8px rgba(23, 162, 184, 0.3);
+}
+
+.photo-thumbnail.comprimida {
+    border: 3px solid #17a2b8;
+}
+
+/* Indicador de tamaño en el preview */
+.size-indicator {
+    position: absolute;
+    top: 5px;
+    left: 5px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 8px;
+    font-weight: 600;
+}
+</style>
+`;
+
+        // Agregar CSS al head
+        $('head').append(cssCompresion);
+
+        // 🔧 FUNCIÓN MEJORADA PARA SUBIR FOTOS CON COMPRESIÓN
+        function subirFotosVehiculo(idVehiculo) {
+            if (fotosSeleccionadas.length === 0) {
+                console.log('ℹ️ No hay fotos para subir');
+                return Promise.resolve(true);
+            }
+
+            return new Promise((resolve, reject) => {
+                console.log(`📤 Subiendo ${fotosSeleccionadas.length} fotos (algunas comprimidas) para vehículo ${idVehiculo}...`);
+
+                // Crear FormData con imágenes comprimidas
+                const formData = new FormData();
+
+                fotosSeleccionadas.forEach((foto, index) => {
+                    foto.estado = 'subiendo';
+
+                    // 🔄 CONVERTIR DATA URL A BLOB PARA SUBIDA EFICIENTE
+                    const blob = dataURLtoBlob(foto.dataUrl);
+                    const fileName = `${foto.nombre}_compressed_${index}.jpg`;
+
+                    formData.append(`foto_${index}`, blob, fileName);
+
+                    console.log(`📎 Agregando foto ${index}: ${fileName} (${(blob.size / 1024).toFixed(1)}KB)`);
+                });
+
+                actualizarPreviewFotos();
+                mostrarProgreso(0);
+
+                $.ajax({
+                    url: `/Vehiculos/SubirFotos?idVehiculo=${idVehiculo}`,
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    timeout: 60000, // 60 segundos para archivos grandes
+                    xhr: function () {
+                        const xhr = new window.XMLHttpRequest();
+                        xhr.upload.addEventListener("progress", function (e) {
+                            if (e.lengthComputable) {
+                                const percentComplete = (e.loaded / e.total) * 100;
+                                mostrarProgreso(percentComplete);
+                            }
+                        }, false);
+                        return xhr;
+                    },
+                    success: function (response) {
+                        console.log('📤 Respuesta subida fotos:', response);
+
+                        if (response && response.respuesta === true) {
+                            fotosSeleccionadas.forEach(foto => {
+                                foto.estado = 'subida';
+                            });
+                            actualizarPreviewFotos();
+
+                            mostrarProgreso(100);
+                            $('#uploadStatus').html(`
+                        <div class="alert alert-success">
+                            <i class="fas fa-check me-2"></i>
+                            ${response.cantidad || fotosSeleccionadas.length} foto(s) subida(s) exitosamente
+                            <br><small>Las imágenes fueron optimizadas automáticamente</small>
+                        </div>
+                    `);
+
+                            resolve(true);
+                        } else {
+                            let errorMsg = response && response.error ? response.error : 'Error al subir fotos';
+                            $('#uploadStatus').html(`
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Error al subir fotos: ${errorMsg}
+                        </div>
+                    `);
+                            reject(errorMsg);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        let errorMsg = `Error de conexión: ${error}`;
+                        if (xhr.status === 413) {
+                            errorMsg = 'Las imágenes son demasiado grandes para el servidor';
+                        } else if (xhr.status === 500) {
+                            errorMsg = 'Error interno del servidor al procesar imágenes';
+                        }
+
+                        $('#uploadStatus').html(`
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ${errorMsg}
+                    </div>
+                `);
+
+                        fotosSeleccionadas.forEach(foto => {
+                            foto.estado = 'error';
+                        });
+                        actualizarPreviewFotos();
+
+                        reject(errorMsg);
+                    }
+                });
+            });
+        }
+
+        // 🔄 FUNCIÓN AUXILIAR PARA CONVERTIR DATA URL A BLOB
+        function dataURLtoBlob(dataURL) {
+            const arr = dataURL.split(',');
+            const mime = arr[0].match(/:(.*?);/)[1];
+            const bstr = atob(arr[1]);
+            let n = bstr.length;
+            const u8arr = new Uint8Array(n);
+
+            while (n--) {
+                u8arr[n] = bstr.charCodeAt(n);
+            }
+
+            return new Blob([u8arr], { type: mime });
+        }
+
+        // 🧪 FUNCIÓN DE PRUEBA PARA COMPRESIÓN
+        window.testCompresion = function () {
+            console.log('🧪 Iniciando test de compresión...');
+
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function (e) {
+                const archivo = e.target.files[0];
+                if (archivo) {
+                    console.log(`📁 Archivo seleccionado: ${archivo.name} (${(archivo.size / 1024 / 1024).toFixed(2)}MB)`);
+                    procesarArchivo(archivo);
+                }
+            };
+            input.click();
+        };
+
+        window.mostrarEstadisticasCompresion = function () {
+            if (fotosSeleccionadas.length === 0) {
+                console.log('ℹ️ No hay fotos para analizar');
+                return;
+            }
+
+            const stats = fotosSeleccionadas.reduce((acc, foto) => {
+                acc.total++;
+                if (foto.comprimida) {
+                    acc.comprimidas++;
+                    acc.ahorroBytes += (foto.tamañoOriginal - foto.tamaño);
+                }
+                acc.tamañoTotal += foto.tamaño;
+                acc.tamañoOriginalTotal += foto.tamañoOriginal || foto.tamaño;
+                return acc;
+            }, {
+                total: 0,
+                comprimidas: 0,
+                ahorroBytes: 0,
+                tamañoTotal: 0,
+                tamañoOriginalTotal: 0
+            });
+
+            const ahorroMB = stats.ahorroBytes / 1024 / 1024;
+            const ahorroPorc = (stats.ahorroBytes / stats.tamañoOriginalTotal * 100);
+
+            console.log('📊 === ESTADÍSTICAS DE COMPRESIÓN ===');
+            console.log(`📷 Total de fotos: ${stats.total}`);
+            console.log(`🗜️ Fotos comprimidas: ${stats.comprimidas}`);
+            console.log(`💾 Ahorro total: ${ahorroMB.toFixed(2)}MB (${ahorroPorc.toFixed(1)}%)`);
+            console.log(`📏 Tamaño final: ${(stats.tamañoTotal / 1024 / 1024).toFixed(2)}MB`);
+
+            return stats;
+        };
+
+        console.log('✅ Sistema de compresión de imágenes cargado');
+        console.log('🧪 Usa testCompresion() para probar');
+        console.log('📊 Usa mostrarEstadisticasCompresion() para ver stats');
         function getEstadoIcon(estado) {
             switch (estado) {
                 case 'subiendo':
@@ -2735,7 +3121,10 @@
                     </div>
                 </div>
             `;
-        } function configurarEventos() {
+        }
+
+
+        function configurarEventos() {
             console.log('🎛️ Configurando eventos...');
 
             // Evento para cargar municipios cuando cambia la provincia
@@ -3081,190 +3470,376 @@
         function verDetalles(idVehiculo) {
             console.log('👁️ Viendo detalles del vehículo:', idVehiculo);
 
-            // Incrementar vistas y obtener detalles
+            if (!idVehiculo || idVehiculo <= 0) {
+                console.error('❌ ID de vehículo inválido:', idVehiculo);
+                mostrarError('ID de vehículo inválido');
+                return;
+            }
+
+            $('#modalDetalles').modal('show');
+            $('#detallesContent').html(`
+        <div class="text-center py-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Cargando...</span>
+            </div>
+            <p class="mt-2">Cargando detalles del vehículo...</p>
+        </div>
+    `);
+
             $.ajax({
                 url: '/Vehiculos/ObtenerVehiculoPorId',
                 type: 'GET',
                 data: { idVehiculo: idVehiculo },
+                timeout: 30000, // 30 segundos
                 success: function (response) {
-                    if (response && response.data) {
-                        mostrarModalDetalles(response.data);
-                    } else {
-                        mostrarError('No se pudieron cargar los detalles del vehículo');
+                    console.log('✅ Respuesta recibida:', response);
+
+                    try {
+                        if (response && response.data) {
+                            mostrarModalDetalles(response.data);
+                        } else {
+                            mostrarErrorEnModal('No se encontraron datos del vehículo');
+                        }
+                    } catch (error) {
+                        console.error('❌ Error procesando respuesta:', error);
+                        mostrarErrorEnModal('Error procesando los datos del vehículo');
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error('❌ Error al obtener detalles:', error);
-                    mostrarError('Error al cargar los detalles del vehículo');
+                    console.error('❌ Error AJAX:', xhr.status, error);
+
+                    let mensaje = 'Error al cargar detalles';
+                    if (xhr.status === 500) {
+                        mensaje = 'Error del servidor - imagen muy grande';
+                    }
+
+                    mostrarErrorEnModal(mensaje);
                 }
             });
         }
+        // 🔧 FUNCIÓN PARA MOSTRAR ERRORES EN EL MODAL
+        function mostrarErrorEnModal(mensaje) {
+            $('#detallesContent').html(`
+        <div class="text-center py-5">
+            <i class="fas fa-exclamation-triangle text-danger mb-3" style="font-size: 3rem;"></i>
+            <h4 class="text-danger">Error</h4>
+            <p class="text-muted">${mensaje}</p>
+            <button class="btn btn-primary" onclick="$('#modalDetalles').modal('hide')">
+                <i class="fas fa-times me-2"></i>Cerrar
+            </button>
+        </div>
+            `);
+        }
+
 
         // 📸 FUNCIÓN ACTUALIZADA PARA MOSTRAR MODAL CON GALERÍA DE FOTOS
         // 📸 FUNCIÓN CORREGIDA PARA MOSTRAR MODAL CON GALERÍA
+        // 📸 FUNCIÓN COMPLETAMENTE REESCRITA PARA MOSTRAR MODAL CON MEJOR MANEJO DE IMÁGENES
         function mostrarModalDetalles(vehiculo) {
-            console.log('🔍 Mostrando detalles para vehículo:', vehiculo.IDVehiculo);
-            console.log('📸 Todas las fotos:', vehiculo.TodasLasFotos);
+            console.log('🔍 === INICIANDO MOSTRAR DETALLES ===');
+            console.log('🚗 Vehículo ID:', vehiculo.IDVehiculo);
+            console.log('📸 Datos de fotos recibidos:', {
+                PrimeraFoto: vehiculo.PrimeraFoto ? 'SÍ' : 'NO',
+                TodasLasFotos: vehiculo.TodasLasFotos ? vehiculo.TodasLasFotos.length : 'NO DEFINIDO',
+                CantidadFotos: vehiculo.CantidadFotos
+            });
 
-            const precio = new Intl.NumberFormat('es-DO', {
-                style: 'currency',
-                currency: 'DOP'
-            }).format(vehiculo.Precio);
-
-            $('#modalDetallesTitle').html(`<i class="fas fa-car me-2"></i>${vehiculo.MarcaNombre} ${vehiculo.Modelo} ${vehiculo.Año}`);
-
-            // 📸 USAR LAS FOTOS TAL COMO VIENEN DEL BACKEND (YA TIENEN EL PREFIJO)
-            let galeriaHtml = '';
-            let thumbnailsHtml = '';
-
-            if (vehiculo.TodasLasFotos && vehiculo.TodasLasFotos.length > 0) {
-                console.log(`📸 Procesando ${vehiculo.TodasLasFotos.length} fotos para la galería`);
-
-                // Las fotos ya vienen con el formato correcto data:image/jpeg;base64,
-                const fotosFormateadas = vehiculo.TodasLasFotos;
-
-                // Imagen principal
-                galeriaHtml = `
-                    <div class="position-relative">
-                        <img id="imagenPrincipal" src="${fotosFormateadas[0]}"
-                             class="vehicle-detail-image" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
-                             onload="console.log('✅ Imagen principal cargada')"
-                             onerror="console.log('❌ Error cargando imagen principal'); this.src='https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Error+al+cargar'">
-
-                        ${fotosFormateadas.length > 1 ? `
-                            <button class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2"
-                                    onclick="cambiarFoto(-1)" style="z-index: 10;">
-                                <i class="fas fa-chevron-left"></i>
-                            </button>
-                            <button class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2"
-                                    onclick="cambiarFoto(1)" style="z-index: 10;">
-                                <i class="fas fa-chevron-right"></i>
-                            </button>
-                        ` : ''}
-
-                        <div class="position-absolute bottom-0 end-0 m-3">
-                            <span class="badge bg-dark bg-opacity-75">
-                                <span id="fotoActual">1</span> / ${fotosFormateadas.length}
-                            </span>
-                        </div>
-                    </div>
-                `;
-
-                // Thumbnails
-                if (fotosFormateadas.length > 1) {
-                    thumbnailsHtml = `
-                        <div class="photos-carousel mt-3">
-                            <div class="d-flex justify-content-center flex-wrap gap-2">
-                                ${fotosFormateadas.map((foto, index) => `
-                                    <img src="${foto}"
-                                         class="carousel-thumbnail ${index === 0 ? 'active' : ''}"
-                                         onclick="seleccionarFoto(${index})"
-                                         data-index="${index}"
-                                         onload="console.log('✅ Thumbnail ${index} cargado')"
-                                         onerror="console.log('❌ Error en thumbnail ${index}')">
-                                `).join('')}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                // Guardar fotos para navegación
-                window.fotosActuales = fotosFormateadas;
-            } else {
-                console.log('❌ No hay fotos disponibles para este vehículo');
-                galeriaHtml = `
-                    <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imágenes"
-                         class="vehicle-detail-image" alt="Sin imágenes disponibles">
-                `;
-                window.fotosActuales = [];
+            // Validar datos básicos del vehículo
+            if (!vehiculo || !vehiculo.IDVehiculo) {
+                console.error('❌ Datos de vehículo inválidos:', vehiculo);
+                mostrarErrorEnModal('Datos de vehículo inválidos');
+                return;
             }
 
-            const contenido = `
-                <div class="row g-4">
-                    <div class="col-md-6">
-                        ${galeriaHtml}
-                        ${thumbnailsHtml}
-                    </div>
-                    <div class="col-md-6">
-                        <h4 class="text-primary mb-3">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h4>
-                        <h3 class="text-success mb-3">${precio}</h3>
+            try {
+                const precio = new Intl.NumberFormat('es-DO', {
+                    style: 'currency',
+                    currency: 'DOP'
+                }).format(vehiculo.Precio || 0);
 
-                        <div class="row g-3">
-                            <div class="col-6">
-                                <strong>Año:</strong><br>
-                                <span class="text-muted">${vehiculo.Año}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Condición:</strong><br>
-                                <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Color:</strong><br>
-                                <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Kilometraje:</strong><br>
-                                <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Tipo:</strong><br>
-                                <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Motor:</strong><br>
-                                <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Combustible:</strong><br>
-                                <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
-                            </div>
-                            <div class="col-6">
-                                <strong>Transmisión:</strong><br>
-                                <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
-                            </div>
-                            <div class="col-12">
-                                <strong>Ubicación:</strong><br>
-                                <span class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}</span>
-                            </div>
-                            <div class="col-12">
-                                <strong>Vendedor:</strong><br>
-                                <span class="text-muted">${vehiculo.NombreUsuario || 'N/A'}</span>
-                            </div>
-                            ${vehiculo.CantidadFotos > 0 ? `
-                            <div class="col-12">
-                                <strong>Fotos:</strong><br>
-                                <span class="text-muted"><i class="fas fa-camera me-1"></i>${vehiculo.CantidadFotos} imagen(es) disponible(s)</span>
-                            </div>
-                            ` : ''}
-                        </div>
-                    </div>
-                    ${vehiculo.Descripcion ? `
-                    <div class="col-12">
-                        <h5>Descripción</h5>
-                        <p class="text-muted">${vehiculo.Descripcion}</p>
-                    </div>
+                $('#modalDetallesTitle').html(`<i class="fas fa-car me-2"></i>${vehiculo.MarcaNombre || 'Marca'} ${vehiculo.Modelo || 'Modelo'} ${vehiculo.Año || ''}`);
+
+                // 📸 PROCESAMIENTO MEJORADO DE IMÁGENES
+                let galeriaHtml = '';
+                let thumbnailsHtml = '';
+                let fotosFormateadas = [];
+
+                // 🔍 VALIDAR Y PROCESAR FOTOS
+                if (vehiculo.TodasLasFotos && Array.isArray(vehiculo.TodasLasFotos) && vehiculo.TodasLasFotos.length > 0) {
+                    console.log(`📸 Procesando ${vehiculo.TodasLasFotos.length} fotos...`);
+
+                    // Filtrar fotos válidas
+                    fotosFormateadas = vehiculo.TodasLasFotos.filter((foto, index) => {
+                        if (!foto || typeof foto !== 'string') {
+                            console.warn(`⚠️ Foto ${index} inválida:`, foto);
+                            return false;
+                        }
+
+                        // Verificar que tenga un formato de imagen válido
+                        if (!foto.startsWith('data:image/')) {
+                            console.warn(`⚠️ Foto ${index} no tiene formato data:image:`, foto.substring(0, 50));
+                            return false;
+                        }
+
+                        console.log(`✅ Foto ${index} válida`);
+                        return true;
+                    });
+
+                    console.log(`📊 Fotos válidas: ${fotosFormateadas.length} de ${vehiculo.TodasLasFotos.length}`);
+                } else {
+                    console.log('📸 No hay fotos disponibles o formato incorrecto');
+                }
+
+                // 🖼️ CREAR GALERÍA O IMAGEN PLACEHOLDER
+                if (fotosFormateadas.length > 0) {
+                    // Imagen principal con controles
+                    galeriaHtml = `
+                <div class="position-relative">
+                    <img id="imagenPrincipal" 
+                         src="${fotosFormateadas[0]}"
+                         class="vehicle-detail-image" 
+                         alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
+                         onload="console.log('✅ Imagen principal cargada correctamente')"
+                         onerror="console.error('❌ Error cargando imagen principal'); manejarErrorImagen(this)">
+                    
+                    ${fotosFormateadas.length > 1 ? `
+                        <button class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2"
+                                onclick="cambiarFoto(-1)" style="z-index: 10;" title="Foto anterior">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <button class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2"
+                                onclick="cambiarFoto(1)" style="z-index: 10;" title="Foto siguiente">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
                     ` : ''}
-                    ${vehiculo.Observaciones ? `
-                    <div class="col-12">
-                        <h5>Observaciones</h5>
-                        <p class="text-muted">${vehiculo.Observaciones}</p>
+                    
+                    <div class="position-absolute bottom-0 end-0 m-3">
+                        <span class="badge bg-dark bg-opacity-75">
+                            <span id="fotoActual">1</span> / ${fotosFormateadas.length}
+                        </span>
                     </div>
-                    ` : ''}
                 </div>
             `;
 
-            $('#detallesContent').html(contenido);
+                    // Thumbnails (solo si hay más de una foto)
+                    if (fotosFormateadas.length > 1) {
+                        thumbnailsHtml = `
+                    <div class="photos-carousel mt-3">
+                        <div class="d-flex justify-content-center flex-wrap gap-2">
+                            ${fotosFormateadas.map((foto, index) => `
+                                <img src="${foto}"
+                                     class="carousel-thumbnail ${index === 0 ? 'active' : ''}"
+                                     onclick="seleccionarFoto(${index})"
+                                     data-index="${index}"
+                                     title="Ver foto ${index + 1}"
+                                     onload="console.log('✅ Thumbnail ${index} cargado')"
+                                     onerror="console.error('❌ Error en thumbnail ${index}'); manejarErrorThumbnail(this, ${index})">
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                    }
 
-            // Configurar botón de contacto
-            $('#btnContactarVendedor').off('click').on('click', function () {
-                contactarVendedor(vehiculo.Contacto || 'No disponible');
-            });
+                    // Guardar fotos para navegación
+                    window.fotosActuales = fotosFormateadas;
+                    window.fotoActualIndex = 0;
 
-            // Configurar variables globales para la galería
-            window.fotoActualIndex = 0;
+                } else {
+                    // Imagen placeholder cuando no hay fotos
+                    console.log('🖼️ Usando imagen placeholder');
+                    galeriaHtml = `
+                <div class="position-relative">
+                    <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imágenes+Disponibles"
+                         class="vehicle-detail-image" 
+                         alt="Sin imágenes disponibles">
+                    <div class="position-absolute bottom-0 start-0 m-3">
+                        <span class="badge bg-warning text-dark">
+                            <i class="fas fa-camera me-1"></i>Sin fotos
+                        </span>
+                    </div>
+                </div>
+            `;
+                    window.fotosActuales = [];
+                    window.fotoActualIndex = 0;
+                }
 
-            $('#modalDetalles').modal('show');
+                // 📝 CONSTRUIR CONTENIDO COMPLETO DEL MODAL
+                const contenido = `
+            <div class="row g-4">
+                <!-- Columna de la galería -->
+                <div class="col-md-6">
+                    ${galeriaHtml}
+                    ${thumbnailsHtml}
+                </div>
+                
+                <!-- Columna de información -->
+                <div class="col-md-6">
+                    <h4 class="text-primary mb-3">${vehiculo.MarcaNombre || 'N/A'} ${vehiculo.Modelo || 'N/A'}</h4>
+                    <h3 class="text-success mb-3">${precio}</h3>
+
+                    <div class="row g-3">
+                        <div class="col-6">
+                            <strong>Año:</strong><br>
+                            <span class="text-muted">${vehiculo.Año || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Condición:</strong><br>
+                            <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Color:</strong><br>
+                            <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Kilometraje:</strong><br>
+                            <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Tipo:</strong><br>
+                            <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Motor:</strong><br>
+                            <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Combustible:</strong><br>
+                            <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
+                        </div>
+                        <div class="col-6">
+                            <strong>Transmisión:</strong><br>
+                            <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Ubicación:</strong><br>
+                            <span class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                ${vehiculo.MunicipioNombre || 'N/A'}, ${vehiculo.ProvinciaNombre || 'N/A'}
+                            </span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Vendedor:</strong><br>
+                            <span class="text-muted">${vehiculo.NombreUsuario || 'Usuario'}</span>
+                        </div>
+                        <div class="col-12">
+                            <strong>Fotos:</strong><br>
+                            <span class="text-muted">
+                                <i class="fas fa-camera me-1"></i>
+                                ${fotosFormateadas.length} imagen(es) disponible(s)
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Descripción completa -->
+                ${vehiculo.Descripcion ? `
+                <div class="col-12">
+                    <h5><i class="fas fa-info-circle me-2"></i>Descripción</h5>
+                    <div class="p-3 bg-light rounded">
+                        <p class="mb-0">${vehiculo.Descripcion}</p>
+                    </div>
+                </div>
+                ` : ''}
+                
+                <!-- Observaciones -->
+                ${vehiculo.Observaciones ? `
+                <div class="col-12">
+                    <h5><i class="fas fa-sticky-note me-2"></i>Observaciones</h5>
+                    <div class="p-3 bg-warning bg-opacity-10 rounded">
+                        <p class="mb-0">${vehiculo.Observaciones}</p>
+                    </div>
+                </div>
+                ` : ''}
+            </div>
+        `;
+
+                // Insertar contenido en el modal
+                $('#detallesContent').html(contenido);
+
+                // Configurar botón de contacto
+                $('#btnContactarVendedor').off('click').on('click', function () {
+                    contactarVendedor(vehiculo.Contacto || 'No disponible');
+                });
+
+                console.log('✅ Modal de detalles mostrado correctamente');
+
+            } catch (error) {
+                console.error('❌ Error construyendo modal de detalles:', error);
+                mostrarErrorEnModal('Error al mostrar los detalles del vehículo');
+            }
         }
+
+        // 🔧 FUNCIÓN PARA MANEJAR ERRORES DE IMÁGENES
+        window.manejarErrorImagen = function (img) {
+            console.error('❌ Error cargando imagen principal:', img.src);
+            img.src = 'https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Error+al+Cargar+Imagen';
+            img.alt = 'Error al cargar imagen';
+        };
+
+        window.manejarErrorThumbnail = function (img, index) {
+            console.error(`❌ Error cargando thumbnail ${index}:`, img.src);
+            img.style.display = 'none'; // Ocultar thumbnail con error
+        };
+
+        // 📸 FUNCIONES MEJORADAS PARA LA GALERÍA
+        window.cambiarFoto = function (direccion) {
+            if (!window.fotosActuales || window.fotosActuales.length <= 1) {
+                console.log('ℹ️ No hay fotos para navegar');
+                return;
+            }
+
+            const anteriorIndex = window.fotoActualIndex;
+            window.fotoActualIndex += direccion;
+
+            // Controlar límites con bucle circular
+            if (window.fotoActualIndex >= window.fotosActuales.length) {
+                window.fotoActualIndex = 0;
+            } else if (window.fotoActualIndex < 0) {
+                window.fotoActualIndex = window.fotosActuales.length - 1;
+            }
+
+            console.log(`📸 Cambiando foto: ${anteriorIndex} → ${window.fotoActualIndex}`);
+            actualizarImagenPrincipal();
+        };
+
+        window.seleccionarFoto = function (index) {
+            if (!window.fotosActuales || index < 0 || index >= window.fotosActuales.length) {
+                console.error('❌ Índice de foto inválido:', index);
+                return;
+            }
+
+            console.log(`🎯 Seleccionando foto índice: ${index}`);
+            window.fotoActualIndex = index;
+            actualizarImagenPrincipal();
+        };
+
+        function actualizarImagenPrincipal() {
+            try {
+                const imagenPrincipal = $('#imagenPrincipal');
+                const contador = $('#fotoActual');
+
+                if (imagenPrincipal.length && window.fotosActuales && window.fotosActuales[window.fotoActualIndex]) {
+                    // Actualizar imagen con fade effect
+                    imagenPrincipal.fadeOut(200, function () {
+                        $(this).attr('src', window.fotosActuales[window.fotoActualIndex]).fadeIn(200);
+                    });
+
+                    // Actualizar contador
+                    contador.text(window.fotoActualIndex + 1);
+
+                    // Actualizar thumbnails activos
+                    $('.carousel-thumbnail').removeClass('active');
+                    $(`.carousel-thumbnail[data-index="${window.fotoActualIndex}"]`).addClass('active');
+
+                    console.log(`✅ Imagen principal actualizada a índice ${window.fotoActualIndex}`);
+                } else {
+                    console.error('❌ No se pudo actualizar imagen principal');
+                }
+            } catch (error) {
+                console.error('❌ Error actualizando imagen principal:', error);
+            }
+        }
+
         // 📸 FUNCIONES PARA LA GALERÍA DE FOTOS
         window.cambiarFoto = function (direccion) {
             if (!window.fotosActuales || window.fotosActuales.length <= 1) return;

@@ -3,6 +3,7 @@ using Proyect_P3.Models.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -161,52 +162,138 @@ namespace Proyect_P3.Controllers
 
                 if (oVehiculo != null)
                 {
-                    // 📸 Obtener TODAS las fotos para el modal de detalles
                     try
                     {
-                        System.Diagnostics.Debug.WriteLine($"🔍 Obteniendo todas las fotos para vehículo {idVehiculo}");
+                        System.Diagnostics.Debug.WriteLine($"🔍 Obteniendo fotos para vehículo {idVehiculo}");
 
-                        // 📸 Usar el método que YA incluye el prefijo data:image
-                        var fotosConPrefijo = ArticulosFotosMetodos.Instance.ObtenerFotosBase64PorArticulo(idVehiculo);
-                        oVehiculo.TodasLasFotos = fotosConPrefijo; // Ya vienen con data:image/jpeg;base64,
+                        // 📸 Obtener fotos y COMPRIMIRLAS
+                        var fotosOriginales = ArticulosFotosMetodos.Instance.ObtenerFotosBase64PorArticulo(idVehiculo);
+                        var fotosComprimidas = new List<string>();
 
-                        oVehiculo.CantidadFotos = oVehiculo.TodasLasFotos.Count;
-
-                        // También establecer la primera foto
-                        if (oVehiculo.TodasLasFotos.Count > 0)
+                        foreach (var foto in fotosOriginales)
                         {
-                            oVehiculo.PrimeraFoto = oVehiculo.TodasLasFotos[0];
+                            try
+                            {
+                                // 🗜️ COMPRIMIR CADA FOTO
+                                string fotoComprimida = ComprimirImagenBase64(foto);
+                                fotosComprimidas.Add(fotoComprimida);
+
+                                System.Diagnostics.Debug.WriteLine($"✅ Foto comprimida: {foto.Length} → {fotoComprimida.Length} caracteres");
+                            }
+                            catch (Exception ex)
+                            {
+                                System.Diagnostics.Debug.WriteLine($"❌ Error comprimiendo foto: {ex.Message}");
+                                // Si no se puede comprimir, omitir esta foto
+                            }
                         }
 
-                        System.Diagnostics.Debug.WriteLine($"✅ Cargadas {oVehiculo.CantidadFotos} fotos para el vehículo");
+                        oVehiculo.TodasLasFotos = fotosComprimidas;
+                        oVehiculo.CantidadFotos = fotosComprimidas.Count;
 
-                        if (oVehiculo.TodasLasFotos.Count > 0)
+                        if (fotosComprimidas.Count > 0)
                         {
-                            System.Diagnostics.Debug.WriteLine($"📸 Primera foto para detalles length: {oVehiculo.TodasLasFotos[0].Length} caracteres");
+                            oVehiculo.PrimeraFoto = fotosComprimidas[0];
                         }
+
+                        System.Diagnostics.Debug.WriteLine($"✅ {fotosComprimidas.Count} fotos comprimidas listas");
                     }
                     catch (Exception ex)
                     {
-                        System.Diagnostics.Debug.WriteLine($"❌ Error cargando fotos: {ex.Message}");
+                        System.Diagnostics.Debug.WriteLine($"❌ Error procesando fotos: {ex.Message}");
                         oVehiculo.TodasLasFotos = new List<string>();
                         oVehiculo.CantidadFotos = 0;
                     }
 
-                    // Incrementar vistas
                     VehiculosMetodos.Instance.IncrementarVistas(idVehiculo);
                 }
-                else
-                {
-                    System.Diagnostics.Debug.WriteLine($"❌ Vehículo {idVehiculo} no encontrado");
-                }
 
-                return Json(new { data = oVehiculo }, JsonRequestBehavior.AllowGet);
+                // 🔧 CONFIGURAR JSON RESULT CON LÍMITE MÁXIMO
+                var jsonResult = Json(new { data = oVehiculo }, JsonRequestBehavior.AllowGet);
+                jsonResult.MaxJsonLength = int.MaxValue;
+
+                return jsonResult;
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"❌ Error al obtener vehículo: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"❌ Error general: {ex.Message}");
                 return Json(new { data = (object)null, error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
+        }
+
+        // 🗜️ MÉTODO PARA COMPRIMIR IMÁGENES BASE64
+        private string ComprimirImagenBase64(string imagenBase64)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(imagenBase64) || !imagenBase64.Contains(","))
+                    return imagenBase64;
+
+                // Extraer el prefijo y los datos base64
+                string[] partes = imagenBase64.Split(',');
+                if (partes.Length != 2) return imagenBase64;
+
+                string prefijo = partes[0] + ",";
+                string datosBase64 = partes[1];
+
+                // Convertir a bytes
+                byte[] imageBytes = Convert.FromBase64String(datosBase64);
+
+                using (var ms = new MemoryStream(imageBytes))
+                using (var imagen = System.Drawing.Image.FromStream(ms))
+                {
+                    // 📐 CALCULAR NUEVAS DIMENSIONES
+                    int nuevoAncho = imagen.Width;
+                    int nuevoAlto = imagen.Height;
+
+                    // Si es muy grande, redimensionar
+                    if (imagen.Width > 1000 || imagen.Height > 800)
+                    {
+                        double ratio = Math.Min(1000.0 / imagen.Width, 800.0 / imagen.Height);
+                        nuevoAncho = (int)(imagen.Width * ratio);
+                        nuevoAlto = (int)(imagen.Height * ratio);
+                    }
+
+                    using (var nuevaImagen = new System.Drawing.Bitmap(nuevoAncho, nuevoAlto))
+                    using (var graphics = System.Drawing.Graphics.FromImage(nuevaImagen))
+                    {
+                        // 🎨 CONFIGURAR CALIDAD
+                        graphics.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.HighQuality;
+                        graphics.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
+                        graphics.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
+
+                        graphics.DrawImage(imagen, 0, 0, nuevoAncho, nuevoAlto);
+
+                        using (var outputStream = new MemoryStream())
+                        {
+                            // 💾 GUARDAR CON COMPRESIÓN JPEG
+                            var encoderParams = new System.Drawing.Imaging.EncoderParameters(1);
+                            encoderParams.Param[0] = new System.Drawing.Imaging.EncoderParameter(
+                                System.Drawing.Imaging.Encoder.Quality, 75L);
+
+                            var jpegEncoder = GetJpegEncoder();
+                            nuevaImagen.Save(outputStream, jpegEncoder, encoderParams);
+
+                            byte[] compressedBytes = outputStream.ToArray();
+                            string compressedBase64 = Convert.ToBase64String(compressedBytes);
+
+                            return $"data:image/jpeg;base64,{compressedBase64}";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"❌ Error comprimiendo imagen: {ex.Message}");
+                return imagenBase64; // Devolver original si hay error
+            }
+        }
+
+        // 🔧 HELPER PARA OBTENER ENCODER JPEG
+        private System.Drawing.Imaging.ImageCodecInfo GetJpegEncoder()
+        {
+            var codecs = System.Drawing.Imaging.ImageCodecInfo.GetImageEncoders();
+            return codecs.FirstOrDefault(codec =>
+                codec.FormatID == System.Drawing.Imaging.ImageFormat.Jpeg.Guid);
         }
 
         [HttpGet]
