@@ -155,19 +155,56 @@ namespace Proyect_P3.Controllers
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine($"=== OBTENIENDO DETALLES DEL VEHÍCULO {idVehiculo} ===");
+
                 Vehiculos oVehiculo = VehiculosMetodos.Instance.ObtenerPorId(idVehiculo);
 
-                // Incrementar vistas si el vehículo existe
                 if (oVehiculo != null)
                 {
+                    // 📸 Obtener TODAS las fotos para el modal de detalles
+                    try
+                    {
+                        System.Diagnostics.Debug.WriteLine($"🔍 Obteniendo todas las fotos para vehículo {idVehiculo}");
+
+                        // 📸 Usar el método que YA incluye el prefijo data:image
+                        var fotosConPrefijo = ArticulosFotosMetodos.Instance.ObtenerFotosBase64PorArticulo(idVehiculo);
+                        oVehiculo.TodasLasFotos = fotosConPrefijo; // Ya vienen con data:image/jpeg;base64,
+
+                        oVehiculo.CantidadFotos = oVehiculo.TodasLasFotos.Count;
+
+                        // También establecer la primera foto
+                        if (oVehiculo.TodasLasFotos.Count > 0)
+                        {
+                            oVehiculo.PrimeraFoto = oVehiculo.TodasLasFotos[0];
+                        }
+
+                        System.Diagnostics.Debug.WriteLine($"✅ Cargadas {oVehiculo.CantidadFotos} fotos para el vehículo");
+
+                        if (oVehiculo.TodasLasFotos.Count > 0)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"📸 Primera foto para detalles length: {oVehiculo.TodasLasFotos[0].Length} caracteres");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error cargando fotos: {ex.Message}");
+                        oVehiculo.TodasLasFotos = new List<string>();
+                        oVehiculo.CantidadFotos = 0;
+                    }
+
+                    // Incrementar vistas
                     VehiculosMetodos.Instance.IncrementarVistas(idVehiculo);
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ Vehículo {idVehiculo} no encontrado");
                 }
 
                 return Json(new { data = oVehiculo }, JsonRequestBehavior.AllowGet);
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error al obtener vehículo: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"❌ Error al obtener vehículo: {ex.Message}");
                 return Json(new { data = (object)null, error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
@@ -177,8 +214,44 @@ namespace Proyect_P3.Controllers
         {
             try
             {
+                System.Diagnostics.Debug.WriteLine("=== CONSULTANDO VEHICULOS ACTIVOS CON FOTOS ===");
+
                 List<Vehiculos> oLista = VehiculosMetodos.Instance.Listar();
                 var vehiculosActivos = oLista.FindAll(v => v.Estatus == true && v.Vendido == false);
+
+                System.Diagnostics.Debug.WriteLine($"📋 {vehiculosActivos.Count} vehículos activos encontrados");
+
+                // 📸 Agregar información de fotos a cada vehículo
+                foreach (var vehiculo in vehiculosActivos)
+                {
+                    try
+                    {
+                        System.Diagnostics.Debug.WriteLine($"🔍 Procesando fotos para vehículo {vehiculo.IDVehiculo}");
+
+                        // 🖼️ Obtener primera foto como thumbnail (YA CON PREFIJO)
+                        string primeraFoto = ArticulosFotosMetodos.Instance.ObtenerPrimeraFotoBase64(vehiculo.IDVehiculo);
+                        vehiculo.PrimeraFoto = primeraFoto; // Ya viene con data:image/jpeg;base64,
+
+                        // 📊 Contar total de fotos
+                        int cantidadFotos = ArticulosFotosMetodos.Instance.ContarFotos(vehiculo.IDVehiculo);
+                        vehiculo.CantidadFotos = cantidadFotos;
+
+                        System.Diagnostics.Debug.WriteLine($"✅ Vehículo {vehiculo.IDVehiculo}: {cantidadFotos} fotos, primera foto: {(primeraFoto != null ? "SÍ" : "NO")}");
+
+                        if (primeraFoto != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine($"📸 Primera foto length: {primeraFoto.Length} caracteres");
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ Error procesando fotos para vehículo {vehiculo.IDVehiculo}: {ex.Message}");
+                        vehiculo.PrimeraFoto = null;
+                        vehiculo.CantidadFotos = 0;
+                    }
+                }
+
+                System.Diagnostics.Debug.WriteLine("✅ Procesamiento de fotos completado");
 
                 var jsonResult = Json(new { data = vehiculosActivos }, JsonRequestBehavior.AllowGet);
                 jsonResult.MaxJsonLength = int.MaxValue;
@@ -187,10 +260,11 @@ namespace Proyect_P3.Controllers
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error en ConsultaVehiculosActivos: {ex.Message}");
+                System.Diagnostics.Debug.WriteLine($"❌ Error en ConsultaVehiculosActivos: {ex.Message}");
                 return Json(new { data = new List<Vehiculos>(), error = ex.Message }, JsonRequestBehavior.AllowGet);
             }
         }
+
 
         [HttpGet]
         public JsonResult ConsultaVehiculosPorUsuario(int idUsuario)

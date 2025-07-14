@@ -165,24 +165,6 @@ namespace Proyect_P3.Metodos
             return fotos;
         }
 
-        // 📸 OBTENER FOTOS EN FORMATO BASE64 PARA WEB
-        public List<string> ObtenerFotosBase64PorArticulo(int idArticulo)
-        {
-            List<string> fotosBase64 = new List<string>();
-            var fotos = ObtenerFotosPorArticulo(idArticulo);
-
-            foreach (var foto in fotos)
-            {
-                if (foto.FOTO != null && foto.FOTO.Length > 0)
-                {
-                    string base64String = Convert.ToBase64String(foto.FOTO);
-                    fotosBase64.Add($"data:image/jpeg;base64,{base64String}");
-                }
-            }
-
-            return fotosBase64;
-        }
-
         // 🗑️ ELIMINAR FOTOS POR ARTÍCULO
         private void EliminarFotosPorArticulo(int idCliente, int idArticulo, SqlConnection connection)
         {
@@ -277,39 +259,6 @@ namespace Proyect_P3.Metodos
             return cantidad;
         }
 
-        // 🖼️ OBTENER PRIMERA FOTO (PARA THUMBNAIL)
-        public string ObtenerPrimeraFotoBase64(int idArticulo)
-        {
-            string fotoBase64 = null;
-            using (SqlConnection oCnn = new SqlConnection(Conexion.Bd))
-            {
-                try
-                {
-                    string sql = @"
-                        SELECT TOP 1 FOTO
-                        FROM ARTICULOSFOTOS 
-                        WHERE IDArticulo = @IDArticulo
-                        ORDER BY SecPhoto";
-
-                    SqlCommand cmd = new SqlCommand(sql, oCnn);
-                    cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
-
-                    oCnn.Open();
-                    byte[] foto = cmd.ExecuteScalar() as byte[];
-
-                    if (foto != null && foto.Length > 0)
-                    {
-                        fotoBase64 = $"data:image/jpeg;base64,{Convert.ToBase64String(foto)}";
-                    }
-                }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"❌ ERROR al obtener primera foto: {ex.Message}");
-                }
-            }
-            return fotoBase64;
-        }
-
         // 📸 REORDENAR FOTOS
         public bool ReordenarFotos(int idCliente, int idArticulo, List<int> nuevoOrden)
         {
@@ -349,6 +298,174 @@ namespace Proyect_P3.Metodos
                 }
             }
             return respuesta;
+        }
+
+        // 🔧 MÉTODOS CORREGIDOS Y AGREGADOS para ArticulosFotosMetodos
+
+        // 🖼️ OBTENER PRIMERA FOTO SOLO BASE64 (SIN PREFIJO) - NUEVO MÉTODO
+        public string ObtenerPrimeraFotoBase64SinPrefijo(int idArticulo)
+        {
+            string fotoBase64 = null;
+            using (SqlConnection oCnn = new SqlConnection(Conexion.Bd))
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine($"🖼️ Obteniendo primera foto para artículo {idArticulo}");
+
+                    string sql = @"
+                SELECT TOP 1 FOTO
+                FROM ARTICULOSFOTOS 
+                WHERE IDArticulo = @IDArticulo
+                ORDER BY SecPhoto";
+
+                    SqlCommand cmd = new SqlCommand(sql, oCnn);
+                    cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
+
+                    oCnn.Open();
+                    byte[] foto = cmd.ExecuteScalar() as byte[];
+
+                    if (foto != null && foto.Length > 0)
+                    {
+                        fotoBase64 = Convert.ToBase64String(foto);
+                        System.Diagnostics.Debug.WriteLine($"✅ Primera foto obtenida: {fotoBase64.Length} caracteres");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ No se encontró primera foto para artículo {idArticulo}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR al obtener primera foto: {ex.Message}");
+                }
+            }
+            return fotoBase64;
+        }
+
+        // 📸 OBTENER FOTOS EN FORMATO BASE64 SIN PREFIJO (NUEVO MÉTODO)
+        public List<string> ObtenerFotosBase64SinPrefijo(int idArticulo)
+        {
+            List<string> fotosBase64 = new List<string>();
+            using (SqlConnection oCnn = new SqlConnection(Conexion.Bd))
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine($"📸 Obteniendo todas las fotos para artículo {idArticulo}");
+
+                    string sql = @"
+                SELECT FOTO
+                FROM ARTICULOSFOTOS 
+                WHERE IDArticulo = @IDArticulo
+                ORDER BY SecPhoto";
+
+                    SqlCommand cmd = new SqlCommand(sql, oCnn);
+                    cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
+
+                    oCnn.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        byte[] foto = dr["FOTO"] as byte[];
+                        if (foto != null && foto.Length > 0)
+                        {
+                            string base64String = Convert.ToBase64String(foto);
+                            fotosBase64.Add(base64String);
+                        }
+                    }
+
+                    dr.Close();
+                    System.Diagnostics.Debug.WriteLine($"✅ {fotosBase64.Count} fotos obtenidas en Base64");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR al obtener fotos Base64: {ex.Message}");
+                }
+            }
+            return fotosBase64;
+        }
+
+        // 🔧 CORREGIR EL MÉTODO EXISTENTE ObtenerPrimeraFotoBase64 (MANTENER COMPATIBILIDAD)
+        public string ObtenerPrimeraFotoBase64(int idArticulo)
+        {
+            string fotoBase64 = null;
+            using (SqlConnection oCnn = new SqlConnection(Conexion.Bd))
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine($"🖼️ Obteniendo primera foto CON PREFIJO para artículo {idArticulo}");
+
+                    string sql = @"
+                SELECT TOP 1 FOTO
+                FROM ARTICULOSFOTOS 
+                WHERE IDArticulo = @IDArticulo
+                ORDER BY SecPhoto";
+
+                    SqlCommand cmd = new SqlCommand(sql, oCnn);
+                    cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
+
+                    oCnn.Open();
+                    byte[] foto = cmd.ExecuteScalar() as byte[];
+
+                    if (foto != null && foto.Length > 0)
+                    {
+                        fotoBase64 = $"data:image/jpeg;base64,{Convert.ToBase64String(foto)}";
+                        System.Diagnostics.Debug.WriteLine($"✅ Primera foto con prefijo obtenida");
+                    }
+                    else
+                    {
+                        System.Diagnostics.Debug.WriteLine($"❌ No se encontró primera foto para artículo {idArticulo}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR al obtener primera foto: {ex.Message}");
+                }
+            }
+            return fotoBase64;
+        }
+
+        // 🔧 CORREGIR EL MÉTODO EXISTENTE ObtenerFotosBase64PorArticulo (MANTENER COMPATIBILIDAD)
+        public List<string> ObtenerFotosBase64PorArticulo(int idArticulo)
+        {
+            List<string> fotosBase64 = new List<string>();
+            using (SqlConnection oCnn = new SqlConnection(Conexion.Bd))
+            {
+                try
+                {
+                    System.Diagnostics.Debug.WriteLine($"📸 Obteniendo todas las fotos CON PREFIJO para artículo {idArticulo}");
+
+                    string sql = @"
+                SELECT FOTO
+                FROM ARTICULOSFOTOS 
+                WHERE IDArticulo = @IDArticulo
+                ORDER BY SecPhoto";
+
+                    SqlCommand cmd = new SqlCommand(sql, oCnn);
+                    cmd.Parameters.AddWithValue("@IDArticulo", idArticulo);
+
+                    oCnn.Open();
+                    SqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        byte[] foto = dr["FOTO"] as byte[];
+                        if (foto != null && foto.Length > 0)
+                        {
+                            string base64String = Convert.ToBase64String(foto);
+                            fotosBase64.Add($"data:image/jpeg;base64,{base64String}");
+                        }
+                    }
+
+                    dr.Close();
+                    System.Diagnostics.Debug.WriteLine($"✅ {fotosBase64.Count} fotos con prefijo obtenidas");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine($"❌ ERROR al obtener fotos Base64: {ex.Message}");
+                }
+            }
+            return fotosBase64;
         }
     }
 }

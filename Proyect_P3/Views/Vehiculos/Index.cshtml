@@ -1,5 +1,6 @@
 ﻿@{
     ViewBag.Title = "Anddy Motors - Compra y Vende Vehículos";
+    ViewBag.FullScreen = true; // 🔥 Indicar que es pantalla completa
 }
 
 <!-- CSS -->
@@ -9,6 +10,92 @@
 <link href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" rel="stylesheet">
 
 <style>
+    /* 🔧 CONFIGURACIÓN PARA PANTALLA COMPLETA - ANDDY MOTORS */
+
+    /* 1. RESETEAR BODY Y CONTENEDORES PRINCIPALES */
+    body {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow-x: hidden;
+    }
+
+    html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+    }
+    /* Anular CUALQUIER contenedor padre */
+    body > * {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+
+    /* 2. CONFIGURAR CONTENEDOR PRINCIPAL PARA PANTALLA COMPLETA */
+    .container.body-content {
+        padding: 0 !important;
+        margin: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+        height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Específicamente para el contenedor de ASP.NET */
+    .container.body-content,
+    .container-fluid,
+    body > .container,
+    body > div:first-child {
+        margin: 0 !important;
+        padding: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        height: 100vh !important;
+        display: flex !important;
+        flex-direction: column !important;
+    }
+
+    /* Asegurar que las secciones principales ocupen toda la pantalla */
+    .main-header,
+    .stats-section,
+    .types-section,
+    .brands-section,
+    .vehicles-section {
+        width: 100vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-right: calc(-50vw + 50%) !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+        /* Contenedores internos con padding normal */
+        .main-header .container,
+        .stats-section .container,
+        .types-section .container,
+        .brands-section .container,
+        .vehicles-section .container {
+            width: 100% !important;
+            max-width: 1200px !important;
+            margin: 0 auto !important;
+            padding-left: 15px !important;
+            padding-right: 15px !important;
+        }
+
+    /* Footer si existe */
+    footer {
+        margin-top: auto;
+        width: 100vw !important;
+        margin-left: calc(-50vw + 50%) !important;
+        margin-right: calc(-50vw + 50%) !important;
+    }
+
+
     /* Header Principal */
     .main-header {
         background: linear-gradient(135deg, #1a1a1a 0%, #2c2c2c 100%);
@@ -16,6 +103,9 @@
         padding: 2rem 0;
         position: relative;
         overflow: hidden;
+        margin: 0;
+        width: 100%;
+        flex-shrink: 0;
     }
 
         .main-header::before {
@@ -32,6 +122,9 @@
     .header-content {
         position: relative;
         z-index: 2;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 1rem;
     }
 
     .logo-section {
@@ -60,7 +153,7 @@
         backdrop-filter: blur(10px);
         border-radius: 20px;
         padding: 2rem;
-        margin-top: 2rem;
+        margin: 2rem 1rem 0 1rem;
         box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         border: 1px solid rgba(255, 239, 194, 0.3);
     }
@@ -132,7 +225,8 @@
     /* Tipos de Vehículos */
     .types-section {
         background: white;
-        padding: 3rem 0;
+        padding: 1.5rem 0;
+        margin: 0;
     }
 
     .section-title {
@@ -181,7 +275,8 @@
     /* Marcas */
     .brands-section {
         background: #f8f9fa;
-        padding: 3rem 0;
+        padding: 1.5rem 0;
+        margin: 0;
     }
 
     .brand-logo {
@@ -213,7 +308,10 @@
     /* Vehículos Grid */
     .vehicles-section {
         background: white;
-        padding: 3rem 0;
+        padding: 1rem 0;
+        flex: 1;
+        overflow-y: auto;
+        margin: 0;
     }
 
     .vehicle-card {
@@ -276,6 +374,7 @@
         border-radius: 15px;
         font-size: 0.7rem;
         font-weight: 600;
+        backdrop-filter: blur(5px);
     }
 
     .vehicle-info {
@@ -357,6 +456,11 @@
     .loading-spinner {
         text-align: center;
         padding: 3rem;
+        min-height: 50vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
     .spinner-border {
@@ -367,6 +471,11 @@
         text-align: center;
         padding: 3rem;
         color: #6c757d;
+        min-height: 50vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
 
         .no-results i {
@@ -399,7 +508,13 @@
         object-fit: cover;
         border-radius: 15px;
         box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        animation: fadeInImage 0.4s ease-out;
     }
+
+        .vehicle-detail-image:hover {
+            transform: scale(1.02);
+        }
 
     /* 📸 CARRUSEL DE FOTOS */
     .photos-carousel {
@@ -415,18 +530,25 @@
         margin: 0 5px;
         border: 2px solid transparent;
         transition: all 0.3s ease;
+        opacity: 0.7;
     }
 
-    .carousel-thumbnail:hover,
-    .carousel-thumbnail.active {
-        border-color: #ffefc2;
-        transform: scale(1.05);
-    }
+        .carousel-thumbnail:hover {
+            border-color: #ffefc2;
+            transform: scale(1.05);
+            opacity: 1;
+        }
+
+        .carousel-thumbnail.active {
+            border-color: #ffefc2;
+            opacity: 1;
+            transform: scale(1.1);
+            box-shadow: 0 4px 15px rgba(255, 239, 194, 0.4);
+        }
 
     .fade-in-up {
         animation: fadeInUp 0.6s ease-out;
     }
-
 
     /* Filters Active State */
     .filter-active {
@@ -438,7 +560,9 @@
     .stats-section {
         background: linear-gradient(135deg, #2c2c2c, #1a1a1a);
         color: white;
-        padding: 2rem 0;
+        padding: 1rem 0;
+        margin: 0;
+        flex-shrink: 0;
     }
 
     .stat-item {
@@ -477,46 +601,47 @@
         overflow: hidden;
     }
 
-    .upload-area::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 239, 194, 0.3), transparent);
-        transition: left 0.8s;
-    }
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 239, 194, 0.3), transparent);
+            transition: left 0.8s;
+        }
 
-    .upload-area:hover {
-        border-color: #ffefc2;
-        background: linear-gradient(135deg, rgba(255, 239, 194, 0.1) 0%, rgba(255, 245, 214, 0.2) 100%);
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(255, 239, 194, 0.3);
-    }
+        .upload-area:hover {
+            border-color: #ffefc2;
+            background: linear-gradient(135deg, rgba(255, 239, 194, 0.1) 0%, rgba(255, 245, 214, 0.2) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 239, 194, 0.3);
+        }
 
-    .upload-area:hover::before {
-        left: 100%;
-    }
+            .upload-area:hover::before {
+                left: 100%;
+            }
 
-    .upload-area.dragover {
-        border-color: #ffefc2;
-        background: linear-gradient(135deg, rgba(255, 239, 194, 0.2) 0%, rgba(255, 245, 214, 0.3) 100%);
-        transform: scale(1.02) translateY(-3px);
-        box-shadow: 0 12px 35px rgba(255, 239, 194, 0.4);
-        border-style: solid;
-    }
+        .upload-area.dragover {
+            border-color: #ffefc2;
+            background: linear-gradient(135deg, rgba(255, 239, 194, 0.2) 0%, rgba(255, 245, 214, 0.3) 100%);
+            transform: scale(1.02) translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 239, 194, 0.4);
+            border-style: solid;
+        }
 
     .upload-content {
         z-index: 2;
         position: relative;
     }
 
-    .upload-content i {
-        color: #ffefc2;
-        margin-bottom: 1rem;
-        transition: all 0.3s ease;
-    }
+        .upload-content i {
+            color: #ffefc2;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            font-size: 2rem;
+        }
 
     .upload-area:hover .upload-content i {
         transform: scale(1.1);
@@ -535,23 +660,23 @@
         box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
-    .fotos-preview::-webkit-scrollbar {
-        width: 8px;
-    }
+        .fotos-preview::-webkit-scrollbar {
+            width: 8px;
+        }
 
-    .fotos-preview::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 10px;
-    }
+        .fotos-preview::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
 
-    .fotos-preview::-webkit-scrollbar-thumb {
-        background: linear-gradient(135deg, #ffefc2, #fff5d6);
-        border-radius: 10px;
-    }
+        .fotos-preview::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #ffefc2, #fff5d6);
+            border-radius: 10px;
+        }
 
-    .fotos-preview::-webkit-scrollbar-thumb:hover {
-        background: linear-gradient(135deg, #e6d49a, #f0e6c1);
-    }
+            .fotos-preview::-webkit-scrollbar-thumb:hover {
+                background: linear-gradient(135deg, #e6d49a, #f0e6c1);
+            }
 
     /* 🖼️ Sin Fotos Placeholder */
     .no-photos {
@@ -561,23 +686,17 @@
         justify-content: center;
         height: 200px;
         color: #6c757d;
-        background: repeating-linear-gradient(
-            45deg,
-            transparent,
-            transparent 10px,
-            rgba(255, 239, 194, 0.1) 10px,
-            rgba(255, 239, 194, 0.1) 20px
-        );
+        background: repeating-linear-gradient( 45deg, transparent, transparent 10px, rgba(255, 239, 194, 0.1) 10px, rgba(255, 239, 194, 0.1) 20px );
         border-radius: 15px;
         border: 2px dashed #dee2e6;
     }
 
-    .no-photos i {
-        font-size: 3rem;
-        margin-bottom: 1rem;
-        opacity: 0.5;
-        color: #ffefc2;
-    }
+        .no-photos i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+            color: #ffefc2;
+        }
 
     /* 📷 Miniatura de Foto Mejorada */
     .photo-thumbnail {
@@ -589,26 +708,26 @@
         box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         border: 3px solid transparent;
-        background: linear-gradient(white, white) padding-box,
-                    linear-gradient(135deg, #ffefc2, #fff5d6) border-box;
+        background: linear-gradient(white, white) padding-box, linear-gradient(135deg, #ffefc2, #fff5d6) border-box;
+        animation: photoAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .photo-thumbnail:hover {
-        transform: translateY(-3px) scale(1.02);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
+        .photo-thumbnail:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
 
-    .photo-thumbnail img {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        display: block;
-        transition: all 0.3s ease;
-    }
+        .photo-thumbnail img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+            transition: all 0.3s ease;
+        }
 
-    .photo-thumbnail:hover img {
-        transform: scale(1.05);
-    }
+        .photo-thumbnail:hover img {
+            transform: scale(1.05);
+        }
 
     /* 🗑️ Botón Eliminar Foto Mejorado */
     .photo-remove {
@@ -632,21 +751,21 @@
         border: 2px solid white;
     }
 
-    .photo-remove:hover {
-        background: linear-gradient(135deg, #c82333, #bd2130);
-        transform: scale(1.15);
-        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
-    }
+        .photo-remove:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: scale(1.15);
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.6);
+        }
 
-    .photo-remove:active {
-        transform: scale(0.95);
-    }
+        .photo-remove:active {
+            transform: scale(0.95);
+        }
 
-    .photo-remove:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        transform: none;
-    }
+        .photo-remove:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
 
     /* 📊 Estados de Foto */
     .photo-thumbnail.uploading {
@@ -654,20 +773,20 @@
         position: relative;
     }
 
-    .photo-thumbnail.uploading::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 24px;
-        height: 24px;
-        border: 3px solid rgba(255, 255, 255, 0.8);
-        border-top: 3px solid #ffefc2;
-        border-radius: 50%;
-        animation: uploadSpin 1s linear infinite;
-        z-index: 5;
-    }
+        .photo-thumbnail.uploading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 24px;
+            height: 24px;
+            border: 3px solid rgba(255, 255, 255, 0.8);
+            border-top: 3px solid #ffefc2;
+            border-radius: 50%;
+            animation: uploadSpin 1s linear infinite;
+            z-index: 5;
+        }
 
     /* 🎯 Iconos de Estado */
     .estado-icon {
@@ -711,25 +830,24 @@
         box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    #uploadProgress .progress-bar {
-        background: linear-gradient(135deg, #ffefc2, #fff5d6);
-        border-radius: 15px;
-        transition: width 0.3s ease;
-        position: relative;
-        overflow: hidden;
-    }
+        #uploadProgress .progress-bar {
+            background: linear-gradient(135deg, #ffefc2, #fff5d6);
+            border-radius: 15px;
+            transition: width 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
 
-    #uploadProgress .progress-bar::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        animation: progressShine 2s infinite;
-    }
-
+            #uploadProgress .progress-bar::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: -100%;
+                width: 100%;
+                height: 100%;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+                animation: progressShine 2s infinite;
+            }
 
     /* 📝 Estado de Upload */
     #uploadStatus .alert {
@@ -765,20 +883,20 @@
         overflow: hidden;
     }
 
-    .btn-modern::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-    }
+        .btn-modern::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
 
-    .btn-modern:hover::before {
-        left: 100%;
-    }
+        .btn-modern:hover::before {
+            left: 100%;
+        }
 
     /* 📤 Botón Seleccionar Fotos Específico */
     .btn-select-photos {
@@ -788,12 +906,12 @@
         box-shadow: 0 4px 15px rgba(255, 239, 194, 0.3) !important;
     }
 
-    .btn-select-photos:hover {
-        background: linear-gradient(135deg, #e6d49a, #f0e6c1) !important;
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(255, 239, 194, 0.5) !important;
-        color: #2c2c2c !important;
-    }
+        .btn-select-photos:hover {
+            background: linear-gradient(135deg, #e6d49a, #f0e6c1) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 239, 194, 0.5) !important;
+            color: #2c2c2c !important;
+        }
 
     /* 🎯 Input File Oculto Mejorado */
     #fileInput {
@@ -818,41 +936,418 @@
         box-shadow: 0 2px 8px rgba(255, 239, 194, 0.3);
     }
 
-
-        .upload-content i {
-            font-size: 2rem;
-        }
-
-        .fotos-preview {
-            min-height: 200px;
-            max-height: 300px;
-            padding: 1rem;
-        }
-
-        .photo-thumbnail img {
-            width: 60px;
-            height: 60px;
-        }
-
-        .photo-remove {
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
-            top: -8px;
-            right: -8px;
-        }
-
-        .vehicle-actions {
-            flex-direction: column;
-        }
-
-        .section-title {
-            font-size: 1.5rem;
-        }
+    /* 🎛️ CONTROLES DE NAVEGACIÓN */
+    .btn-gallery-nav {
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     }
-    .photo-thumbnail {
-        animation: photoAppear 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+
+        .btn-gallery-nav:hover {
+            background: rgba(255, 239, 194, 0.9);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+    /* 🌟 EFECTOS DE CARGA PARA IMÁGENES */
+    .vehicle-image img, .vehicle-detail-image {
+        transition: opacity 0.3s ease;
     }
+
+        .vehicle-image img:not([src]),
+        .vehicle-detail-image:not([src]) {
+            opacity: 0;
+        }
+
+    /* 🔧 AJUSTES PARA GRID Y CONTENEDORES */
+    #vehiculosContainer {
+        margin: 0;
+        padding: 0 1rem;
+    }
+
+    .row {
+        margin: 0;
+    }
+
+    .container {
+        max-width: 100% !important;
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+
+    /* 📱 RESPONSIVE PARA MANTENER PANTALLA COMPLETA */
+
+    .search-section {
+        margin: 1rem 0.5rem 0 0.5rem;
+        padding: 1rem;
+    }
+
+    .vehicles-section {
+        padding: 0.5rem 0;
+    }
+
+    #vehiculosContainer {
+        padding: 0 0.5rem;
+    }
+
+    .upload-content i {
+        font-size: 2rem;
+    }
+
+    .fotos-preview {
+        min-height: 200px;
+        max-height: 300px;
+        padding: 1rem;
+    }
+
+    .photo-thumbnail img {
+        width: 60px;
+        height: 60px;
+    }
+
+    .photo-remove {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+        top: -8px;
+        right: -8px;
+    }
+
+    .vehicle-actions {
+        flex-direction: column;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+    }
+
+    .carousel-thumbnail {
+        width: 60px;
+        height: 45px;
+        margin: 0 3px;
+    }
+
+    .btn-gallery-nav {
+        width: 35px;
+        height: 35px;
+    }
+
+    }
+
+
+    /* 🔧 ASEGURAR QUE NO HAYA OVERFLOW HORIZONTAL */
+    * {
+        box-sizing: border-box;
+    }
+
+    .row, .container-fluid {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    /* 🎯 ASEGURAR QUE LOS MODALES NO AFECTEN EL LAYOUT */
+    .modal {
+        padding: 0 !important;
+    }
+
+    /* 🔧 AJUSTE FINAL PARA BODY CONTENT */
+    body > .container,
+    body > .container-fluid {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+  /* 🎠 CSS MEJORADO PARA CARRUSEL DE MARCAS - FLECHAS LATERALES */
+
+/* Contenedor principal del carrusel */
+.brands-carousel-container {
+    position: relative;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+    padding: 3rem 4rem;
+    margin: 2rem 0;
+    overflow: hidden;
+}
+
+/* Wrapper que se mueve */
+.brands-carousel-wrapper {
+    display: flex;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    gap: 2rem;
+    will-change: transform;
+}
+
+/* Cada item del carrusel */
+.brand-carousel-item {
+    flex: 0 0 auto;
+    width: 200px;
+    height: 120px;
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 1.5rem;
+    text-align: center;
+    transition: all 0.3s ease;
+    border: 2px solid #e9ecef;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    position: relative;
+    overflow: hidden;
+}
+
+.brand-carousel-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 239, 194, 0.4), transparent);
+    transition: left 0.6s;
+}
+
+.brand-carousel-item:hover::before {
+    left: 100%;
+}
+
+.brand-carousel-item:hover {
+    transform: translateY(-8px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 239, 194, 0.4);
+    border-color: #ffefc2;
+    background: white;
+}
+
+.brand-carousel-item img {
+    max-width: 100%;
+    max-height: 80px;
+    object-fit: contain;
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 2;
+}
+
+.brand-carousel-item:hover img {
+    transform: scale(1.1);
+}
+
+.brand-carousel-item .brand-name {
+    position: relative;
+    z-index: 2;
+    font-weight: 700;
+    color: #2c2c2c;
+    font-size: 1.1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* 🏹 Flechas laterales */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: linear-gradient(135deg, #ffefc2, #fff5d6);
+    border: none;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 20px rgba(255, 239, 194, 0.4);
+    color: #2c2c2c;
+    font-size: 1.4rem;
+    z-index: 10;
+    opacity: 0.9;
+}
+
+.carousel-arrow:hover {
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 10px 30px rgba(255, 239, 194, 0.6);
+    background: linear-gradient(135deg, #e6d49a, #f0e6c1);
+    opacity: 1;
+}
+
+.carousel-arrow:active {
+    transform: translateY(-50%) scale(1.05);
+}
+
+.carousel-arrow-left {
+    left: 1rem;
+}
+
+.carousel-arrow-right {
+    right: 1rem;
+}
+
+.carousel-arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: translateY(-50%) scale(0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-arrow:disabled:hover {
+    transform: translateY(-50%) scale(0.9);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* 📍 Indicadores de puntos */
+.carousel-dots {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 2rem;
+}
+
+.carousel-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #dee2e6;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.carousel-dot.active {
+    background: linear-gradient(135deg, #ffefc2, #fff5d6);
+    transform: scale(1.2);
+    box-shadow: 0 2px 8px rgba(255, 239, 194, 0.5);
+}
+
+.carousel-dot:hover {
+    background: #ffefc2;
+    transform: scale(1.1);
+}
+
+/* 🎯 Estados del carrusel */
+.brands-carousel-wrapper.moving {
+    pointer-events: none;
+}
+
+    .brands-carousel-wrapper {
+        gap: 1.5rem;
+    }
+
+    .brands-carousel-container {
+        padding: 2.5rem 3.5rem;
+    }
+}
+
+
+    .carousel-arrow {
+        width: 50px;
+        height: 50px;
+        font-size: 1.2rem;
+    }
+
+    .brands-carousel-container {
+        padding: 2rem 3rem;
+    }
+}
+
+
+    .brands-carousel-wrapper {
+        gap: 1rem;
+    }
+
+    .carousel-arrow {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+
+    .carousel-arrow-left {
+        left: 0.5rem;
+    }
+
+    .carousel-arrow-right {
+        right: 0.5rem;
+    }
+
+    .brands-carousel-container {
+        padding: 1.5rem 2.5rem;
+    }
+}
+
+
+    .brand-carousel-item img {
+        max-height: 50px;
+    }
+
+    .brand-name {
+        font-size: 0.9rem !important;
+    }
+
+    .carousel-arrow {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .brands-carousel-container {
+        padding: 1rem 2rem;
+    }
+
+    /* Ocultar puntos en móvil muy pequeño */
+    .carousel-dots {
+        display: none;
+    }
+}
+
+
+.brand-carousel-item {
+    animation: slideInBrand 0.6s ease-out;
+}
+
+/* 🎨 Efectos de carga */
+.brands-carousel-container.loading {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.brands-loading {
+    text-align: center;
+    color: #6c757d;
+}
+
+.brands-loading i {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: #ffefc2;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+
+/* 🎭 Hover effect para toda la sección */
+.brands-section:hover .carousel-arrow {
+    opacity: 1;
+}
+
+/* 🔧 Mejoras de performance */
+.brands-carousel-container {
+    contain: layout style paint;
+}
+
+.brands-carousel-wrapper {
+    backface-visibility: hidden;
+    perspective: 1000px;
+}
 </style>
 
 <body>
@@ -999,14 +1494,36 @@
     </section>
 
     <!-- Marcas -->
-    <section class="brands-section">
-        <div class="container">
-            <h2 class="section-title">Marcas Destacadas</h2>
-            <div class="row g-4" id="marcasContainer">
-                <!-- Se cargará dinámicamente -->
+    <!-- 🎠 SECCIÓN DE MARCAS CON CARRUSEL MEJORADA -->
+    <!-- 🎠 SECCIÓN DE MARCAS CON CARRUSEL MEJORADA - FLECHAS LATERALES -->
+<section class="brands-section">
+    <div class="container">
+        <h2 class="section-title">Marcas Destacadas</h2>
+        
+        <!-- 🎠 Contenedor del carrusel con flechas laterales -->
+        <div class="brands-carousel-container">
+            <!-- Flecha izquierda -->
+            <button class="carousel-arrow carousel-arrow-left" id="prevMarcas">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            
+            <!-- Contenedor de las marcas -->
+            <div class="brands-carousel-wrapper" id="marcasCarousel">
+                <!-- Las marcas se cargarán dinámicamente aquí -->
             </div>
+            
+            <!-- Flecha derecha -->
+            <button class="carousel-arrow carousel-arrow-right" id="nextMarcas">
+                <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
-    </section>
+
+        <!-- 📍 Indicadores de puntos (opcional, más elegante) -->
+        <div class="carousel-dots" id="carouselDots">
+            <!-- Se generarán dinámicamente -->
+        </div>
+    </div>
+</section>
 
     <!-- Vehículos -->
     <section class="vehicles-section">
@@ -1361,6 +1878,11 @@
         let provinciasData = [];
         let municipiosData = [];
 
+        let marcasCarruselIndex = 0;
+        let marcasCarruselItems = 0;
+        let marcasVisibles = 4; // Número de marcas visibles a la vez
+        let marcasCarruselData = [];
+
         // 📸 VARIABLES PARA FOTOS
         let fotosSeleccionadas = [];
         const MAX_FOTOS = 10;
@@ -1565,11 +2087,11 @@
 
             if (fotosSeleccionadas.length === 0) {
                 container.html(`
-                    <div class="no-photos">
-                        <i class="fas fa-images fa-2x text-muted"></i>
-                        <p class="text-muted mb-0">No hay fotos seleccionadas</p>
-                    </div>
-                `);
+                            <div class="no-photos">
+                                <i class="fas fa-images fa-2x text-muted"></i>
+                                <p class="text-muted mb-0">No hay fotos seleccionadas</p>
+                            </div>
+                        `);
                 console.log('📷 Preview limpiado - sin fotos');
                 return;
             }
@@ -1580,15 +2102,15 @@
                 const estadoIcon = getEstadoIcon(foto.estado);
 
                 html += `
-                    <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
-                        <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
-                        <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
-                                ${foto.estado === 'subiendo' ? 'disabled' : ''}>
-                            <i class="fas fa-times"></i>
-                        </button>
-                        ${estadoIcon}
-                    </div>
-                `;
+                            <div class="photo-thumbnail ${estadoClass}" data-foto-id="${foto.id}">
+                                <img src="${foto.dataUrl}" alt="${foto.nombre}" title="${foto.nombre}">
+                                <button type="button" class="photo-remove" onclick="eliminarFotoSeleccionada('${foto.id}')"
+                                        ${foto.estado === 'subiendo' ? 'disabled' : ''}>
+                                    <i class="fas fa-times"></i>
+                                </button>
+                                ${estadoIcon}
+                            </div>
+                        `;
             });
 
             container.html(html);
@@ -1694,22 +2216,22 @@
 
                             mostrarProgreso(100);
                             $('#uploadStatus').html(`
-                        <div class="alert alert-success">
-                            <i class="fas fa-check me-2"></i>
-                            ${response.cantidad || fotosSeleccionadas.length} foto(s) subida(s) exitosamente
-                        </div>
-                    `);
+                                <div class="alert alert-success">
+                                    <i class="fas fa-check me-2"></i>
+                                    ${response.cantidad || fotosSeleccionadas.length} foto(s) subida(s) exitosamente
+                                </div>
+                            `);
 
                             resolve(true);
                         } else {
                             // Mostrar el error completo del backend
                             let errorMsg = response && response.error ? response.error : 'Error al subir fotos';
                             $('#uploadStatus').html(`
-                        <div class="alert alert-danger">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
-                            Error al subir fotos: ${errorMsg}
-                        </div>
-                    `);
+                                <div class="alert alert-danger">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Error al subir fotos: ${errorMsg}
+                                </div>
+                            `);
                             reject(errorMsg);
                         }
                     },
@@ -1717,11 +2239,11 @@
                         // Mostrar el error completo del backend si está disponible
                         let errorMsg = xhr.responseText || error;
                         $('#uploadStatus').html(`
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
-                        Error al subir fotos: ${errorMsg}
-                    </div>
-                `);
+                            <div class="alert alert-danger">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Error al subir fotos: ${errorMsg}
+                            </div>
+                        `);
 
                         fotosSeleccionadas.forEach(foto => {
                             foto.estado = 'error';
@@ -2013,29 +2535,54 @@
 
             container.empty();
 
+            // Verificar si tenemos datos de vehículos
+            console.log('📊 Vehículos disponibles para contar:', vehiculosData.length);
+
             // Contar vehículos por tipo
             const tiposCounts = {};
-            vehiculosData.forEach(vehiculo => {
-                const tipo = vehiculo.TipoNombre || 'Otros';
-                tiposCounts[tipo] = (tiposCounts[tipo] || 0) + 1;
-            });
 
+            if (vehiculosData && vehiculosData.length > 0) {
+                vehiculosData.forEach(vehiculo => {
+                    // Usar diferentes posibles nombres de campo para el tipo
+                    const tipo = vehiculo.TipoNombre || vehiculo.TipoDescripcion || vehiculo.Tipo || 'Otros';
+                    console.log('🔍 Procesando vehículo tipo:', tipo, 'para vehículo ID:', vehiculo.IDVehiculo);
+                    tiposCounts[tipo] = (tiposCounts[tipo] || 0) + 1;
+                });
+            }
+
+            console.log('📈 Conteos por tipo:', tiposCounts);
+
+            // Mostrar tipos con sus conteos
             tiposData.forEach(tipo => {
-                const count = tiposCounts[tipo.Descripcion] || 0;
+                // Buscar coincidencias exactas o similares
+                let count = tiposCounts[tipo.Descripcion] || 0;
+
+                // Si no hay coincidencia exacta, buscar coincidencias parciales
+                if (count === 0) {
+                    Object.keys(tiposCounts).forEach(tipoVehiculo => {
+                        if (tipoVehiculo.toLowerCase().includes(tipo.Descripcion.toLowerCase()) ||
+                            tipo.Descripcion.toLowerCase().includes(tipoVehiculo.toLowerCase())) {
+                            count += tiposCounts[tipoVehiculo];
+                        }
+                    });
+                }
+
                 const icon = obtenerIconoTipo(tipo.Descripcion);
 
                 const card = `
-                <div class="col-md-6 col-lg-4 col-xl-3">
-                    <div class="type-card" onclick="filtrarPorTipo('${tipo.Descripcion}')">
-                        <div class="type-icon">
-                            <i class="${icon}"></i>
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="type-card" onclick="filtrarPorTipo('${tipo.Descripcion}')">
+                                <div class="type-icon">
+                                    <i class="${icon}"></i>
+                                </div>
+                                <div class="type-name">${tipo.Descripcion}</div>
+                                <div class="type-count">${count} vehículo${count !== 1 ? 's' : ''}</div>
+                            </div>
                         </div>
-                        <div class="type-name">${tipo.Descripcion}</div>
-                        <div class="type-count">${count} vehículos</div>
-                    </div>
-                </div>
-            `;
+                    `;
                 container.append(card);
+
+                console.log(`📝 Tipo: ${tipo.Descripcion} - Count: ${count}`);
             });
 
             console.log('✅ Tipos cargados:', tiposData.length, 'elementos');
@@ -2061,12 +2608,12 @@
                 }
 
                 const card = `
-                <div class="col-6 col-md-4 col-lg-3">
-                    <div class="brand-logo" onclick="filtrarPorMarca('${marca.Descripcion}')">
-                        ${imagenHtml}
-                    </div>
-                </div>
-            `;
+                        <div class="col-6 col-md-4 col-lg-3">
+                            <div class="brand-logo" onclick="filtrarPorMarca('${marca.Descripcion}')">
+                                ${imagenHtml}
+                            </div>
+                        </div>
+                    `;
                 container.append(card);
             });
 
@@ -2130,7 +2677,13 @@
             console.log('✅ Vehículos mostrados:', vehiculos.length);
         }
 
+        // 📸 FUNCIÓN ACTUALIZADA PARA CREAR TARJETA CON FOTOS
+        // 📸 FUNCIÓN CORREGIDA PARA CREAR TARJETA CON FOTOS (SIN DOBLE PREFIJO)
         function crearTarjetaVehiculo(vehiculo) {
+            console.log('🚗 Creando tarjeta para vehículo:', vehiculo.IDVehiculo);
+            console.log('📸 Primera foto:', vehiculo.PrimeraFoto ? 'SÍ TIENE' : 'NO TIENE');
+            console.log('📊 Cantidad fotos:', vehiculo.CantidadFotos);
+
             const precio = new Intl.NumberFormat('es-DO', {
                 style: 'currency',
                 currency: 'DOP'
@@ -2140,49 +2693,49 @@
                 '<div class="vehicle-badge destacado"><i class="fas fa-star me-1"></i>Destacado</div>' :
                 '<div class="vehicle-badge"><i class="fas fa-check me-1"></i>Disponible</div>';
 
-            // 📸 Usar la primera foto si existe, sino placeholder
-            const imagenSrc = vehiculo.PrimeraFoto || 'https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen';
+            // 📸 USAR LA IMAGEN TAL COMO VIENE DEL BACKEND (YA TIENE EL PREFIJO)
+            let imagenSrc = vehiculo.PrimeraFoto || 'https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen';
 
-            // 📊 Badge de cantidad de fotos
+            // 📊 Badge de cantidad de fotos (solo mostrar si hay fotos)
             const fotosBadge = vehiculo.CantidadFotos > 0 ?
                 `<div class="photos-badge"><i class="fas fa-camera me-1"></i>${vehiculo.CantidadFotos}</div>` : '';
 
             return `
-            <div class="col-md-6 col-lg-4 col-xl-3">
-                <div class="vehicle-card">
-                    <div class="vehicle-image">
-                        <img src="${imagenSrc}" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
-                             onerror="this.src='https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen'">
-                        ${badge}
-                        ${fotosBadge}
-                    </div>
-                    <div class="vehicle-info">
-                        <h5 class="vehicle-title">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h5>
-                        <div class="vehicle-details">
-                            <span><i class="fas fa-calendar me-1"></i>${vehiculo.Año}</span>
-                            <span><i class="fas fa-cog me-1"></i>${vehiculo.TipoNombre}</span>
-                            <span><i class="fas fa-gas-pump me-1"></i>${vehiculo.Combustible || 'N/A'}</span>
+                <div class="col-md-6 col-lg-4 col-xl-3">
+                    <div class="vehicle-card">
+                        <div class="vehicle-image">
+                            <img src="${imagenSrc}"
+                                 alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
+                                 onerror="this.src='https://via.placeholder.com/400x220/f8f9fa/6c757d?text=Sin+Imagen'"
+                                 onload="console.log('✅ Imagen cargada para vehículo ${vehiculo.IDVehiculo}')">
+                            ${badge}
+                            ${fotosBadge}
                         </div>
-                        <div class="vehicle-price">${precio}</div>
-                        <div class="vehicle-location">
-                            <i class="fas fa-map-marker-alt me-1"></i>
-                            ${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}
-                        </div>
-                        <div class="vehicle-actions">
-                            <button class="btn btn-view" onclick="verDetalles(${vehiculo.IDVehiculo})">
-                                <i class="fas fa-eye me-2"></i>Ver Detalles
-                            </button>
-                            <button class="btn btn-contact" onclick="contactarVendedor('${vehiculo.Contacto || 'No disponible'}')">
-                                <i class="fas fa-phone me-2"></i>Contactar
-                            </button>
+                        <div class="vehicle-info">
+                            <h5 class="vehicle-title">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h5>
+                            <div class="vehicle-details">
+                                <span><i class="fas fa-calendar me-1"></i>${vehiculo.Año}</span>
+                                <span><i class="fas fa-cog me-1"></i>${vehiculo.TipoNombre}</span>
+                                <span><i class="fas fa-gas-pump me-1"></i>${vehiculo.Combustible || 'N/A'}</span>
+                            </div>
+                            <div class="vehicle-price">${precio}</div>
+                            <div class="vehicle-location">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                ${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}
+                            </div>
+                            <div class="vehicle-actions">
+                                <button class="btn btn-view" onclick="verDetalles(${vehiculo.IDVehiculo})">
+                                    <i class="fas fa-eye me-2"></i>Ver Detalles
+                                </button>
+                                <button class="btn btn-contact" onclick="contactarVendedor('${vehiculo.Contacto || 'No disponible'}')">
+                                    <i class="fas fa-phone me-2"></i>Contactar
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-`;
-        }
-
-        function configurarEventos() {
+            `;
+        } function configurarEventos() {
             console.log('🎛️ Configurando eventos...');
 
             // Evento para cargar municipios cuando cambia la provincia
@@ -2547,7 +3100,12 @@
             });
         }
 
+        // 📸 FUNCIÓN ACTUALIZADA PARA MOSTRAR MODAL CON GALERÍA DE FOTOS
+        // 📸 FUNCIÓN CORREGIDA PARA MOSTRAR MODAL CON GALERÍA
         function mostrarModalDetalles(vehiculo) {
+            console.log('🔍 Mostrando detalles para vehículo:', vehiculo.IDVehiculo);
+            console.log('📸 Todas las fotos:', vehiculo.TodasLasFotos);
+
             const precio = new Intl.NumberFormat('es-DO', {
                 style: 'currency',
                 currency: 'DOP'
@@ -2555,75 +3113,145 @@
 
             $('#modalDetallesTitle').html(`<i class="fas fa-car me-2"></i>${vehiculo.MarcaNombre} ${vehiculo.Modelo} ${vehiculo.Año}`);
 
-            const contenido = `
-            <div class="row g-4">
-                <div class="col-md-6">
-                    <div class="vehicle-image">
-                        <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imagen"
-                             class="img-fluid rounded" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}">
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h4 class="text-primary mb-3">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h4>
-                    <h3 class="text-success mb-3">${precio}</h3>
+            // 📸 USAR LAS FOTOS TAL COMO VIENEN DEL BACKEND (YA TIENEN EL PREFIJO)
+            let galeriaHtml = '';
+            let thumbnailsHtml = '';
 
-                    <div class="row g-3">
-                        <div class="col-6">
-                            <strong>Año:</strong><br>
-                            <span class="text-muted">${vehiculo.Año}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Condición:</strong><br>
-                            <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Color:</strong><br>
-                            <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Kilometraje:</strong><br>
-                            <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Tipo:</strong><br>
-                            <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Motor:</strong><br>
-                            <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Combustible:</strong><br>
-                            <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
-                        </div>
-                        <div class="col-6">
-                            <strong>Transmisión:</strong><br>
-                            <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
-                        </div>
-                        <div class="col-12">
-                            <strong>Ubicación:</strong><br>
-                            <span class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}</span>
-                        </div>
-                        <div class="col-12">
-                            <strong>Vendedor:</strong><br>
-                            <span class="text-muted">${vehiculo.NombreUsuario || 'N/A'}</span>
+            if (vehiculo.TodasLasFotos && vehiculo.TodasLasFotos.length > 0) {
+                console.log(`📸 Procesando ${vehiculo.TodasLasFotos.length} fotos para la galería`);
+
+                // Las fotos ya vienen con el formato correcto data:image/jpeg;base64,
+                const fotosFormateadas = vehiculo.TodasLasFotos;
+
+                // Imagen principal
+                galeriaHtml = `
+                    <div class="position-relative">
+                        <img id="imagenPrincipal" src="${fotosFormateadas[0]}"
+                             class="vehicle-detail-image" alt="${vehiculo.MarcaNombre} ${vehiculo.Modelo}"
+                             onload="console.log('✅ Imagen principal cargada')"
+                             onerror="console.log('❌ Error cargando imagen principal'); this.src='https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Error+al+cargar'">
+
+                        ${fotosFormateadas.length > 1 ? `
+                            <button class="btn btn-light position-absolute top-50 start-0 translate-middle-y ms-2"
+                                    onclick="cambiarFoto(-1)" style="z-index: 10;">
+                                <i class="fas fa-chevron-left"></i>
+                            </button>
+                            <button class="btn btn-light position-absolute top-50 end-0 translate-middle-y me-2"
+                                    onclick="cambiarFoto(1)" style="z-index: 10;">
+                                <i class="fas fa-chevron-right"></i>
+                            </button>
+                        ` : ''}
+
+                        <div class="position-absolute bottom-0 end-0 m-3">
+                            <span class="badge bg-dark bg-opacity-75">
+                                <span id="fotoActual">1</span> / ${fotosFormateadas.length}
+                            </span>
                         </div>
                     </div>
+                `;
+
+                // Thumbnails
+                if (fotosFormateadas.length > 1) {
+                    thumbnailsHtml = `
+                        <div class="photos-carousel mt-3">
+                            <div class="d-flex justify-content-center flex-wrap gap-2">
+                                ${fotosFormateadas.map((foto, index) => `
+                                    <img src="${foto}"
+                                         class="carousel-thumbnail ${index === 0 ? 'active' : ''}"
+                                         onclick="seleccionarFoto(${index})"
+                                         data-index="${index}"
+                                         onload="console.log('✅ Thumbnail ${index} cargado')"
+                                         onerror="console.log('❌ Error en thumbnail ${index}')">
+                                `).join('')}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                // Guardar fotos para navegación
+                window.fotosActuales = fotosFormateadas;
+            } else {
+                console.log('❌ No hay fotos disponibles para este vehículo');
+                galeriaHtml = `
+                    <img src="https://via.placeholder.com/500x300/f8f9fa/6c757d?text=Sin+Imágenes"
+                         class="vehicle-detail-image" alt="Sin imágenes disponibles">
+                `;
+                window.fotosActuales = [];
+            }
+
+            const contenido = `
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        ${galeriaHtml}
+                        ${thumbnailsHtml}
+                    </div>
+                    <div class="col-md-6">
+                        <h4 class="text-primary mb-3">${vehiculo.MarcaNombre} ${vehiculo.Modelo}</h4>
+                        <h3 class="text-success mb-3">${precio}</h3>
+
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <strong>Año:</strong><br>
+                                <span class="text-muted">${vehiculo.Año}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Condición:</strong><br>
+                                <span class="text-muted">${vehiculo.Condicion || 'N/A'}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Color:</strong><br>
+                                <span class="text-muted">${vehiculo.Color || 'N/A'}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Kilometraje:</strong><br>
+                                <span class="text-muted">${vehiculo.Kilometraje ? vehiculo.Kilometraje.toLocaleString() + ' km' : 'N/A'}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Tipo:</strong><br>
+                                <span class="text-muted">${vehiculo.TipoNombre || 'N/A'}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Motor:</strong><br>
+                                <span class="text-muted">${vehiculo.MotorDescripcion || 'N/A'}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Combustible:</strong><br>
+                                <span class="text-muted">${vehiculo.Combustible || 'N/A'}</span>
+                            </div>
+                            <div class="col-6">
+                                <strong>Transmisión:</strong><br>
+                                <span class="text-muted">${vehiculo.Transmision || 'N/A'}</span>
+                            </div>
+                            <div class="col-12">
+                                <strong>Ubicación:</strong><br>
+                                <span class="text-muted"><i class="fas fa-map-marker-alt me-1"></i>${vehiculo.MunicipioNombre}, ${vehiculo.ProvinciaNombre}</span>
+                            </div>
+                            <div class="col-12">
+                                <strong>Vendedor:</strong><br>
+                                <span class="text-muted">${vehiculo.NombreUsuario || 'N/A'}</span>
+                            </div>
+                            ${vehiculo.CantidadFotos > 0 ? `
+                            <div class="col-12">
+                                <strong>Fotos:</strong><br>
+                                <span class="text-muted"><i class="fas fa-camera me-1"></i>${vehiculo.CantidadFotos} imagen(es) disponible(s)</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    ${vehiculo.Descripcion ? `
+                    <div class="col-12">
+                        <h5>Descripción</h5>
+                        <p class="text-muted">${vehiculo.Descripcion}</p>
+                    </div>
+                    ` : ''}
+                    ${vehiculo.Observaciones ? `
+                    <div class="col-12">
+                        <h5>Observaciones</h5>
+                        <p class="text-muted">${vehiculo.Observaciones}</p>
+                    </div>
+                    ` : ''}
                 </div>
-                ${vehiculo.Descripcion ? `
-                <div class="col-12">
-                    <h5>Descripción</h5>
-                    <p class="text-muted">${vehiculo.Descripcion}</p>
-                </div>
-                ` : ''}
-                ${vehiculo.Observaciones ? `
-                <div class="col-12">
-                    <h5>Observaciones</h5>
-                    <p class="text-muted">${vehiculo.Observaciones}</p>
-                </div>
-                ` : ''}
-            </div>
-`;
+            `;
 
             $('#detallesContent').html(contenido);
 
@@ -2632,7 +3260,45 @@
                 contactarVendedor(vehiculo.Contacto || 'No disponible');
             });
 
+            // Configurar variables globales para la galería
+            window.fotoActualIndex = 0;
+
             $('#modalDetalles').modal('show');
+        }
+        // 📸 FUNCIONES PARA LA GALERÍA DE FOTOS
+        window.cambiarFoto = function (direccion) {
+            if (!window.fotosActuales || window.fotosActuales.length <= 1) return;
+
+            window.fotoActualIndex += direccion;
+
+            if (window.fotoActualIndex >= window.fotosActuales.length) {
+                window.fotoActualIndex = 0;
+            } else if (window.fotoActualIndex < 0) {
+                window.fotoActualIndex = window.fotosActuales.length - 1;
+            }
+
+            actualizarImagenPrincipal();
+        };
+
+        window.seleccionarFoto = function (index) {
+            if (!window.fotosActuales || index < 0 || index >= window.fotosActuales.length) return;
+
+            window.fotoActualIndex = index;
+            actualizarImagenPrincipal();
+        };
+
+        function actualizarImagenPrincipal() {
+            const imagenPrincipal = $('#imagenPrincipal');
+            const contador = $('#fotoActual');
+
+            if (imagenPrincipal.length && window.fotosActuales && window.fotosActuales[window.fotoActualIndex]) {
+                imagenPrincipal.attr('src', window.fotosActuales[window.fotoActualIndex]);
+                contador.text(window.fotoActualIndex + 1);
+
+                // Actualizar thumbnails activos
+                $('.carousel-thumbnail').removeClass('active');
+                $(`.carousel-thumbnail[data-index="${window.fotoActualIndex}"]`).addClass('active');
+            }
         }
 
         function contactarVendedor(telefono) {
@@ -2649,10 +3315,10 @@
             Swal.fire({
                 title: 'Contactar Vendedor',
                 html: `
-                <p>Puedes contactar al vendedor al número:</p>
-                <h4 class="text-primary">${telefono}</h4>
-                <p class="text-muted">¿Qué deseas hacer?</p>
-            `,
+                        <p>Puedes contactar al vendedor al número:</p>
+                        <h4 class="text-primary">${telefono}</h4>
+                        <p class="text-muted">¿Qué deseas hacer?</p>
+                    `,
                 icon: 'info',
                 showCancelButton: true,
                 confirmButtonText: '<i class="fas fa-phone me-2"></i>Llamar',
@@ -2800,6 +3466,322 @@
                 console.log('🔧 === AUTO-VERIFICACIÓN DEL DOM ===');
                 verificarElementosDOM();
             }, 3000);
+        });
+
+        // 📸 AGREGAR ESTAS FUNCIONES AL FINAL DEL SCRIPT EN TU HTML
+
+        // Variables globales para la galería
+        window.fotosActuales = [];
+        window.fotoActualIndex = 0;
+
+        // Función para cambiar foto con teclado
+        $(document).on('keydown', function (e) {
+            if ($('#modalDetalles').hasClass('show')) {
+                if (e.key === 'ArrowLeft') {
+                    cambiarFoto(-1);
+                } else if (e.key === 'ArrowRight') {
+                    cambiarFoto(1);
+                } else if (e.key === 'Escape') {
+                    $('#modalDetalles').modal('hide');
+                }
+            }
+        });
+
+        // Limpiar variables al cerrar modal
+        $('#modalDetalles').on('hidden.bs.modal', function () {
+            window.fotosActuales = [];
+            window.fotoActualIndex = 0;
+        });
+
+        // 🎠 FUNCIÓN ACTUALIZADA PARA CARGAR MARCAS EN CARRUSEL
+        function cargarMarcasCarrusel() {
+            console.log('🎠 Cargando marcas en carrusel...');
+
+            const container = $('#marcasCarousel');
+            if (!container.length) {
+                console.warn('⚠️ Container del carrusel no encontrado');
+                return;
+            }
+
+            // Mostrar loading
+            container.parent().addClass('loading');
+            container.html(`
+        <div class="brands-loading">
+            <i class="fas fa-spinner"></i>
+            <p>Cargando marcas...</p>
+        </div>
+    `);
+
+            // Simular delay para mejor UX
+            setTimeout(() => {
+                container.empty();
+                container.parent().removeClass('loading');
+
+                if (!marcasData || marcasData.length === 0) {
+                    container.html(`
+                <div class="text-center p-4">
+                    <i class="fas fa-car-side text-muted mb-3" style="font-size: 3rem;"></i>
+                    <p class="text-muted">No hay marcas disponibles</p>
+                </div>
+            `);
+                    return;
+                }
+
+                // Guardar datos para el carrusel
+                marcasCarruselData = [...marcasData];
+                marcasCarruselItems = marcasCarruselData.length;
+
+                // Crear items del carrusel
+                marcasCarruselData.forEach((marca, index) => {
+                    let contenidoMarca = '';
+
+                    if (marca.ImagenBase64) {
+                        contenidoMarca = `<img src="data:image/jpeg;base64,${marca.ImagenBase64}" alt="${marca.Descripcion}">`;
+                    } else {
+                        contenidoMarca = `<div class="brand-name">${marca.Descripcion}</div>`;
+                    }
+
+                    const item = `
+                <div class="brand-carousel-item" 
+                     onclick="filtrarPorMarca('${marca.Descripcion}')" 
+                     data-index="${index}"
+                     title="Ver vehículos de ${marca.Descripcion}">
+                    ${contenidoMarca}
+                </div>
+            `;
+                    container.append(item);
+                });
+
+                // Configurar carrusel
+                configurarCarruselMarcas();
+                actualizarIndicadorMarcas();
+
+                console.log(`✅ Carrusel de marcas cargado: ${marcasCarruselItems} marcas`);
+            }, 500);
+        }
+
+        // 🎛️ CONFIGURAR EVENTOS DEL CARRUSEL
+        function configurarCarruselMarcas() {
+            // Calcular marcas visibles según el tamaño de pantalla
+            calcularMarcasVisibles();
+
+            // Eventos de botones
+            $('#prevMarcas').off('click').on('click', function () {
+                moverCarruselMarcas(-1);
+            });
+
+            $('#nextMarcas').off('click').on('click', function () {
+                moverCarruselMarcas(1);
+            });
+
+            // Eventos táctiles para móvil
+            let startX = 0;
+            let currentX = 0;
+            let isDragging = false;
+
+            $('#marcasCarousel').on('touchstart', function (e) {
+                startX = e.originalEvent.touches[0].clientX;
+                isDragging = true;
+            });
+
+            $('#marcasCarousel').on('touchmove', function (e) {
+                if (!isDragging) return;
+                e.preventDefault();
+                currentX = e.originalEvent.touches[0].clientX;
+            });
+
+            $('#marcasCarousel').on('touchend', function (e) {
+                if (!isDragging) return;
+                isDragging = false;
+
+                let diffX = startX - currentX;
+                if (Math.abs(diffX) > 50) { // Mínimo 50px para activar
+                    if (diffX > 0) {
+                        moverCarruselMarcas(1); // Swipe izquierda -> siguiente
+                    } else {
+                        moverCarruselMarcas(-1); // Swipe derecha -> anterior
+                    }
+                }
+            });
+
+            // Eventos de teclado
+            $(document).on('keydown', function (e) {
+                if (e.key === 'ArrowLeft') {
+                    moverCarruselMarcas(-1);
+                } else if (e.key === 'ArrowRight') {
+                    moverCarruselMarcas(1);
+                }
+            });
+
+            // Redimensionar ventana
+            $(window).on('resize', debounce(function () {
+                calcularMarcasVisibles();
+                ajustarPosicionCarrusel();
+            }, 250));
+        }
+
+        // 📐 CALCULAR MARCAS VISIBLES SEGÚN PANTALLA
+        function calcularMarcasVisibles() {
+            const width = $(window).width();
+
+            if (width >= 1200) {
+                marcasVisibles = 5;
+            } else if (width >= 992) {
+                marcasVisibles = 4;
+            } else if (width >= 768) {
+                marcasVisibles = 3;
+            } else if (width >= 576) {
+                marcasVisibles = 2;
+            } else {
+                marcasVisibles = 1;
+            }
+
+            console.log(`📐 Pantalla: ${width}px, Marcas visibles: ${marcasVisibles}`);
+        }
+
+        // 🏃‍♂️ MOVER CARRUSEL
+        function moverCarruselMarcas(direccion) {
+            if (marcasCarruselItems <= marcasVisibles) {
+                console.log('ℹ️ No hay suficientes marcas para mover el carrusel');
+                return;
+            }
+
+            const maxIndex = Math.max(0, marcasCarruselItems - marcasVisibles);
+
+            marcasCarruselIndex += direccion;
+
+            // Controlar límites
+            if (marcasCarruselIndex < 0) {
+                marcasCarruselIndex = maxIndex; // Ir al final
+            } else if (marcasCarruselIndex > maxIndex) {
+                marcasCarruselIndex = 0; // Volver al inicio
+            }
+
+            aplicarTransformacionCarrusel();
+            actualizarIndicadorMarcas();
+            actualizarBotonesCarrusel();
+        }
+
+        // 🎨 APLICAR TRANSFORMACIÓN
+        function aplicarTransformacionCarrusel() {
+            const container = $('#marcasCarousel');
+            const itemWidth = 200 + 32; // 200px + 2rem gap
+            const offset = marcasCarruselIndex * itemWidth;
+
+            container.addClass('moving');
+            container.css('transform', `translateX(-${offset}px)`);
+
+            // Quitar clase después de la transición
+            setTimeout(() => {
+                container.removeClass('moving');
+            }, 500);
+
+            console.log(`🎨 Carrusel movido a índice: ${marcasCarruselIndex}, offset: ${offset}px`);
+        }
+
+        // 📊 ACTUALIZAR INDICADORES
+        function actualizarIndicadorMarcas() {
+            $('#marcaActual').text(marcasCarruselIndex + 1);
+            $('#totalMarcas').text(Math.max(1, marcasCarruselItems - marcasVisibles + 1));
+        }
+
+        // 🎛️ ACTUALIZAR ESTADO DE BOTONES
+        function actualizarBotonesCarrusel() {
+            const maxIndex = Math.max(0, marcasCarruselItems - marcasVisibles);
+
+            $('#prevMarcas').prop('disabled', marcasCarruselIndex === 0);
+            $('#nextMarcas').prop('disabled', marcasCarruselIndex >= maxIndex);
+        }
+
+        // 🔧 AJUSTAR POSICIÓN AL REDIMENSIONAR
+        function ajustarPosicionCarrusel() {
+            const maxIndex = Math.max(0, marcasCarruselItems - marcasVisibles);
+            if (marcasCarruselIndex > maxIndex) {
+                marcasCarruselIndex = maxIndex;
+            }
+            aplicarTransformacionCarrusel();
+            actualizarIndicadorMarcas();
+            actualizarBotonesCarrusel();
+        }
+
+        // 🕰️ FUNCIÓN DEBOUNCE PARA OPTIMIZAR RESIZE
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // 🎯 AUTO-PLAY OPCIONAL (DESCOMENTRAR PARA ACTIVAR)
+        /*
+        let carruselAutoPlay;
+        
+        function iniciarAutoPlay() {
+            carruselAutoPlay = setInterval(() => {
+                moverCarruselMarcas(1);
+            }, 4000); // Cambiar cada 4 segundos
+        }
+        
+        function detenerAutoPlay() {
+            if (carruselAutoPlay) {
+                clearInterval(carruselAutoPlay);
+            }
+        }
+        
+        // Pausar autoplay en hover
+        $('#marcasCarousel').hover(
+            () => detenerAutoPlay(),
+            () => iniciarAutoPlay()
+        );
+        */
+
+        // 🔄 ACTUALIZAR LA FUNCIÓN CARGAR MARCAS ORIGINAL
+        function cargarMarcas() {
+            console.log('🔄 Redirigiendo a carrusel de marcas...');
+            cargarMarcasCarrusel();
+        }
+
+        // 🎯 FUNCIÓN GLOBAL PARA FILTRAR POR MARCA (MEJORADA)
+        window.filtrarPorMarca = function (marca) {
+            console.log(`🎯 Filtrando por marca: ${marca}`);
+
+            $('#filtroMarca').val(marca).addClass('filter-active');
+            aplicarFiltros();
+
+            // Scroll suave hacia la sección de vehículos
+            $('html, body').animate({
+                scrollTop: $("#vehiculosContainer").offset().top - 100
+            }, 1000);
+
+            // Feedback visual
+            Swal.fire({
+                title: `Vehículos ${marca}`,
+                text: `Mostrando vehículos de la marca ${marca}`,
+                icon: 'info',
+                timer: 2000,
+                showConfirmButton: false,
+                toast: true,
+                position: 'top-end'
+            });
+        };
+
+        // 🚀 INICIALIZAR AL CARGAR LA PÁGINA
+        $(document).ready(function () {
+            // Reemplazar la función original después de que se carguen los datos
+            const originalCargarDatos = cargarDatosIniciales;
+            cargarDatosIniciales = function () {
+                return originalCargarDatos().then(() => {
+                    // Cargar carrusel después de obtener los datos
+                    setTimeout(() => {
+                        cargarMarcasCarrusel();
+                    }, 1000);
+                });
+            };
         });
     </script>
 </body>
