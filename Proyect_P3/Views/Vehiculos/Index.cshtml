@@ -1901,12 +1901,17 @@
                     configurarEventos();
                     // 4. 📸 Configurar eventos de fotos INMEDIATAMENTE
                     configurarEventosFotosInmediato();
+                    // 5. 🎠 Cargar carrusel de marcas
+                    setTimeout(() => {
+                        cargarMarcasCarrusel();
+                    }, 500);
                 })
                 .catch(error => {
                     console.error('❌ Error en inicialización:', error);
                     mostrarError('Error al inicializar la aplicación');
                 });
         });
+
 
         // 📸 CONFIGURACIÓN INMEDIATA DE EVENTOS DE FOTOS (SIN ESPERAR MODAL)
         function configurarEventosFotosInmediato() {
@@ -3009,28 +3014,45 @@
         function cargarVehiculos() {
             console.log('🚚 Cargando vehículos...');
 
-            $('#loadingVehiculos').show();
+            // Mostrar loading solo si no hay vehículos cargados
+            if (vehiculosData.length === 0) {
+                $('#loadingVehiculos').show();
+            }
+
             $('#vehiculosContainer').hide();
             $('#noResults').hide();
 
             $.ajax({
                 url: '/Vehiculos/ConsultaVehiculosActivos',
                 type: 'GET',
+                timeout: 10000, // 10 segundos timeout
                 success: function (response) {
                     console.log('✅ Vehículos cargados:', response);
+
+                    $('#loadingVehiculos').hide();
 
                     if (response && response.data) {
                         vehiculosData = response.data;
                         mostrarVehiculos(vehiculosData);
                         actualizarEstadisticas();
+
+                        // Actualizar contadores de tipos
+                        cargarTipos();
                     } else {
                         mostrarVehiculos([]);
                     }
                 },
                 error: function (xhr, status, error) {
                     console.error('❌ Error al cargar vehículos:', error);
-                    mostrarError('Error al cargar los vehículos');
                     $('#loadingVehiculos').hide();
+
+                    // Mostrar error pero no bloquear la interfaz
+                    console.warn('Usando datos en caché si están disponibles');
+                    if (vehiculosData.length > 0) {
+                        mostrarVehiculos(vehiculosData);
+                    } else {
+                        mostrarError('Error al cargar los vehículos. Verifica tu conexión.');
+                    }
                 }
             });
         }
@@ -3063,8 +3085,24 @@
             console.log('✅ Vehículos mostrados:', vehiculos.length);
         }
 
+        // 🔧 CORRECCIÓN 5: Agregar función para limpiar estado de carga
+        function limpiarEstadosCarga() {
+            console.log('🧹 Limpiando estados de carga...');
+
+            // Ocultar todos los loading
+            $('#loadingVehiculos').hide();
+
+            // Habilitar todos los botones
+            $('button').prop('disabled', false);
+
+            // Remover overlays o masks si existen
+            $('.loading-overlay, .modal-backdrop').remove();
+
+            // Asegurar que el body no tenga scroll bloqueado
+            $('body').removeClass('modal-open').css('overflow', '');
+        }
+
         // 📸 FUNCIÓN ACTUALIZADA PARA CREAR TARJETA CON FOTOS
-        // 📸 FUNCIÓN CORREGIDA PARA CREAR TARJETA CON FOTOS (SIN DOBLE PREFIJO)
         function crearTarjetaVehiculo(vehiculo) {
             console.log('🚗 Creando tarjeta para vehículo:', vehiculo.IDVehiculo);
             console.log('📸 Primera foto:', vehiculo.PrimeraFoto ? 'SÍ TIENE' : 'NO TIENE');
@@ -3293,28 +3331,38 @@
         }
 
         function finalizarGuardado(btnGuardar, textoOriginal, exito, mensajeCustom = null) {
+            // Siempre restaurar el botón primero
             btnGuardar.html(textoOriginal).prop('disabled', false);
 
             if (exito) {
                 const mensaje = mensajeCustom || 'Vehículo publicado exitosamente';
+
+                // Mostrar mensaje de éxito
                 Swal.fire({
                     title: '¡Éxito!',
                     text: mensaje,
                     icon: 'success',
-                    confirmButtonColor: '#28a745'
-                }).then(() => {
-                    $('#modalPublicar').modal('hide');
-                    cargarVehiculos(); // Recargar lista
+                    confirmButtonColor: '#28a745',
+                    timer: 2000,
+                    showConfirmButton: false
                 });
+
+                // Cerrar modal inmediatamente
+                $('#modalPublicar').modal('hide');
+
+                // Limpiar formulario
+                limpiarFormularioCompleto();
+
+                // Recargar datos con un pequeño delay
+                setTimeout(() => {
+                    console.log('🔄 Recargando datos después de guardar...');
+                    cargarVehiculos();
+                    actualizarEstadisticas();
+                }, 500);
+
             } else {
                 mostrarError(mensajeCustom || 'Error al publicar el vehículo');
             }
-        }
-
-        function obtenerUltimoIdVehiculo() {
-            // Esta función debería implementarse para obtener el ID del último vehículo insertado
-            // Por ahora retornamos un valor temporal
-            return new Date().getTime(); // ID temporal basado en timestamp
         }
 
         function validarFormulario() {
@@ -4344,20 +4392,6 @@
                 position: 'top-end'
             });
         };
-
-        // 🚀 INICIALIZAR AL CARGAR LA PÁGINA
-        $(document).ready(function () {
-            // Reemplazar la función original después de que se carguen los datos
-            const originalCargarDatos = cargarDatosIniciales;
-            cargarDatosIniciales = function () {
-                return originalCargarDatos().then(() => {
-                    // Cargar carrusel después de obtener los datos
-                    setTimeout(() => {
-                        cargarMarcasCarrusel();
-                    }, 1000);
-                });
-            };
-        });
     </script>
 </body>
 </html>

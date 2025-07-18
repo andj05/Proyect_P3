@@ -7,5 +7,5 @@ public class Marcas
     public bool? Estatus { get; set; }
     public DateTime? FechaRegistro { get; set; }
     public byte[] Imagen { get; set; }
-    public string ImagenBase64 { get; set; } // Opcional para facilitar conversión
+    public string ImagenBase64 { get; set; } 
 }

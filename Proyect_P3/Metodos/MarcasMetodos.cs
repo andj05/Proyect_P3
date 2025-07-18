@@ -33,7 +33,6 @@ namespace Proyect_P3.Metodos
                 {
                     System.Diagnostics.Debug.WriteLine("=== INICIANDO LISTAR MARCAS ===");
 
-                    // CAMBIO CRÍTICO: Usar consulta SQL directa como en Tipos
                     // En lugar de stored procedure que puede tener problemas
                     SqlCommand cmd = new SqlCommand("SELECT * FROM MARCAS WHERE Estatus = 1 ORDER BY IdMarca DESC", oCnn);
                     cmd.CommandType = CommandType.Text;

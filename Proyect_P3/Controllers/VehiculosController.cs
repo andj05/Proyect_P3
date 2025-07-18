@@ -19,12 +19,6 @@ namespace Proyect_P3.Controllers
                 return RedirectToAction("Login", "Acceder");
             return View();
         }
-        public ActionResult Vehiculos()
-        {
-            if (Session["Usuario"] == null)
-                return RedirectToAction("Login", "Acceder");
-            return View("Index");
-        }
 
         [HttpGet]
         public JsonResult ConsultaVehiculos()
